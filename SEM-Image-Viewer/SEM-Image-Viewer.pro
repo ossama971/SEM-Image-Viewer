@@ -1,4 +1,5 @@
 QT       += core gui
+QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,13 +11,18 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    modules/image_processor.cpp \
+    widgets/image_widget.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    modules/image_processor.h \
+    widgets/image_widget.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    widgets/image_widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -45,3 +51,6 @@ LIBS += -L/opt/homebrew/lib/ \
 # Include Boost libraries and directories
 INCLUDEPATH += /opt/homebrew/opt/boost/include
 LIBS += -L/opt/homebrew/opt/boost/lib -lboost_system -lboost_filesystem
+
+
+LIBS += -framework OpenGL

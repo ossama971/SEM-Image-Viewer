@@ -2,25 +2,28 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "widgets/image_widget.h"
+#include "modules/image_processor.h"
 
-QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
-    void on_imporbtn_clicked();
+    void on_imporbtn_clicked();  // Slot to handle the import button click
 
 private:
     Ui::MainWindow *ui;
+    ImageProcessor *imageProcessor;
+    ImageWidget *imageWidget;  // Custom widget containing only the image viewer
 };
+
 #endif // MAINWINDOW_H
