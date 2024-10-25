@@ -12,12 +12,10 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    modules/image_processor.cpp \
     widgets/image_widget.cpp
 
 HEADERS += \
     mainwindow.h \
-    modules/image_processor.h \
     widgets/image_widget.h
 
 FORMS += \

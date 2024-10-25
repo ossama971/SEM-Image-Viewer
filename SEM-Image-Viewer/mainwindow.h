@@ -3,11 +3,10 @@
 
 #include <QMainWindow>
 #include "widgets/image_widget.h"
-#include "modules/image_processor.h"
 
-namespace Ui {
-class MainWindow;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -18,12 +17,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_imporbtn_clicked();  // Slot to handle the import button click
+    void imporbtn_clicked();
 
 private:
     Ui::MainWindow *ui;
-    ImageProcessor *imageProcessor;
-    ImageWidget *imageWidget;  // Custom widget containing only the image viewer
+    ImageWidget *imageWidget;  // Member variable for the custom widget
 };
 
 #endif // MAINWINDOW_H

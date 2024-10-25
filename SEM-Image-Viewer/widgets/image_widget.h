@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPixmap>
+#include <optional>
 
 class ImageWidget : public QWidget
 {
@@ -11,10 +12,15 @@ class ImageWidget : public QWidget
 
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
-    void setImage(const QPixmap &pixmap);  // Public method to set the image on the label
+    void loadAndDisplayImage(const QString &imagePath);
 
 private:
-    QLabel *imageLabel;  // Label to display the image
+    QLabel *imageLabel;
+    std::optional<QPixmap> loadAndPrepareImage(const QString &path, const QSize &targetSize);
+    void setImage(const QPixmap &pixmap);
+
+signals:
+    void imageLoadFailed();  // Signal to notify MainWindow of a failure
 };
 
 #endif // IMAGEWIDGET_H
