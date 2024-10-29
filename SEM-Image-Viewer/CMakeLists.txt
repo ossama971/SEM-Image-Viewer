@@ -44,7 +44,7 @@ set(PROJECT_SOURCES
         core/image_utils.h
         core/image_utils.cpp
 
-        filters/image_filter.h
+        core/filters/image_filter.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
