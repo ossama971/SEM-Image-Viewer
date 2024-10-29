@@ -39,5 +39,5 @@ MainWindow::~MainWindow()
 
 void MainWindow::imporbtn_clicked()
 {
-    imageWidget->loadAndDisplayImage("Put absolute path to any photo here");
+    imageWidget->loadAndDisplayImage("/Users/salmaabdelghany/Siemens/FinalProject/5a6733ac-b211-4d15-bdca-6be7f7e94683.JPG");
 }
