@@ -1,6 +1,8 @@
 #ifndef IMAGE_FILTER_H
 #define IMAGE_FILTER_H
 
+#include <opencv2/opencv.hpp>
+
 class Filter {
 public:
 
