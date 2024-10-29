@@ -26,7 +26,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-find_package(Boost CONFIG REQUIRED)
+find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
