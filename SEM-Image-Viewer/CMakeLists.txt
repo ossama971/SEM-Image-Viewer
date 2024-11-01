@@ -23,8 +23,13 @@ endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+set(OpenCV_DIR $ENV{OpenCV})
+
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
+set(BOOST_ROOT $ENV{Boost})
+
 
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -52,6 +57,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         core/filters/gray_scale_filter.h
+        widgets/LoggerWidget.h
+        widgets/LoggerWidget.cpp
+        assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

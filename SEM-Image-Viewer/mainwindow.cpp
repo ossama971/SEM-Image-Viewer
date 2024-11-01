@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -25,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connect the button click signal to the imporbtn_clicked slot
     connect(ui->imporbtn, &QPushButton::clicked, this, &MainWindow::imporbtn_clicked);
+
+
 
     // Connect the image load failure signal from ImageWidget to show an error message
     connect(imageWidget, &ImageWidget::imageLoadFailed, this, [] {
