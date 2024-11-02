@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void imporbtn_clicked();
+
 
 private:
     Ui::MainWindow *ui;
