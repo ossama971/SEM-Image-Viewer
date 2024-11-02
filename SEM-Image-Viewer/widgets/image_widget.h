@@ -4,9 +4,11 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QPixmap>
+#include <QPinchGesture>
+#include <QWheelEvent>
 #include <optional>
-#include <QString>
+#include <QMouseEvent>
+#include "zoom_widget.h"
 #include <opencv2/opencv.hpp>
 
 class ImageWidget : public QWidget
@@ -15,20 +17,38 @@ class ImageWidget : public QWidget
 
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
+    void loadAndDisplayImage(const QString &imagePath);
 
 protected:
-    void showEvent(QShowEvent *event) override; // Override showEvent to load the image after widget is shown
+    void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    QGraphicsView *graphicsView; // Graphics view for displaying the image
-    QGraphicsScene *scene;       // Scene for managing graphics items
+    QGraphicsView *graphicsView;
+    QGraphicsScene *scene;
+    ZoomWidget *zoomWidget;  // Separate zoom widget for zoom controls
 
-    void loadAndDisplayImage(const QString &imagePath);
     std::optional<QPixmap> loadAndPrepareImage(const QString &path, const QSize &targetSize);
     void setImage(const QPixmap &pixmap);
 
+
+    QPoint lastMousePosition;
+    bool isPanning = false;
+    double zoomFactor = 1.0;
+
+private slots:
+    void zoomIn();
+    void zoomOut();
+
 signals:
-    void imageLoadFailed(); // Signal emitted when image loading fails
+    void imageLoadFailed();
 };
 
 #endif // IMAGEWIDGET_H

@@ -1474,6 +1474,9 @@
 			"path" : "/opt/homebrew/Cellar/qt/6.7.2_2/lib/cmake/Qt6/macos/Info.plist.app.in"
 		},
 		{
+			"path" : "resources.qrc"
+		},
+		{
 			"path" : ".qt/info_plist/SEM_Image_Viewer/Info.plist"
 		}
 	],

@@ -1,4 +1,4 @@
-/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/SEM-Image-Viewer_autogen/EWIEGA46WW/moc_mainwindow.cpp: /Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/mainwindow.h \
+/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/SEM-Image-Viewer_autogen/IMAN36LHMA/moc_zoom_widget.cpp: /Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/zoom_widget.h \
   /Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/SEM-Image-Viewer_autogen/moc_predefs.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/16/include/__stdarg___gnuc_va_list.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/16/include/__stdarg___va_copy.h \
@@ -159,10 +159,11 @@
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtguiglobal.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtransform.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h \
-  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QMainWindow \
-  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qmainwindow.h \
+  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QPushButton \
+  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QWidget \
+  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qabstractbutton.h \
+  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qpushbutton.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qsizepolicy.h \
-  /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtabwidget.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgets-config.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsexports.h \
   /opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsglobal.h \

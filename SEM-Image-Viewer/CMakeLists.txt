@@ -9,7 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -37,9 +37,9 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 
-        widgets/image_widget.h
-        widgets/image_widget.cpp
-        widgets/image_widget.ui
+
+
+
 
         core/image.h
         core/image.cpp
@@ -54,6 +54,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         core/filters/gray_scale_filter.h
+        widgets/zoom_widget.h widgets/zoom_widget.cpp
+        resources.qrc
+        icons/zoom-in.svg icons/zoom-out.svg
+        widgets/image_widget.h widgets/image_widget.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

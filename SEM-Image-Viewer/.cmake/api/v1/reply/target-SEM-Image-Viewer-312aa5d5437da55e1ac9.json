@@ -73,13 +73,13 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 93,
+				"line" : 98,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 76,
+				"line" : 81,
 				"parent" : 0
 			},
 			{
@@ -356,8 +356,10 @@
 				1,
 				2,
 				6,
-				9,
-				11
+				8,
+				12,
+				17,
+				20
 			]
 		}
 	],
@@ -751,8 +753,10 @@
 				1,
 				2,
 				6,
-				9,
-				11
+				8,
+				12,
+				17,
+				20
 			]
 		},
 		{
@@ -761,12 +765,12 @@
 			[
 				3,
 				5,
-				8,
+				7,
+				9,
 				10,
-				12,
-				13,
-				14,
-				15
+				11,
+				16,
+				18
 			]
 		},
 		{
@@ -774,15 +778,18 @@
 			"sourceIndexes" : 
 			[
 				4,
-				7,
-				16
+				13,
+				14,
+				15,
+				19
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				17
+				21,
+				22
 			]
 		}
 	],
@@ -819,22 +826,6 @@
 		},
 		{
 			"backtrace" : 4,
-			"path" : "widgets/image_widget.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 4,
-			"compileGroupIndex" : 0,
-			"path" : "widgets/image_widget.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 4,
-			"path" : "widgets/image_widget.ui",
-			"sourceGroupIndex" : 2
-		},
-		{
-			"backtrace" : 4,
 			"path" : "core/image.h",
 			"sourceGroupIndex" : 1
 		},
@@ -866,15 +857,46 @@
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 0,
-			"isGenerated" : true,
-			"path" : "SEM-Image-Viewer_autogen/include/ui_mainwindow.h",
+			"backtrace" : 4,
+			"path" : "widgets/zoom_widget.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "widgets/zoom_widget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "resources.qrc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"path" : "icons/zoom-in.svg",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"path" : "icons/zoom-out.svg",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"path" : "widgets/image_widget.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "widgets/image_widget.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "SEM-Image-Viewer_autogen/include/widgets/ui_image_widget.h",
+			"path" : "SEM-Image-Viewer_autogen/include/ui_mainwindow.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -885,8 +907,21 @@
 		},
 		{
 			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "SEM-Image-Viewer_autogen/EWIEGA46WW/qrc_resources.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
 			"isGenerated" : true,
 			"path" : "SEM-Image-Viewer_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "SEM-Image-Viewer_autogen/EWIEGA46WW/qrc_resources.cpp.rule",
 			"sourceGroupIndex" : 3
 		}
 	],
