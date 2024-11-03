@@ -10,6 +10,7 @@ LoggerWidget::LoggerWidget(QWidget *parent)
                            "padding-right: 20px;"
                            "font:  14px;"
                            "text-align: center;"
+
                            "}"
                            "QPushButton:hover {"
                            "background-color: #d3d3d3;" // Change background color on hover
@@ -39,10 +40,12 @@ LoggerWidget::LoggerWidget(QWidget *parent)
     warningsShowButton->setIconSize(QSize(16, 16));
     warningsShowButton->setStyleSheet(buttonsStyle);
 
-    switchLayoutButtonFull = new QPushButton("→", this);
+    switchLayoutButtonFull = new QPushButton("   ▼", this);
     switchLayoutButtonFull->setStyleSheet(buttonsStyle);
-    switchLayoutButtonCompact = new QPushButton("→", this);
 
+    switchLayoutButtonCompact = new QPushButton("   ▲", this);
+    switchLayoutButtonCompact->setStyleSheet(buttonsStyle);
+    switchLayoutButtonCompact->setFixedWidth(50);
     // Search line edit for filtering logs by text
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Search log message");
@@ -70,6 +73,8 @@ LoggerWidget::LoggerWidget(QWidget *parent)
     // Layout setup
     // Create the top horizontal layout for compact layout
     QHBoxLayout *topLayoutCompact = new QHBoxLayout;
+
+    topLayoutCompact->addWidget(new QLabel("Error : 1 Warnings : 2 Info : 3", this));
     topLayoutCompact->addWidget(switchLayoutButtonCompact);
 
     QHBoxLayout *topLayoutFull = new QHBoxLayout;
@@ -85,6 +90,7 @@ LoggerWidget::LoggerWidget(QWidget *parent)
 
     // Create the compact vertical layout without logListWidget
     compactLayout = new QVBoxLayout();
+
     compactLayout->addLayout(topLayoutCompact);
     // Create the full vertical layout
     fullLayout = new QVBoxLayout();
