@@ -67,9 +67,25 @@ Log *get_logger() {
   }
 }
 
+class StringTarget : public WritableTarget {
+public:
+  StringTarget() : buffer_() {}
+
+  void write(const Buffer &buffer) const override {
+    buffer_.append(reinterpret_cast<const char *>(buffer.as_bytes().data()),
+                   buffer.as_bytes().size());
+  }
+
+  std::string get_value() { return buffer_; }
+
+private:
+  mutable std::string buffer_;
+};
+
+
 int32_t main(void) {
 
-  boost::shared_ptr<WritableTarget> target(new StdoutTarget());
+  boost::shared_ptr<WritableTarget> target(new StringTarget());
   BufferWriter buffer_writer(target);
 
   // std::string value = "Hello World";
@@ -132,6 +148,8 @@ int32_t main(void) {
   get_logger()->log(r1);
   get_logger()->log(r2);
   get_logger()->log(r3);
+
+  std::cout << static_cast<StringTarget *>(target.get())->get_value();
 
   delete NopLogger::get_instance();
   delete Logger::get_instance();
