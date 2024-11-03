@@ -59,6 +59,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         icons/zoom-in.svg icons/zoom-out.svg
         widgets/image_widget.h widgets/image_widget.cpp
+        core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
