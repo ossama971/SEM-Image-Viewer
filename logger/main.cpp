@@ -5,67 +5,15 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "Filter.h"
-#include "Level.h"
-#include "Log.h"
-#include "Logger.h"
-#include "Metadata.h"
-#include "NopLogger.h"
-#include "Record.h"
-#include "Target.h"
-#include "Writer.h"
-
-constexpr uint8_t UNINTIALIZED = 0;
-constexpr uint8_t INTIALIZING = 1;
-constexpr uint8_t INTIALIZED = 2;
-
-// XXX: rethink these globals, for thread safety
-boost::atomic<uint8_t> MAX_LOG_LEVEL_FILTER{0};
-
-Log *LOGGER = NopLogger::get_instance();
-
-boost::atomic<uint8_t> STATE{UNINTIALIZED};
-
-void set_max_level(Level level) {
-  MAX_LOG_LEVEL_FILTER.store(static_cast<uint8_t>(level.get_typ()),
-                             boost::memory_order_relaxed);
-}
-
-Level get_max_level() {
-  return Level(static_cast<Level::LevelType>(
-      MAX_LOG_LEVEL_FILTER.load(boost::memory_order_relaxed)));
-}
-
-std::pair<bool, const char *> set_logger(boost::function<Log *()> make_logger) {
-  uint8_t expected = UNINTIALIZED;
-  if (STATE.compare_exchange_strong(expected, INTIALIZING,
-                                    boost::memory_order_acquire,
-                                    boost::memory_order_relaxed)) {
-    LOGGER = make_logger();
-    STATE.store(INTIALIZED, boost::memory_order_release);
-    return std::make_pair(true, "Logger set successfully");
-
-  } else if (expected == INTIALIZING) {
-    while (STATE.load(boost::memory_order_relaxed) == INTIALIZING) {
-      // on using yield instead of spinlock
-      // https://doc.rust-lang.org/std/hint/fn.spin_loop.html
-      // https://github.com/facebook/folly/blob/208949c27d3c7e6f6136d64de3108a6c71fae95b/folly/SpinLock.h#L17
-      boost::this_thread::yield();
-    }
-    return std::make_pair(false, SET_LOGGER_ERROR);
-
-  } else {
-    return std::make_pair(false, SET_LOGGER_ERROR);
-  }
-}
-
-Log *get_logger() {
-  if (STATE.load(boost::memory_order_relaxed) != INTIALIZED) {
-    return NopLogger::get_instance();
-  } else {
-    return LOGGER;
-  }
-}
+#include "src/LoggerUtils.h"
+#include "src/filter/Filter.h"
+#include "src/Level.h"
+#include "src/Log.h"
+#include "src/Logger.h"
+#include "src/Metadata.h"
+#include "src/NopLogger.h"
+#include "src/Record.h"
+#include "src/writer/Writer.h"
 
 class StringTarget : public WritableTarget {
 public:
