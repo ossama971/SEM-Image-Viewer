@@ -21,6 +21,9 @@ public:
 private slots:
     void filterLogs();
     void switchLayout();
+    void createConnections();
+    void createLayouts();
+    void createButtons();
 
 private:
     QPushButton *allShowButton;

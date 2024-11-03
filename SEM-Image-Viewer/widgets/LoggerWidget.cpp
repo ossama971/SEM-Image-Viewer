@@ -3,6 +3,19 @@
 LoggerWidget::LoggerWidget(QWidget *parent)
     : QWidget(parent)
 {
+
+    // Layout setup
+    // Create the top horizontal layout for compact layout
+    createButtons();
+    createLayouts();
+    createConnections();
+    // Set initial state
+    isExpanded = true;
+    stackedWidget->setCurrentIndex(0);
+}
+
+void LoggerWidget::createButtons()
+{
     QString buttonsStyle = "QPushButton {"
                            "border: none;"
                            "font-family: 'Roboto';"
@@ -13,12 +26,9 @@ LoggerWidget::LoggerWidget(QWidget *parent)
 
                            "}"
                            "QPushButton:hover {"
-                           "background-color: #d3d3d3;" // Change background color on hover
+                           "background-color: #d3d3d3;"
                            "}";
-    QWidget *line = new QWidget(this);
-    line->setStyleSheet("background-color: #aaaaaa;"); // Set the color of the line
-    line->setFixedHeight(2);                           // Set the height of the line
-    line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
     // Buttons for filtering logs by type
     allShowButton = new QPushButton("All", this);
 
@@ -26,17 +36,17 @@ LoggerWidget::LoggerWidget(QWidget *parent)
         buttonsStyle);
 
     infoShowButton = new QPushButton("Info", this);
-    infoShowButton->setIcon(QIcon(":/assets/information_icon.png"));
+    infoShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/information_icon.png"));
     infoShowButton->setIconSize(QSize(16, 16));
     infoShowButton->setStyleSheet(buttonsStyle);
 
     errorsShowButton = new QPushButton("Errors", this);
-    errorsShowButton->setIcon(QIcon(":/assets/errors_icon.png"));
+    errorsShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/errors_icon.png"));
     errorsShowButton->setIconSize(QSize(16, 16));
     errorsShowButton->setStyleSheet(buttonsStyle);
 
     warningsShowButton = new QPushButton("Warnings", this);
-    warningsShowButton->setIcon(QIcon(":/assets/warnings_icon.png"));
+    warningsShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/warnings_icon.png"));
     warningsShowButton->setIconSize(QSize(16, 16));
     warningsShowButton->setStyleSheet(buttonsStyle);
 
@@ -55,23 +65,41 @@ LoggerWidget::LoggerWidget(QWidget *parent)
     // Set the style sheet for rounded borders and other properties
     searchLineEdit->setStyleSheet(
         "QLineEdit {"
-        "border: 2px solid #aaaaaa;" // Set border color and width
-        "border-radius: 10px;"       // Set border radius for rounded corners
-        "padding: 5px;"              // Add some padding
+        "border: 2px solid #aaaaaa;"
+        "border-radius: 10px;"
+        "padding: 5px;"
         "}"
-        "QLineEdit:focus {"          // Change style when focused
-        "border: 2px solid #0078d7;" // Change border color on focus
+        "QLineEdit:focus {"
+        "border: 2px solid #0078d7;"
         "}");
 
     // Log list widget for displaying messages
     logListWidget = new QListWidget(this);
     logListWidget->setStyleSheet(
         "QListWidget {"
-        "border: none;"            // Remove border
-        "background: transparent;" // Remove background
+        "border: none;"
+        "background: transparent;"
         "}");
-    // Layout setup
-    // Create the top horizontal layout for compact layout
+}
+
+void LoggerWidget::createConnections()
+{
+    connect(allShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
+    connect(infoShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
+    connect(errorsShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
+    connect(warningsShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
+    connect(searchLineEdit, &QLineEdit::textChanged, this, &LoggerWidget::filterLogs);
+    connect(switchLayoutButtonFull, &QPushButton::clicked, this, &LoggerWidget::switchLayout);
+    connect(switchLayoutButtonCompact, &QPushButton::clicked, this, &LoggerWidget::switchLayout);
+}
+
+void LoggerWidget::createLayouts()
+{
+    QWidget *line = new QWidget(this);
+    line->setStyleSheet("background-color: #aaaaaa;");
+    line->setFixedHeight(2);
+    line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
     QHBoxLayout *topLayoutCompact = new QHBoxLayout;
 
     topLayoutCompact->addWidget(new QLabel("Error : 1 Warnings : 2 Info : 3", this));
@@ -114,17 +142,6 @@ LoggerWidget::LoggerWidget(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(stackedWidget);
     setLayout(mainLayout);
-
-    connect(allShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
-    connect(infoShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
-    connect(errorsShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
-    connect(warningsShowButton, &QPushButton::clicked, this, &LoggerWidget::filterLogs);
-    connect(searchLineEdit, &QLineEdit::textChanged, this, &LoggerWidget::filterLogs);
-    connect(switchLayoutButtonFull, &QPushButton::clicked, this, &LoggerWidget::switchLayout);
-    connect(switchLayoutButtonCompact, &QPushButton::clicked, this, &LoggerWidget::switchLayout);
-    // Set initial state
-    isExpanded = true;
-    stackedWidget->setCurrentIndex(0);
 }
 
 void LoggerWidget::addLogMessage(const QString &type, const QString &message)
@@ -135,15 +152,15 @@ void LoggerWidget::addLogMessage(const QString &type, const QString &message)
 
     if (type == "Info")
     {
-        item->setIcon(QIcon(":/icons/info.png")); // Placeholder icon
+        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/information_icon.png")); // Placeholder icon
     }
     else if (type == "Warning")
     {
-        item->setIcon(QIcon(":/icons/warning.png")); // Placeholder icon
+        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/warnings_icon.png")); // Placeholder icon
     }
     else if (type == "Error")
     {
-        item->setIcon(QIcon(":/icons/error.png")); // Placeholder icon
+        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/errors_icon.png")); // Placeholder icon
     }
 
     logListWidget->addItem(item);
