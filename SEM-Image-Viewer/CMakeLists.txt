@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if (PROJECT_IS_TOP_LEVEL AND UNIX)
     # Create symlink to compile_commands.json for IDE to pick it up
@@ -37,11 +38,6 @@ set(PROJECT_SOURCES
 
         widgets/image_widget.h
         widgets/image_widget.cpp
-
-
-
-
-
 
 )
 
@@ -71,7 +67,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
-        core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
+        # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
         widgets/image_info_bar.h widgets/image_info_bar.cpp
         widgets/bottommiddlewidget.cpp widgets/bottommiddlewidget.h widgets/image_info_bar.cpp widgets/image_info_bar.h widgets/image_widget.cpp widgets/image_widget.h widgets/leftsidebarwidget.cpp widgets/leftsidebarwidget.h widgets/menubarwidget.cpp widgets/menubarwidget.h widgets/rightsidebarwidget.cpp widgets/rightsidebarwidget.h widgets/sharpen_filter_widget.cpp widgets/sharpen_filter_widget.h widgets/topmiddlewidget.cpp widgets/topmiddlewidget.h widgets/zoom_widget.cpp widgets/zoom_widget.h
     )
