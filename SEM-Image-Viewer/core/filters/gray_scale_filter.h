@@ -1,4 +1,0 @@
-#ifndef GRAY_SCALE_FILTER_H
-#define GRAY_SCALE_FILTER_H
-
-#endif // GRAY_SCALE_FILTER_H
