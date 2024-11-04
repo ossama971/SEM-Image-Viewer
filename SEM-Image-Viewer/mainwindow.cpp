@@ -14,9 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the ImageWidget instance
     imageWidget = new ImageWidget(this);
 
-    // Create a layout to hold the button and the ImageWidget
+    // Create a layout to hold the ImageWidget
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(ui->imporbtn, 0, Qt::AlignHCenter); // Add the button to the layout
     layout->addWidget(imageWidget, 0, Qt::AlignCenter);    // Add ImageWidget to the layout
 
     // Set the layout as the central widget's layout
@@ -24,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
 
-    // Connect the button click signal to the imporbtn_clicked slot
-    connect(ui->imporbtn, &QPushButton::clicked, this, &MainWindow::imporbtn_clicked);
 
 
 
@@ -40,7 +37,4 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::imporbtn_clicked()
-{
-    imageWidget->loadAndDisplayImage("/Users/salmaabdelghany/Siemens/FinalProject/5a6733ac-b211-4d15-bdca-6be7f7e94683.JPG");
-}
+

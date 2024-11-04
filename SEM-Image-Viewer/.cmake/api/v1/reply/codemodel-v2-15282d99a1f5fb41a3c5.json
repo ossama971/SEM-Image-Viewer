@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-e523074c385a43044688.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "SEM-Image-Viewer",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "SEM-Image-Viewer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SEM-Image-Viewer-590eb58925deeb5a111d.json",
+					"name" : "SEM-Image-Viewer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SEM-Image-Viewer_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SEM-Image-Viewer_autogen-ab9bda7693071f4a2373.json",
+					"name" : "SEM-Image-Viewer_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SEM-Image-Viewer_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SEM-Image-Viewer_autogen_timestamp_deps-78efdd0379621118ddf4.json",
+					"name" : "SEM-Image-Viewer_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer",
+		"source" : "/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
