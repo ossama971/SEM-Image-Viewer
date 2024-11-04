@@ -43,8 +43,8 @@ void ImageInfoBar::setZoomPercentage(double zoom)
 void ImageInfoBar::setMousePosition(int x, int y)
 {
     // Limit the position to the image size
-    int limitedX = qBound(0, x, imageWidth - 1);
-    int limitedY = qBound(0, y, imageHeight - 1);
+    int limitedX = qBound(0, x, imageWidth);
+    int limitedY = qBound(0, y, imageHeight);
 
     positionLabel->setText(QString("Position: (%1, %2)").arg(limitedX).arg(limitedY));
     positionLabel->repaint(); // Force label to update immediately

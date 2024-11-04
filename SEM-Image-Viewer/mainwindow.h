@@ -2,6 +2,22 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
+#include <QSplitter>
+#include "widgets/bottommiddlewidget.h"
+#include "widgets/leftsidebarwidget.h"
+#include "widgets/rightsidebarwidget.h"
+#include "widgets/topmiddlewidget.h"
+#include "widgets/menubarwidget.h"
+
+#include <QApplication>
+#include <QMainWindow>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QIcon>
+
 #include "widgets/image_widget.h"
 
 QT_BEGIN_NAMESPACE
@@ -16,12 +32,29 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+public slots:
+    void onShowLeftSidebarClicked(bool isChecked);
+    void onShowRightSidebarClicked(bool isChecked);
+    void onShowLoggerClicked(bool isChecked);
+    void onShowImageClicked(bool isChecked);
 
+private slots:
 
 private:
     Ui::MainWindow *ui;
     ImageWidget *imageWidget;  // Member variable for the custom widget
+
+    LeftSidebarWidget *leftSidebarWidget;
+    RightSidebarWidget *rightSidebarWidget;
+    TopMiddleWidget *topMiddleWidget;
+    BottomMiddleWidget *bottomMiddleWidget;
+    QSplitter *middleSplitter;
+    QSplitter *mainSplitter;
+    MenuBarWidget *menuBarWidget;
+
+    // signals:
+
+
 };
 
 #endif // MAINWINDOW_H
