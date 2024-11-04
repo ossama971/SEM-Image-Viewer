@@ -11,6 +11,8 @@
 #include "zoom_widget.h"
 #include <opencv2/opencv.hpp>
 
+#include "image_info_bar.h" // Include the new widget
+
 class ImageWidget : public QWidget
 {
     Q_OBJECT
@@ -37,7 +39,7 @@ private:
 
     std::optional<QPixmap> loadAndPrepareImage(const QString &path, const QSize &targetSize);
     void setImage(const QPixmap &pixmap);
-
+    ImageInfoBar *infoBar; // New info bar widget
 
     QPoint lastMousePosition;
     bool isPanning = false;

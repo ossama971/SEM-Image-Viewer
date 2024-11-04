@@ -27,6 +27,10 @@ SEM-Image-Viewer_autogen/timestamp: \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/SEM-Image-Viewer_autogen/moc_predefs.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/gray_scale_filter.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/image_filter.h \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/noise_reduction_filter.cpp \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/noise_reduction_filter.h \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/sharpen_filter.cpp \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/filters/sharpen_filter.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/image.cpp \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/image.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/core/image_utils.cpp \
@@ -35,8 +39,12 @@ SEM-Image-Viewer_autogen/timestamp: \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/mainwindow.cpp \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/mainwindow.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/resources.qrc \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/image_info_bar.cpp \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/image_info_bar.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/image_widget.cpp \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/image_widget.h \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/sharpen_filter_widget.cpp \
+	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/sharpen_filter_widget.h \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/zoom_widget.cpp \
 	/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/widgets/zoom_widget.h \
 	/opt/homebrew/Cellar/cmake/3.28.3/share/cmake/Modules/CMakeCXXInformation.cmake \
@@ -340,6 +348,7 @@ SEM-Image-Viewer_autogen/timestamp: \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpainter.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpalette.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpen.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpicture.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpixelformat.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpixmap.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qpointingdevice.h \
@@ -349,6 +358,7 @@ SEM-Image-Viewer_autogen/timestamp: \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qrgba64.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qscreen.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qscreen_platform.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtextdocument.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtextoption.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtgui-config.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qtguiexports.h \
@@ -359,21 +369,30 @@ SEM-Image-Viewer_autogen/timestamp: \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QGraphicsScene \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QGraphicsView \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QLabel \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QMainWindow \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QPinchGesture \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QPushButton \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QSlider \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QStackedWidget \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QToolButton \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/QWidget \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qabstractbutton.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qabstractscrollarea.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qabstractslider.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qframe.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qgesture.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qgraphicsscene.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qgraphicsview.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qlabel.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qmainwindow.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qpushbutton.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qscrollarea.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qsizepolicy.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qslider.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qstackedwidget.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtabwidget.h \
+	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtoolbutton.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgets-config.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsexports.h \
 	/opt/homebrew/Cellar/qt/6.7.2_2/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsglobal.h \

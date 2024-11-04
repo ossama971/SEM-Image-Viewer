@@ -9,6 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -62,6 +63,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
         core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
+        widgets/image_info_bar.h widgets/image_info_bar.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
