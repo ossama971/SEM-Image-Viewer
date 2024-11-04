@@ -1,5 +1,5 @@
 #include "bottommiddlewidget.h"
-
+#include "LoggerWidget.h"
 BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -13,6 +13,8 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     QWidget *bottomMiddleContent = new QWidget(parent);
     bottomMiddleContent->setStyleSheet("background-color: #627e7c;");
     bottomMiddleLayout->addWidget(bottomMiddleContent);
+    LoggerWidget * logger = new LoggerWidget();
+    bottomMiddleLayout->addWidget(logger);
 
     this->setLayout(bottomMiddleLayout);
 }
