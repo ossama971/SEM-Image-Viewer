@@ -24,8 +24,13 @@ endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+set(OpenCV_DIR $ENV{OpenCV})
+
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
+set(BOOST_ROOT $ENV{Boost})
+
 
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -45,6 +50,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SEM-Image-Viewer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
+
+
+        widgets/LoggerWidget.h
+        widgets/LoggerWidget.cpp
+        assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
+
+
         core/filters/EdgeDetectionFilter.cpp core/filters/EdgeDetectionFilter.h core/filters/NoiseReductionFilter.cpp core/filters/NoiseReductionFilter.h core/filters/GrayScaleFilter.cpp core/filters/GrayScaleFilter.h core/filters/ImageFilter.h
         core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
 
@@ -58,17 +71,18 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         core/engines/Workspace.cpp core/engines/Workspace.h
 
         core/data/ImageColorSpace.h
+
         widgets/zoom_widget.h widgets/zoom_widget.cpp
         widgets/image_info_bar.h widgets/image_info_bar.cpp
         resources.qrc
         icons/zoom-in.svg icons/zoom-out.svg
-
 
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
         # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
         widgets/image_info_bar.h widgets/image_info_bar.cpp
+
         widgets/bottommiddlewidget.cpp widgets/bottommiddlewidget.h widgets/image_info_bar.cpp widgets/image_info_bar.h widgets/image_widget.cpp widgets/image_widget.h widgets/leftsidebarwidget.cpp widgets/leftsidebarwidget.h widgets/menubarwidget.cpp widgets/menubarwidget.h widgets/rightsidebarwidget.cpp widgets/rightsidebarwidget.h widgets/sharpen_filter_widget.cpp widgets/sharpen_filter_widget.h widgets/topmiddlewidget.cpp widgets/topmiddlewidget.h widgets/zoom_widget.cpp widgets/zoom_widget.h
     )
 # Define target properties for Android with Qt 6 as:
