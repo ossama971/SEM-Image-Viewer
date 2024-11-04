@@ -8,6 +8,7 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     setMaximumWidth(mainScreenWidth*1.0);
 
     ImageWidget *image = new ImageWidget();
+    GridView *gridView = new GridView;
 
     QVBoxLayout *topMiddleLayout = new QVBoxLayout();
 
@@ -17,6 +18,7 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
 
     topMiddleLayout->addWidget(topMiddleContent);
     topMiddleLayout->addWidget(image);
+    //topMiddleLayout->addWidget(gridView);
 
     this->setLayout(topMiddleLayout);
 }

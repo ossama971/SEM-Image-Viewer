@@ -14,6 +14,7 @@
 #include <QScreen>
 
 #include "image_widget.h"
+#include "GridView.h"
 
 class TopMiddleWidget : public QWidget
 {
