@@ -41,7 +41,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("/Users/salmaabdelghany/Desktop/Screenshot 2024-11-04 at 3.35.55 PM.png");
+    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     scene->installEventFilter(this);
 }
 
