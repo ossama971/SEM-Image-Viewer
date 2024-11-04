@@ -9,8 +9,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (PROJECT_IS_TOP_LEVEL AND UNIX)
@@ -38,42 +36,57 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.h
         mainwindow.cpp
+        mainwindow.h
         mainwindow.ui
 
+        widgets/image_widget.h
+        widgets/image_widget.cpp
 
 
 
 
-        core/image.h
-        core/image.cpp
-        core/image_utils.h
-        core/image_utils.cpp
 
-        core/filters/image_filter.h
-        core/filters/sharpen_filter.h
-        core/filters/sharpen_filter.cpp
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SEM-Image-Viewer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
         core/filters/gray_scale_filter.h
 
         widgets/LoggerWidget.h
         widgets/LoggerWidget.cpp
         assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
 
+
+        core/filters/EdgeDetectionFilter.cpp core/filters/EdgeDetectionFilter.h core/filters/NoiseReductionFilter.cpp core/filters/NoiseReductionFilter.h core/filters/GrayScaleFilter.cpp core/filters/GrayScaleFilter.h core/filters/ImageFilter.h
+        core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
+
+        core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+        core/data/ImageMetadata.cpp core/data/ImageMetadata.h
+        core/data/ImageFormat.h
+        core/engines/ImageRepository.cpp core/engines/ImageRepository.h
+        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/ImageRepository.cpp core/engines/ImageRepository.h core/engines/Logger.cpp core/engines/Logger.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+        core/filters/SharpenFilter.cpp core/filters/SharpenFilter.h
+        core/data/Image.cpp core/data/Image.h
+        core/engines/Workspace.cpp core/engines/Workspace.h
+
+        core/data/ImageColorSpace.h
+
         widgets/zoom_widget.h widgets/zoom_widget.cpp
+        widgets/image_info_bar.h widgets/image_info_bar.cpp
         resources.qrc
         icons/zoom-in.svg icons/zoom-out.svg
+
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
         core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
         widgets/image_info_bar.h widgets/image_info_bar.cpp
+
 
     )
 # Define target properties for Android with Qt 6 as:
