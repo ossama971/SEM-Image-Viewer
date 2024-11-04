@@ -73,3 +73,14 @@ CMakeLists.txt.user*
 *.exe
 
 .DS_Store
+
+build
+.cmake
+.qt
+.qtc
+SEM-Image-Viewer_autogen
+Testing
+CMakeCache.txt.prev
+cmake_install.cmake
+compile_commands.json
+
