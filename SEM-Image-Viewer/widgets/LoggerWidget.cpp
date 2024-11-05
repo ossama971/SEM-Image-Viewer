@@ -23,7 +23,6 @@ void LoggerWidget::createButtons()
                            "padding-right: 20px;"
                            "font:  14px;"
                            "text-align: center;"
-
                            "}"
                            "QPushButton:hover {"
                            "background-color: #d3d3d3;"
@@ -55,12 +54,12 @@ void LoggerWidget::createButtons()
 
     switchLayoutButtonCompact = new QPushButton("   ▲", this);
     switchLayoutButtonCompact->setStyleSheet(buttonsStyle);
-    switchLayoutButtonCompact->setFixedWidth(50);
+    //switchLayoutButtonCompact->setFixedWidth(50);
     // Search line edit for filtering logs by text
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Search log message");
     // Set a fixed width (e.g., 200 pixels)
-    searchLineEdit->setFixedWidth(300);
+    //searchLineEdit->setFixedWidth(300);
 
     // Set the style sheet for rounded borders and other properties
     searchLineEdit->setStyleSheet(

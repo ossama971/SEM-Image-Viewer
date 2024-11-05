@@ -1,7 +1,8 @@
 #ifndef ICOMMAND_H
 #define ICOMMAND_H
 
-#include <iostream>
+
+#include <opencv2/opencv.hpp>
 
 class ICommand {
 protected:
@@ -11,8 +12,8 @@ public:
 	
 public:
 
-    virtual void execute() = 0;
-	virtual void undo() = 0;
+    virtual cv::Mat execute() = 0;
+    virtual cv::Mat undo() = 0;
 	
 	virtual std::string getDescription() const = 0;
 };

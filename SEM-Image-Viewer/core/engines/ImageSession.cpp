@@ -1,15 +1,29 @@
 #include "ImageSession.h"
 #include "../data/Image.h"
 
+void ImageSession::loadImage(const std::string path) {
+    _imageRepo.load(path);
+}
+
+cv::Mat ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
+
+
+
+    auto _it =_undoManager.createFilterCommand(_imageRepo.getImage(),std::move(filter),"Hello world");
+    _imageRepo.getImage().setMat(_it);
+    return _imageRepo.getImage().getImageMat();
+}
+
+Image& ImageSession::getImage(void) {
+    return _imageRepo.getImage();
+}
+
 const ImageMetadata ImageSession::getImageInfo(void)
 {
     return _imageRepo.getImage().getMetadata();
 }
 
-//cv::Mat ImageSession::getImageProperties(const std::string &path) {
-//    cv::Mat image = cv::imread(path, cv::IMREAD_COLOR);
-//    return image;
-//}
+
 
 std::vector<int>
 ImageSession::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
@@ -47,4 +61,12 @@ cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
     cv::Mat res;
     cv::bitwise_and(image1, image1, res, mask);
     return res;
+}
+
+cv::Mat ImageSession::undo(){
+    return _undoManager.undo();
+}
+
+cv::Mat ImageSession::redo(){
+    return _undoManager.redo();
 }

@@ -10,6 +10,7 @@ private:
 public:
     ~Workspace() = default;
 
+    ImageSession& getActiveSession();
     static Workspace& Instance();
 	
 private:

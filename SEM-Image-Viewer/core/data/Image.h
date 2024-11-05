@@ -14,7 +14,7 @@ public:
     cv::Mat getImageMat() const;
     std::string getPath() const;
     ImageMetadata getMetadata() const;
-
+    void setMat(cv::Mat _image);
 private:
     cv::Mat _image;
     std::string _path;

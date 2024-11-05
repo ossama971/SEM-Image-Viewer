@@ -21,14 +21,6 @@ ImageMetadata Image::getMetadata() const {
     return _metadata;
 }
 
-/*int Image::getWidth() const {
-    return _image.cols;
+void Image::setMat(cv::Mat _image){
+    this->_image=_image;
 }
-
-int Image::getHeight() const {
-    return _image.rows;
-}
-
-int Image::getSize() const {
-    return _image.size().area();
-}*/

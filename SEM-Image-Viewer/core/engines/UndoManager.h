@@ -8,11 +8,11 @@
 
 class UndoManager {
 public:
-    std::unique_ptr<ICommand> createFilterCommand(const cv::Mat &image, std::unique_ptr<ImageFilter> filter);
+    cv::Mat createFilterCommand(Image &image, std::unique_ptr<ImageFilter> filter,std::string description);
 
     void execute(std::unique_ptr<ICommand> cmd);
-    void undo();
-    void redo();
+    cv::Mat undo();
+    cv::Mat redo();
     void clearHistory();
 
 private:

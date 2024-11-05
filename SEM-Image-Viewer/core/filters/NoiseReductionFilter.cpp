@@ -14,11 +14,11 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
 
     if (inputImage.getMetadata().getColorSpace() == ColorSpace::Gray)
     {
-        cv::fastNlMeansDenoising(cv::InputArray(inputImage), cv::OutputArray(res), _intensity);
+        cv::fastNlMeansDenoising(cv::InputArray(inputImage.getImageMat()), cv::OutputArray(res), _intensity);
     }
     else
     {
-        cv::fastNlMeansDenoisingColored(cv::InputArray(inputImage), cv::OutputArray(res), _intensity, _intensity);
+        cv::fastNlMeansDenoisingColored(cv::InputArray(inputImage.getImageMat()), cv::OutputArray(res), _intensity, _intensity);
     }
     return res;
 }
