@@ -127,10 +127,12 @@ void Controller::printMat(const cv::Mat &mat)
 void Controller::undoAction(){
 
     auto _res=ImageSession.undo();
-
-    emit imageUpdated(_res);
+    if(!_res.empty())
+        emit imageUpdated(_res);
 }
 void Controller::redoAction(){
    auto _res= ImageSession.redo();
-   emit imageUpdated(_res);
+
+    if(!_res.empty())
+        emit imageUpdated(_res);
 }
