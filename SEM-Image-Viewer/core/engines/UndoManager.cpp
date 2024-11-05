@@ -13,6 +13,9 @@ cv::Mat UndoManager::createFilterCommand(Image &image, std::unique_ptr<ImageFilt
 
 cv::Mat UndoManager::undo()
 {
+    if(_undo.size()==0){
+        return cv::Mat();
+    }
     ICommand * command =_undo.top().get();
     auto _res=command->undo();
     _redo.push(std::move(_undo.top()));
@@ -23,6 +26,9 @@ cv::Mat UndoManager::undo()
 
 cv::Mat UndoManager::redo()
 {
+    if(_redo.size()==0){
+        return cv::Mat();
+    }
     ICommand * command =_redo.top().get();
     auto _res=command->execute();
     _undo.push(std::move(_redo.top()));
