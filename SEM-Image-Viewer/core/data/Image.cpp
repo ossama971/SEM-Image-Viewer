@@ -20,3 +20,7 @@ std::string Image::getPath() const {
 ImageMetadata Image::getMetadata() const {
     return _metadata;
 }
+
+void Image::setMat(cv::Mat _image){
+    this->_image=_image;
+}

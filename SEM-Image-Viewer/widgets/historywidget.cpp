@@ -3,67 +3,50 @@
 HistoryWidget::HistoryWidget(QWidget *parent)
     : QWidget(parent)
 {
-
-    QWidget *line = new QWidget(this);
-    line->setStyleSheet("background-color: #aaaaaa;");
-    line->setFixedHeight(1);
-    line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    QString buttonsStyle = "QPushButton {"
-                           "border: none;"
-                           "font-family: 'Roboto';"
-                           "padding:5px;"
-                           "font:  14px;"
-                           "text-align: center;"
-                           "}"
-                           "QPushButton:hover {"
-                           "background-color: #d3d3d3;"
-                           "}";
     // Create main vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     // Create a horizontal layout for the header and buttons
-    QHBoxLayout *topLayout = new QHBoxLayout();
+    QHBoxLayout *headerLayout = new QHBoxLayout();
 
     // Create header label
     headerLabel = new QLabel("History", this);
-    headerLabel->setAlignment(Qt::AlignCenter);
+    headerLabel->setStyleSheet("font-size: 16px; font-weight: bold;");
+    headerLayout->addWidget(headerLabel);
 
-    QWidget *buttonWidget = new QWidget(this);
-    QHBoxLayout *buttonLayout = new QHBoxLayout(buttonWidget);
+    // Add a spacer to push buttons to the right
+    headerLayout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    topLayout->addWidget(headerLabel);
+    // Create Undo button with icon
+    undoButton = new QPushButton("▲",this);
+    // undoButton->setIcon(QIcon(":/icons/undo_icon.png")); // Set your undo icon path here
+    // undoButton->setIconSize(QSize(12, 12));
+    /*undoButton->setStyleSheet("background: none; border: none;");*/ // Remove background and border
+    headerLayout->addWidget(undoButton);
 
-    // Create buttons
-    undoButton = new QPushButton("▼", this);
-    redoButton = new QPushButton("▲", this);
+    // Create Redo button with icon
+    redoButton = new QPushButton("▼",this);
+    // redoButton->setIcon(QIcon(":/icons/redo_icon.png")); // Set your redo icon path here
+    // redoButton->setIconSize(QSize(12, 12));
+   // redoButton->setStyleSheet("background: none; border: none;"); // Remove background and border
+    headerLayout->addWidget(redoButton);
 
-    undoButton->setStyleSheet(buttonsStyle);
-    redoButton->setStyleSheet(buttonsStyle);
+    // Add header layout to main layout
+    mainLayout->addLayout(headerLayout);
 
-    undoButton->setFixedSize(50, 30);
-    redoButton->setFixedSize(50, 30);
 
-    buttonLayout->addWidget(undoButton);
-    buttonLayout->addWidget(redoButton);
-
-    // Set the button layout to the button widget
-    buttonWidget->setLayout(buttonLayout);
-    // Add buttons to the horizontal layout
-    topLayout->addWidget(buttonWidget);
-
-    // Add top layout to the main layout
-    mainLayout->addLayout(topLayout);
-    mainLayout->addWidget(line);
     // Create action list
     actionList = new QListWidget(this);
     mainLayout->addWidget(actionList);
+
+
 
     // Connect buttons to slots
     connect(undoButton, &QPushButton::clicked, this, &HistoryWidget::undoAction);
     connect(redoButton, &QPushButton::clicked, this, &HistoryWidget::redoAction);
 
     // Set the main layout
+    mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
 
@@ -75,27 +58,6 @@ void HistoryWidget::addAction(const QString &action)
     updateActionList();
 }
 
-void HistoryWidget::undoAction()
-{
-    if (!undoStack.isEmpty())
-    {
-        // Move the last action from undo stack to redo stack
-        QString lastAction = undoStack.pop();
-        redoStack.push(lastAction);
-        updateActionList();
-    }
-}
-
-void HistoryWidget::redoAction()
-{
-    if (!redoStack.isEmpty())
-    {
-        // Move the last action from redo stack to undo stack
-        QString lastRedoAction = redoStack.pop();
-        undoStack.push(lastRedoAction);
-        updateActionList();
-    }
-}
 
 void HistoryWidget::updateActionList()
 {
@@ -106,4 +68,11 @@ void HistoryWidget::updateActionList()
     {
         actionList->addItem(action);
     }
+}
+
+void HistoryWidget::undoAction(){
+    emit undo();
+}
+void HistoryWidget::redoAction(){
+    emit redo();
 }

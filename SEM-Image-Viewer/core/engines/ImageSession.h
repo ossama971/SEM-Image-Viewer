@@ -10,8 +10,8 @@ public:
     void saveImage(const std::string path, ImageFormat format);
     cv::Mat applyFilter(std::unique_ptr<ImageFilter> filter);
 
-    void undo();
-    void redo();
+    cv::Mat undo();
+    cv::Mat redo();
 
     Image& getImage();
     const ImageMetadata getImageInfo();

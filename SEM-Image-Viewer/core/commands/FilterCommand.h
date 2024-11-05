@@ -3,21 +3,24 @@
 
 #include "ICommand.h"
 #include "../filters/ImageFilter.h"
+#include "../data/Image.h"
 #include <memory>
 
 class FilterCommand : public ICommand {
 public:
-    FilterCommand(cv::Mat image, std::unique_ptr<ImageFilter> filter);
+    FilterCommand(Image &image, std::unique_ptr<ImageFilter> filter,std::string description);
     virtual ~FilterCommand();
 	
 public:
-    void execute() override;
-    void undo() override;
+    cv::Mat execute() override;
+    cv::Mat undo() override;
 	
     std::string getDescription() const override;
 
 private:
-    cv::Mat _image;
+    Image _image;
+    cv::Mat _previuos;
+    std::string _description;
     std::unique_ptr<ImageFilter> _filter;
 };
 

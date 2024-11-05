@@ -13,12 +13,10 @@ class HistoryWidget : public QWidget {
 
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
-
-private slots:
-    void undoAction();
-    void redoAction();
-    void addAction(const QString &action); // Function to add actions to history
-
+    void addAction(const QString &action);
+signals:
+    void undo();
+    void redo();
 private:
     QLabel *headerLabel;
     QPushButton *undoButton;
@@ -28,6 +26,11 @@ private:
     QStack<QString> redoStack;
 
     void updateActionList();
+
+private slots:
+    void undoAction();
+    void redoAction();
+
 };
 
 #endif

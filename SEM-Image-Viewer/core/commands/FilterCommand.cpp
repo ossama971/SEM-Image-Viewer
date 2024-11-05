@@ -1,23 +1,27 @@
 #include "FilterCommand.h"
 
-FilterCommand::FilterCommand(cv::Mat image, std::unique_ptr<ImageFilter> filter) : _image(image), _filter(std::move(filter)) {
+FilterCommand::FilterCommand(Image &image, std::unique_ptr<ImageFilter> filter,std::string description ) : _image(image), _filter(std::move(filter)),_description(description) {
 }
 
 FilterCommand::~FilterCommand()
 {
 }
 
-void FilterCommand::execute()
+cv::Mat FilterCommand::execute()
 {
-
+    _previuos=_image.getImageMat();
+    return _filter->applyFilter(_image);
 }
 
-void FilterCommand::undo()
+ cv::Mat FilterCommand::undo()
 {
 
+    cv::Mat temp=_previuos;
+    _previuos=_image.getImageMat();
+    return temp;
 }
 
 std::string FilterCommand::getDescription() const
 {
-    return std::string();
+    return _description;
 }

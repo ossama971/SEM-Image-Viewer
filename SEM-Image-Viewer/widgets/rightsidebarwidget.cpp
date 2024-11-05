@@ -21,8 +21,14 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     rightSidebarLayout->addWidget(_contourWidget);
     rightSidebarLayout->addWidget(_edgeExtractionWidget);
     rightSidebarLayout->addWidget(_historyWidget);
+
+
+
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
     controller.setContourWidget(_contourWidget);
+    controller.setHistoryWidget(_historyWidget);
+
+
     this->setLayout(rightSidebarLayout);
 }
 
