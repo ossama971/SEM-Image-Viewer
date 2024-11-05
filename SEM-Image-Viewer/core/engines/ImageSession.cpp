@@ -68,5 +68,5 @@ cv::Mat ImageSession::undo(){
 }
 
 cv::Mat ImageSession::redo(){
-    return _undoManager.undo();
+    return _undoManager.redo();
 }

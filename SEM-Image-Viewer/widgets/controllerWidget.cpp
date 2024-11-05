@@ -4,7 +4,7 @@
 
 #include "../core/filters/EdgeDetectionFilter.h"
 // #include "../core/filters/NoiseReductionFilter.h"
-// #include "../core/filters/SharpenFilter.h"
+ #include "../core/filters/SharpenFilter.h"
 
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
@@ -40,6 +40,9 @@ void Controller::setImageWidget(ImageWidget *widget)
 void Controller::setContourWidget(ContourWidget *widget)
 {
     contourWidget = widget;
+    if(contourWidget){
+        connect(contourWidget,&ContourWidget::applyFilter,this, &Controller::onContourFilterApplied);
+    }
 }
 
 void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
@@ -75,6 +78,14 @@ void Controller::onEdgeWidgetFilterApplied()
 
 void Controller::onContourFilterApplied()
 {
+    std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
+
+    auto updatedImage = ImageSession.applyFilter(std::move(filter));
+    ImageSession.getImage().setMat(updatedImage);
+
+    emit imageUpdated(updatedImage);
+
+    loggerWidget->addLogMessage("Info", "filter Applied2");
 }
 
 void Controller::printMat(const cv::Mat &mat)

@@ -16,10 +16,9 @@ cv::Mat FilterCommand::execute()
  cv::Mat FilterCommand::undo()
 {
 
-    cv::Mat temp=_previuos;
-    _previuos=_image.getImageMat();
-    return temp;
+    return _previuos;
 }
+
 
 std::string FilterCommand::getDescription() const
 {

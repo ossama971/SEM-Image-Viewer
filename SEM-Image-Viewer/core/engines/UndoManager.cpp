@@ -24,7 +24,7 @@ cv::Mat UndoManager::undo()
 cv::Mat UndoManager::redo()
 {
     ICommand * command =_redo.top().get();
-    auto _res=command->undo();
+    auto _res=command->execute();
     _undo.push(std::move(_redo.top()));
     _redo.pop();
     return _res;

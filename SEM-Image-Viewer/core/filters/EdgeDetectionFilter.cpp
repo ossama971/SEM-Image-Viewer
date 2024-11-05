@@ -32,7 +32,7 @@ cv::Mat EdgeDetectionFilter::ToGrayscale(const cv::Mat &image) const
 cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
     //const cv::Mat image =inputImage.getImageMat();
-    cv::Vec3b tint(50, 0, 0);
+
 
 
     // cv::Mat detected_edges;
@@ -41,6 +41,7 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
     // cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
 
     //return detected_edges;
+    cv::Vec3b tint(50, 0, 0);
     cv::Mat output = inputImage.getImageMat().clone();
 
     // Loop through each pixel and apply the tint

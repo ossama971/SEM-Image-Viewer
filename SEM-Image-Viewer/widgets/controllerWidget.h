@@ -29,10 +29,12 @@ public:
     void setHistoryWidget(HistoryWidget *widget);
 
 private slots:
+
     void onEdgeWidgetFilterApplied();
     void onContourFilterApplied();
     void undoAction();
     void redoAction();
+
 private:
     Controller();
     Controller(const Controller &) = delete;
