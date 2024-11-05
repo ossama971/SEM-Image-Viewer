@@ -15,9 +15,6 @@ public:
     bool loadImagesFromPath(const QString &path);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    void appendImage(const Image& image);
-    Image getImageAt(int index) const;
-
 private:
     QList<Image> images;
     QSize thumbnailSize = QSize(100, 100);
