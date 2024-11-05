@@ -1,6 +1,10 @@
 #include "ImageSession.h"
 #include "../data/Image.h"
 
+Image& ImageSession::getImage(void) {
+    return _imageRepo.getImage();
+}
+
 const ImageMetadata ImageSession::getImageInfo(void)
 {
     return _imageRepo.getImage().getMetadata();

@@ -13,6 +13,7 @@ public:
     void undo();
     void redo();
 
+    Image& getImage();
     const ImageMetadata getImageInfo();
     std::vector<int> pixelIntensity(const std::vector<std::pair<int, int>> &points);
     cv::Mat heatMap();
