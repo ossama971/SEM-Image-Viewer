@@ -1,6 +1,14 @@
 #include "ImageSession.h"
 #include "../data/Image.h"
 
+void ImageSession::loadImage(const std::string path) {
+    _imageRepo.load(path);
+}
+
+cv::Mat ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
+    return filter->applyFilter(_imageRepo.getImage());
+}
+
 Image& ImageSession::getImage(void) {
     return _imageRepo.getImage();
 }

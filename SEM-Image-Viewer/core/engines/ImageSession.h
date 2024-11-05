@@ -8,7 +8,7 @@ class ImageSession {
 public:
     void loadImage(const std::string path);
     void saveImage(const std::string path, ImageFormat format);
-    void applyFilter(std::unique_ptr<ImageFilter> filter);
+    cv::Mat applyFilter(std::unique_ptr<ImageFilter> filter);
 
     void undo();
     void redo();

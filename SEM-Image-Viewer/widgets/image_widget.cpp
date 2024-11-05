@@ -41,7 +41,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
+    loadAndDisplayImage("C:\\Users\\pc\\Documents\\sem-image-viewer-cmake\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
     scene->installEventFilter(this);
 }
 

@@ -2,6 +2,8 @@
 #include "image_widget.h"
 #include "LoggerWidget.h"
 #include "../core/filters/EdgeDetectionFilter.h"
+#include "../core/filters/NoiseReductionFilter.h"
+#include "../core/filters/SharpenFilter.h"
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
@@ -42,14 +44,30 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
 {
+    static int test = 0;
 
     int low=edgeExtractionWidget->getLowThreshold();
-    int hight=edgeExtractionWidget->getHighThreshold();
-    //EdgeDetectionFilter * _edgeDetectionFilter
-//    auto updatedImage=ImageSession.applyFilter(imageWidget->getImage());
+    int high=edgeExtractionWidget->getHighThreshold();
 
+    std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
+    filter->setThresholdLow(low);
+    filter->setTHresholdHigh(high);
 
-   // emit imageUpdated(updatedImage);
+    ImageSession.loadImage("C:\\Users\\pc\\Documents\\sem-image-viewer-cmake\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
+    printMat(ImageSession.getImage().getImageMat());
+
+    if (++test % 2 == 0)
+    {
+        printf("Showing edge extraction\n");
+        auto updatedImage = ImageSession.applyFilter(std::move(filter));
+        emit imageUpdated(updatedImage);
+    }
+    else
+    {
+        printf("Showing original image\n");
+        emit imageUpdated(ImageSession.getImage().getImageMat());
+    }
+
     loggerWidget->addLogMessage("Error","filter Applied");
 }
 
