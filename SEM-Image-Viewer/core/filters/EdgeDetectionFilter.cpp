@@ -29,10 +29,11 @@ cv::Mat EdgeDetectionFilter::ToGrayscale(const cv::Mat &image) const
     cv::cvtColor(image,gray_image, cv::COLOR_BGR2GRAY);
     return gray_image;
 }
-cv::Mat EdgeDetectionFilter::applyFilter(const cv::Mat &inputImage) const
+cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
+    const cv::Mat image =inputImage.getImageMat();
     cv::Mat detected_edges;
-    detected_edges=ToGrayscale(inputImage);
+    detected_edges=ToGrayscale(image);
     detected_edges=Denoise(detected_edges);
     cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
     return detected_edges;

@@ -16,7 +16,7 @@ public:
     void setTHresholdHigh(int threshold);
     int get_threshold_low();
     int get_threshold_high();
-    cv::Mat applyFilter(const cv::Mat &inputImage) const;
+    cv::Mat applyFilter(const Image &inputImage) const override;
 
 };
 
