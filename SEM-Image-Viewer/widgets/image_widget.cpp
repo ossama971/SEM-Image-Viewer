@@ -10,7 +10,7 @@ using namespace std;
 
 ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent), graphicsView(new QGraphicsView(this)), scene(new QGraphicsScene(this)),
-    zoomWidget(new ZoomWidget(this)), infoBar(new ImageInfoBar(this))
+      zoomWidget(new ZoomWidget(this)), infoBar(new ImageInfoBar(this))
 {
     // setMinimumSize(600, 400);
     graphicsView->setScene(scene);
@@ -41,23 +41,27 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+    loadAndDisplayImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
     scene->installEventFilter(this);
 }
 
 bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
 {
-    if (obj == scene) {
-        if (event->type() == QEvent::GraphicsSceneMousePress) {
-            QGraphicsSceneMouseEvent *mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent*>(event);
-            if (mouseEvent) {
+    if (obj == scene)
+    {
+        if (event->type() == QEvent::GraphicsSceneMousePress)
+        {
+            QGraphicsSceneMouseEvent *mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
+            if (mouseEvent)
+            {
                 QPointF clickPos = mouseEvent->scenePos();
                 qDebug() << "Clicked position in scene:" << clickPos;
             }
             return true;
         }
-        if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
-            QGraphicsSceneMouseEvent *mouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
+        if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove)
+        {
+            QGraphicsSceneMouseEvent *mouseEvent = static_cast<QGraphicsSceneMouseEvent *>(event);
             QPointF scenePos = mouseEvent->scenePos();
 
             // Update info bar with real-time mouse position
@@ -66,17 +70,19 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
             qDebug() << "Real-time position in scene:" << scenePos; // Debug message
             return true;
         }
-
     }
     return QWidget::eventFilter(obj, event);
 }
 void ImageWidget::loadAndDisplayImage(const QString &imagePath)
 {
     auto pixmap = loadAndPrepareImage(imagePath, graphicsView->size());
-    if (pixmap) {
+    if (pixmap)
+    {
         setImage(*pixmap);
         infoBar->setDimensions(pixmap->width(), pixmap->height()); // Set image dimensions
-    } else {
+    }
+    else
+    {
         emit imageLoadFailed();
     }
 }
@@ -84,7 +90,9 @@ void ImageWidget::loadAndDisplayImage(const QString &imagePath)
 optional<QPixmap> ImageWidget::loadAndPrepareImage(const QString &path, const QSize &targetSize)
 {
     Mat image = imread(path.toStdString());
-    if (image.empty()) {
+    currentImage=image;
+    if (image.empty())
+    {
         return nullopt;
     }
 
@@ -103,7 +111,6 @@ void ImageWidget::setImage(const QPixmap &pixmap)
     graphicsView->fitInView(image, Qt::KeepAspectRatio);
     graphicsView->setSceneRect(image->boundingRect());
     infoBar->setImageSize(pixmap.width(), pixmap.height());
-
 }
 
 void ImageWidget::resizeEvent(QResizeEvent *event)
@@ -111,14 +118,16 @@ void ImageWidget::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     // Reposition the zoom widget at the top-right corner
-    if (zoomWidget) {
+    if (zoomWidget)
+    {
         zoomWidget->move(width() - zoomWidget->width() - 10, 10);
     }
 }
 
 void ImageWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         isPanning = true;
         lastMousePosition = event->pos();
         setCursor(Qt::ClosedHandCursor);
@@ -131,7 +140,8 @@ void ImageWidget::mousePressEvent(QMouseEvent *event)
 void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 {
     event->accept();
-    if (isPanning) {
+    if (isPanning)
+    {
         QPoint delta = lastMousePosition - event->pos();
         graphicsView->horizontalScrollBar()->setValue(graphicsView->horizontalScrollBar()->value() + delta.x());
         graphicsView->verticalScrollBar()->setValue(graphicsView->verticalScrollBar()->value() + delta.y());
@@ -144,7 +154,8 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         isPanning = false;
         setCursor(Qt::ArrowCursor);
         event->accept();
@@ -155,7 +166,8 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void ImageWidget::wheelEvent(QWheelEvent *event)
 {
-    if(event->modifiers() & Qt::ControlModifier) {
+    if (event->modifiers() & Qt::ControlModifier)
+    {
         const qreal zoomIncrement = 1.1;
         qreal factor = event->angleDelta().y() > 0 ? zoomIncrement : 1 / zoomIncrement;
         zoomFactor *= factor;
@@ -168,9 +180,10 @@ void ImageWidget::wheelEvent(QWheelEvent *event)
         infoBar->setZoomPercentage(zoomFactor); // Update zoom percentage
         event->accept();
     }
-        else {
-            event->ignore();
-        }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void ImageWidget::zoomIn()
@@ -195,4 +208,17 @@ void ImageWidget::zoomOut()
 
     graphicsView->setTransform(QTransform().scale(zoomFactor, zoomFactor));
     infoBar->setZoomPercentage(zoomFactor); // Update zoom percentage
+}
+
+void ImageWidget::updateImage(const cv::Mat &image)
+{
+    currentImage=image;
+    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    QPixmap pixmap = QPixmap::fromImage(qImage);
+    setImage(pixmap);
+}
+
+cv::Mat ImageWidget::getImage() const
+{
+    return currentImage; // Return the stored cv::Mat image
 }

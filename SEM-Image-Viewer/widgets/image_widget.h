@@ -20,7 +20,7 @@ class ImageWidget : public QWidget
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
     void loadAndDisplayImage(const QString &imagePath);
-
+    cv::Mat getImage() const;
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -35,12 +35,13 @@ protected:
 private:
     QGraphicsView *graphicsView;
     QGraphicsScene *scene;
-    ZoomWidget *zoomWidget;  // Separate zoom widget for zoom controls
+    ZoomWidget *zoomWidget; // Separate zoom widget for zoom controls
 
     std::optional<QPixmap> loadAndPrepareImage(const QString &path, const QSize &targetSize);
     void setImage(const QPixmap &pixmap);
-    ImageInfoBar *infoBar; // New info bar widget
 
+    ImageInfoBar *infoBar; // New info bar widget
+    cv::Mat currentImage;
     QPoint lastMousePosition;
     bool isPanning = false;
     double zoomFactor = 1.0;
@@ -51,6 +52,8 @@ private slots:
 
 signals:
     void imageLoadFailed();
+public slots:
+    void updateImage(const cv::Mat &image);
 };
 
 #endif // IMAGEWIDGET_H

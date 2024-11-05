@@ -20,15 +20,3 @@ std::string Image::getPath() const {
 ImageMetadata Image::getMetadata() const {
     return _metadata;
 }
-
-/*int Image::getWidth() const {
-    return _image.cols;
-}
-
-int Image::getHeight() const {
-    return _image.rows;
-}
-
-int Image::getSize() const {
-    return _image.size().area();
-}*/
