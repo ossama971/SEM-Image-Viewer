@@ -54,15 +54,4 @@ QImage ImageDataModel::generateThumbnail(const Image &image) const {
     return originalImage.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
 
-void ImageDataModel::appendImage(const Image& image) {
-    beginInsertRows(QModelIndex(), images.size(), images.size());
-    images.push_back(image);
-    endInsertRows();
-}
 
-Image ImageDataModel::getImageAt(int index) const {
-    if (index >= 0 && index < images.size()) {
-        return images[index];
-    }
-    return Image(); // Return an empty `Image` if index is out of bounds
-}
