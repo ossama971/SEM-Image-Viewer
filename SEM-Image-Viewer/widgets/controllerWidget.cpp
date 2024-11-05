@@ -58,7 +58,6 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
 {
-
     int low = edgeExtractionWidget->getLowThreshold();
     int high = edgeExtractionWidget->getHighThreshold();
 
@@ -73,11 +72,14 @@ void Controller::onEdgeWidgetFilterApplied()
 
     emit imageUpdated(updatedImage);
 
-    loggerWidget->addLogMessage("Info", "filter Applied");
+    historyWidget->addAction("Edge Filter");
+
+    loggerWidget->addLogMessage("Info", "Edge Filter Applied");
 }
 
 void Controller::onContourFilterApplied()
 {
+
     std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
 
     auto updatedImage = ImageSession.applyFilter(std::move(filter));
@@ -85,7 +87,9 @@ void Controller::onContourFilterApplied()
 
     emit imageUpdated(updatedImage);
 
-    loggerWidget->addLogMessage("Info", "filter Applied2");
+    historyWidget->addAction("Contour Filter");
+
+    loggerWidget->addLogMessage("Info", "Contour Filter Applied");
 }
 
 void Controller::printMat(const cv::Mat &mat)
@@ -123,9 +127,10 @@ void Controller::printMat(const cv::Mat &mat)
 void Controller::undoAction(){
 
     auto _res=ImageSession.undo();
+
     emit imageUpdated(_res);
 }
 void Controller::redoAction(){
    auto _res= ImageSession.redo();
-    emit imageUpdated(_res);
+   emit imageUpdated(_res);
 }
