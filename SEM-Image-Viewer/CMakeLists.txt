@@ -92,6 +92,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         widgets/controllerWidget.h
         widgets/controllerWidget.cpp
         core/imageeditor.h core/imageeditor.cpp
+        widgets/historywidget.h widgets/historywidget.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

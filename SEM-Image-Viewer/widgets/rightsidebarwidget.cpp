@@ -1,7 +1,8 @@
 #include "rightsidebarwidget.h"
 #include "sharpen_filter_widget.h"
-#include "controllerWidget.h""
+#include "controllerWidget.h"
 #include "edge_extraction_wigdet.h"
+#include "historywidget.h"
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -16,8 +17,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
    // rightContent->setStyleSheet("background-color: #627e7c;");
     ContourWidget* _contourWidget=new ContourWidget();
     EdgeExtractionWidget* _edgeExtractionWidget= new EdgeExtractionWidget();
+    HistoryWidget * _historyWidget=new HistoryWidget();
     rightSidebarLayout->addWidget(_contourWidget);
     rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    rightSidebarLayout->addWidget(_historyWidget);
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
     controller.setContourWidget(_contourWidget);
     this->setLayout(rightSidebarLayout);

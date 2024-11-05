@@ -1,13 +1,13 @@
 #include "controllerWidget.h"
 #include "image_widget.h"
 #include "LoggerWidget.h"
-
+#include "../core/filters/EdgeDetectionFilter.h"
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() {
-    imageEdtior=new ImageEditor();
+Controller::Controller():ImageSession(Workspace::Instance().getActiveSession()) {
+
 };
 
 void Controller::setLoggerWidget(LoggerWidget *widget)
@@ -22,7 +22,6 @@ void Controller::setImageWidget(ImageWidget *widget)
     if(imageWidget){
         connect(this, &Controller::imageUpdated, imageWidget, &ImageWidget::updateImage);
     }
-
 }
 
 void Controller::setContourWidget(ContourWidget *widget)
@@ -44,10 +43,13 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
 void Controller::onEdgeWidgetFilterApplied()
 {
 
-    auto updatedImage=imageEdtior->ApplyFilter(imageWidget->getImage());
+    int low=edgeExtractionWidget->getLowThreshold();
+    int hight=edgeExtractionWidget->getHighThreshold();
+    //EdgeDetectionFilter * _edgeDetectionFilter
+//    auto updatedImage=ImageSession.applyFilter(imageWidget->getImage());
 
 
-    emit imageUpdated(updatedImage);
+   // emit imageUpdated(updatedImage);
     loggerWidget->addLogMessage("Error","filter Applied");
 }
 

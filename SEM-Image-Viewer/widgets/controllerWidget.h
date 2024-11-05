@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <opencv2/opencv.hpp>
-#include "../core/imageeditor.h"
-
+#include "../core/engines/ImageSession.h"
+#include "../core/engines/Workspace.h"
 class LoggerWidget;
 class ImageWidget;
 class ContourWidget;
@@ -36,7 +36,7 @@ private:
     Controller &operator=(const Controller &) = delete;
     void printMat(const cv::Mat &mat);
 
-    ImageEditor *imageEdtior=nullptr;
+    ImageSession &ImageSession;
 
     LoggerWidget *loggerWidget = nullptr;
     ImageWidget *imageWidget = nullptr;

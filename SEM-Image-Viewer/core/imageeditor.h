@@ -7,6 +7,7 @@ class ImageEditor
 
 public:
     ImageEditor();
+    //input mat , pointer
     cv::Mat ApplyFilter(const cv::Mat &inputImage);
 };
 
