@@ -41,7 +41,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
+    loadAndDisplayImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     scene->installEventFilter(this);
 }
 
@@ -55,7 +55,6 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
             if (mouseEvent)
             {
                 QPointF clickPos = mouseEvent->scenePos();
-                qDebug() << "Clicked position in scene:" << clickPos;
             }
             return true;
         }
@@ -67,7 +66,6 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
             // Update info bar with real-time mouse position
             infoBar->setMousePosition(static_cast<int>(scenePos.x()), static_cast<int>(scenePos.y()));
 
-            qDebug() << "Real-time position in scene:" << scenePos; // Debug message
             return true;
         }
     }
