@@ -2,6 +2,8 @@
 #define CONTOURS_FILTER_H
 
 #include "ImageFilter.h"
+#include "../engines/Logger.h"
+#include "../data/InfoMessage.h"
 
 class EdgeDetectionFilter : public ImageFilter {
 private:
