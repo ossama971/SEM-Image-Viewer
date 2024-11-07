@@ -3,6 +3,7 @@
 
 enum class ImageFormat
 {
+    Unknown,
     PNG,
     JPG,
     BMP

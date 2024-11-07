@@ -14,7 +14,6 @@ public:
     static Workspace& Instance();
 	
 private:
-    std::map<std::string, ImageSession> _sessions;
     ImageSession _activeSession;
 
     static Workspace _instance;

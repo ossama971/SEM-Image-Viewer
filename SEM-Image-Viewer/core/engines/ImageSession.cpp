@@ -1,10 +1,11 @@
 #include "ImageSession.h"
 #include "../data/Image.h"
 
-void ImageSession::loadImage(const std::string path) {
-    _imageRepo.load(path);
+void ImageSession::loadDirectory(const std::string path) {
+    _imageRepo.load_directory(path);
 }
 
+<<<<<<< Updated upstream
 cv::Mat ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
 
 
@@ -12,6 +13,18 @@ cv::Mat ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
     auto _it =_undoManager.createFilterCommand(_imageRepo.getImage(),std::move(filter),"Hello world");
     _imageRepo.getImage().setMat(_it);
     return _imageRepo.getImage().getImageMat();
+=======
+void ImageSession::loadImage(const std::string path) {
+    _imageRepo.load_image(path);
+}
+
+void ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
+    Image* selectedImage = _imageRepo.getImage();
+    if (!selectedImage)
+        return;
+
+    selectedImage->filter->applyFilter(*selectedImage);
+>>>>>>> Stashed changes
 }
 
 Image& ImageSession::getImage(void) {
@@ -63,10 +76,15 @@ cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
     return res;
 }
 
+<<<<<<< Updated upstream
 cv::Mat ImageSession::undo(){
     return _undoManager.undo();
 }
 
 cv::Mat ImageSession::redo(){
     return _undoManager.redo();
+=======
+ImageRepository& ImageSession::getImageRepo() {
+    return _imageRepo;
+>>>>>>> Stashed changes
 }
