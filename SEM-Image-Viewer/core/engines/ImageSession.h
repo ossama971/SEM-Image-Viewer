@@ -5,7 +5,7 @@
 #include "UndoManager.h"
 #include <QObject.h>
 
-class ImageSession : QObject {
+class ImageSession : public QObject {
 public:
     void loadDirectory(const std::string path);
     void loadImage(const std::string path);
@@ -15,13 +15,12 @@ public:
     cv::Mat undo();
     cv::Mat redo();
 
-    Image& getImage();
-    const ImageMetadata getImageInfo();
     std::vector<int> pixelIntensity(const std::vector<std::pair<int, int>> &points);
     cv::Mat heatMap();
     cv::Mat diffTwoImages(const cv::Mat &image2, const int threshold);
 
     ImageRepository& getImageRepo();
+    Image* getSelectedImage();
 
 signals:
     void onImageStateUpdated(const ImageState& newState);

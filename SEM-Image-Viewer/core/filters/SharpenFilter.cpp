@@ -26,3 +26,7 @@ cv::Mat SharpenFilter::applyFilter(const Image& inputImage) const {
     return output;
 
 }
+
+ImageStateSource SharpenFilter::getImageSource() const {
+    return ImageStateSource::SharpenFilter;
+}

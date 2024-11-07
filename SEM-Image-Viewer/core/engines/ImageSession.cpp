@@ -1,21 +1,21 @@
 #include "ImageSession.h"
 #include "../data/Image.h"
+#include "../commands/FilterCommand.h"
 
 void ImageSession::loadDirectory(const std::string path) {
     _imageRepo.load_directory(path);
 }
 
-<<<<<<< Updated upstream
-cv::Mat ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
-
-
-
-    auto _it =_undoManager.createFilterCommand(_imageRepo.getImage(),std::move(filter),"Hello world");
-    _imageRepo.getImage().setMat(_it);
-    return _imageRepo.getImage().getImageMat();
-=======
 void ImageSession::loadImage(const std::string path) {
     _imageRepo.load_image(path);
+}
+
+void ImageSession::saveImage(const std::string path, ImageFormat format) {
+    Image* selectedImage = _imageRepo.getImage();
+    if (!selectedImage)
+        return;
+
+    _imageRepo.save(*selectedImage, format, path);
 }
 
 void ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
@@ -23,25 +23,17 @@ void ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
     if (!selectedImage)
         return;
 
-    selectedImage->filter->applyFilter(*selectedImage);
->>>>>>> Stashed changes
+    const ImageStateSource source = filter->getImageSource();
+    std::unique_ptr<FilterCommand> cmd = std::make_unique<FilterCommand>(std::move(filter));
+    cmd->setImage(selectedImage);
+
+    selectedImage->setImage(cmd->execute(), std::move(cmd), source);
 }
-
-Image& ImageSession::getImage(void) {
-    return _imageRepo.getImage();
-}
-
-const ImageMetadata ImageSession::getImageInfo(void)
-{
-    return _imageRepo.getImage().getMetadata();
-}
-
-
 
 std::vector<int>
 ImageSession::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
     cv::Mat gray;
-    cv::cvtColor(_imageRepo.getImage().getImageMat(), gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(_imageRepo.getImage()->getImageMat(), gray, cv::COLOR_BGR2GRAY);
     std::vector<int> intensities;
     for (const auto &point : points) {
         intensities.push_back(gray.at<uchar>(point.first, point.second));
@@ -51,14 +43,14 @@ ImageSession::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
 
 cv::Mat ImageSession::heatMap() {
     cv::Mat gray;
-    cv::cvtColor(_imageRepo.getImage().getImageMat(), gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(_imageRepo.getImage()->getImageMat(), gray, cv::COLOR_BGR2GRAY);
     cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
     return gray;
 }
 
 cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
                                     const int threshold) {
-    const cv::Mat& image1 = _imageRepo.getImage().getImageMat();
+    const cv::Mat& image1 = _imageRepo.getImage()->getImageMat();
     cv::Mat diff;
     cv::absdiff(image1, image2, diff);
     cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
@@ -76,15 +68,18 @@ cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
     return res;
 }
 
-<<<<<<< Updated upstream
-cv::Mat ImageSession::undo(){
+cv::Mat ImageSession::undo() {
     return _undoManager.undo();
 }
 
-cv::Mat ImageSession::redo(){
+cv::Mat ImageSession::redo() {
     return _undoManager.redo();
-=======
+}
+
 ImageRepository& ImageSession::getImageRepo() {
     return _imageRepo;
->>>>>>> Stashed changes
+}
+
+Image* ImageSession::getSelectedImage(void) {
+    return _imageRepo.getImage();
 }

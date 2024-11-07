@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-class ImageRepository : QObject {
+class ImageRepository : public QObject {
 public:
     ImageRepository();
 

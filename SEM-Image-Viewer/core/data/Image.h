@@ -14,7 +14,7 @@ public:
     ~Image();
 
     bool load(const std::string &path);
-    bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
+    bool setImage(cv::Mat image, std::unique_ptr<ICommand> cmd, ImageStateSource newState = ImageStateSource::Origin);
 
     Image clone();
 
@@ -22,19 +22,16 @@ public:
     ImageStateSource getImageState() const;
     std::string getPath() const;
     ImageMetadata getMetadata() const;
-<<<<<<< Updated upstream
-    void setMat(cv::Mat _image);
-=======
 
 signals:
     void onImageStateUpdated(std::list<ImageState>& states);
 
->>>>>>> Stashed changes
 private:
     bool _loaded;
     std::string _path;
     ImageMetadata _metadata;
     std::list<ImageState> _states;
+    std::list<ImageState> _undone;
 };
 
 #endif // IMAGE_H

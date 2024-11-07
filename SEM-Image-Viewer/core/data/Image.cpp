@@ -17,20 +17,20 @@ bool Image::load(const std::string &path) {
     _loaded = true;
 
     cv::Mat image = cv::imread(path, cv::IMREAD_COLOR);
-    if (!setImage(std::move(image)))
+    if (!setImage(std::move(image), std::unique_ptr<ICommand>()))
         return false;
 
     _metadata.load(path, getImageMat());
     return true;
 }
 
-bool Image::setImage(cv::Mat image, ImageStateSource newState) {
+bool Image::setImage(cv::Mat image, std::unique_ptr<ICommand> cmd, ImageStateSource newState) {
     if (!_loaded)
         return false;
     if (image.empty())
         return false;
 
-    _states.push_front(ImageState{ newState, image });
+    _states.emplace_front(ImageState{ newState, std::move(cmd), std::move(image) });
 
     emit onImageStateUpdated(_states);
     return true;
@@ -54,8 +54,4 @@ std::string Image::getPath() const {
 
 ImageMetadata Image::getMetadata() const {
     return _metadata;
-}
-
-void Image::setMat(cv::Mat _image){
-    this->_image=_image;
 }

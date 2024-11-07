@@ -58,3 +58,7 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 
     return output;
 }
+
+ImageStateSource EdgeDetectionFilter::getImageSource() const {
+    return ImageStateSource::EdgeDetectionFilter;
+}

@@ -13,9 +13,9 @@ public:
 public:
 
     virtual cv::Mat execute() = 0;
-    virtual cv::Mat undo() = 0;
+    //virtual cv::Mat undo() = 0;
 	
-	virtual std::string getDescription() const = 0;
+    //virtual std::string getDescription() const = 0;
 };
 
 #endif // ICOMMAND_H

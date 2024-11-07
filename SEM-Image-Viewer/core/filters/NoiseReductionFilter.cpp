@@ -22,3 +22,11 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
     }
     return res;
 }
+
+ImageStateSource NoiseReductionFilter::getImageSource() const {
+    return ImageStateSource::NoiseReductionFilter;
+}
+
+double NoiseReductionFilter::getIntensity(void) const {
+    return _intensity;
+}

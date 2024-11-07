@@ -9,6 +9,7 @@ public:
 
     cv::Mat applyFilter(const Image& inputImage) const override;
 
+    ImageStateSource getImageSource() const override;
     double getIntensity() const;
 
 private:
