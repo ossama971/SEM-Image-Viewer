@@ -44,21 +44,9 @@ set(PROJECT_SOURCES
         widgets/image_widget.h
         widgets/image_widget.cpp
 
-)
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(SEM-Image-Viewer
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-
-
-
         widgets/LoggerWidget.h
         widgets/LoggerWidget.cpp
         assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
-
-
-        core/filters/EdgeDetectionFilter.cpp core/filters/EdgeDetectionFilter.h core/filters/NoiseReductionFilter.cpp core/filters/NoiseReductionFilter.h core/filters/GrayScaleFilter.cpp core/filters/GrayScaleFilter.h core/filters/ImageFilter.h
         core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
 
         core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/UndoManager.cpp core/engines/UndoManager.h
@@ -88,11 +76,23 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         widgets/bottommiddlewidget.cpp widgets/bottommiddlewidget.h widgets/image_info_bar.cpp widgets/image_info_bar.h widgets/image_widget.cpp widgets/image_widget.h widgets/leftsidebarwidget.cpp widgets/leftsidebarwidget.h widgets/menubarwidget.cpp widgets/menubarwidget.h widgets/rightsidebarwidget.cpp widgets/rightsidebarwidget.h widgets/sharpen_filter_widget.cpp widgets/sharpen_filter_widget.h widgets/topmiddlewidget.cpp widgets/topmiddlewidget.h widgets/zoom_widget.cpp widgets/zoom_widget.h
         models/ImageDataModel.cpp
         models/ImageDataModel.h
+        models/MessageDataModel.cpp
+        models/MessageDataModel.h
         widgets/edge_extraction_wigdet.h widgets/edge_extraction_wigdet.cpp
         widgets/controllerWidget.h
         widgets/controllerWidget.cpp
         core/imageeditor.h core/imageeditor.cpp
         widgets/historywidget.h widgets/historywidget.cpp
+
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(SEM-Image-Viewer
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+
+
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
