@@ -4,7 +4,8 @@
 #include "IMessage.h"
 
 class InfoMessage : public IMessage {
-    InfoMessage(int msgId, const std::string msg);
+public:
+    InfoMessage(int msgId, const boost::format msg);
 };
 
 #endif // INFO_MESSAGE
