@@ -9,7 +9,14 @@
 #include <QObject>
 #include <QImage>
 #include <QFileDialog>
+#include <iostream>
 
+
+#include "../core/engines/Workspace.h"
+#include "../core/data/Image.h"
+#include "../core/data/ImageFormat.h"
+
+using namespace std;
 
 
 class MenuBarWidget : public QMenuBar

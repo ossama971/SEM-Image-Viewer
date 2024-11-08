@@ -6,7 +6,7 @@
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {
-    load_directory("D:\\Test");
+    load_directory("/Users/salmaabdelghany/Siemens/FinalProject/newload");
 }
 
 bool ImageRepository::load_directory(const std::string &path) {
@@ -80,4 +80,8 @@ void ImageRepository::selectImage(int index) {
 
 Image* ImageRepository::getImage() {
     return _selectedImage;
+}
+
+std::vector<Image> ImageRepository::getImages(){
+    return _images;
 }

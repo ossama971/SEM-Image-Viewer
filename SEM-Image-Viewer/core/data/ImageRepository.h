@@ -17,9 +17,11 @@ public:
     bool load_image(const std::string &path);
     bool save(Image& image, const ImageFormat format, const std::string path);
 
+
     void selectImage(int index);
 
     Image* getImage();
+    std::vector<Image> getImages();
 
 signals:
     void onDirectoryChanged(std::vector<Image>& newImages);

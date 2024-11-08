@@ -3,7 +3,7 @@
 Image::Image() : _loaded(false) {
 }
 
-Image::Image(const std::string &path) {
+Image::Image(std::filesystem::path path) {
     Image();
     load(path);
 }
@@ -28,15 +28,15 @@ Image Image::operator=(const Image& image) {
     return Image(image);
 }
 
-bool Image::load(const std::string &path) {
+bool Image::load(const std::filesystem::path path) {
     _path = path;
     _loaded = true;
 
-    cv::Mat image = cv::imread(path, cv::IMREAD_COLOR);
+    cv::Mat image = cv::imread(path.string(), cv::IMREAD_COLOR);
     if (!setImage(std::move(image)))
         return false;
 
-    _metadata.load(path, getImageMat());
+    _metadata.load(path.string(), getImageMat());
     return true;
 }
 
@@ -64,7 +64,7 @@ ImageStateSource Image::getImageState() const {
     return _states.front()->State;
 }
 
-std::string Image::getPath() const {
+std::filesystem::path Image::getPath() const {
     return _path;
 }
 

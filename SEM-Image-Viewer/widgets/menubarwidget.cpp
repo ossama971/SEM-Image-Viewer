@@ -38,16 +38,129 @@ void MenuBarWidget::fileMenu(){
 
 
 void MenuBarWidget::exportImage(QString format){
+
+
+
+        // qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
+
+        // // Access the images from the vector
+        // std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+        // cout << "image size : " << images.size() << endl;
+
+        // for (int i = 0; i < images.size(); i++) {
+        //     qDebug("-------------------------------------------------loading img ------------------------------------------------");
+        //     cout << "image num : " << i << endl;
+
+        //     // Get the OpenCV image from the vector
+        //     cv::Mat matImg = images[i].getImageMat();
+
+        //     // Convert to QImage
+        //     QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+        //     // Use getPath() to get the specific path for each image
+        //     std::filesystem::path imagePath = images[i].getPath();
+        //     QString fullPath = QString::fromStdString(imagePath.string());
+        //     QFileInfo fileInfo(fullPath);
+
+        //     // Extract base name and directory path from each image's original path
+        //     QString baseName = fileInfo.completeBaseName(); // Image name without extension
+        //     QString filePath = fileInfo.path();             // Directory path where the image will be saved
+
+        //     // Generate the file name with format for saving
+        //     QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(format);
+
+        //     // Save the image with the filename generated from its own path
+        //     qImg.save(numberedFileName);
+        // }
+
+        // qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
+
+
     qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
-    QImage image(QSize(128, 128), QImage::Format_ARGB32);
-    image.fill(Qt::red); // A red rectangle.
 
-    // Set up the save file dialog with the specified format
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
-    if (!fileName.isEmpty()) {
+    // Prompt the user for a base filename
+    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
 
-        image.save(fileName);
+    if (!baseFileName.isEmpty()) {
+        // Extract the base name and extension
+        QFileInfo fileInfo(baseFileName);
+        // QString baseName = fileInfo.completeBaseName();
+
+        QString extension = fileInfo.completeSuffix();
+        QString filePath = fileInfo.path(); // Path where images will be saved
+
+        // Access the images from the vector
+        std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+        cout << "image size : " << images.size() << endl;
+
+        for (int i = 0; i < images.size(); i++) {
+            qDebug("-------------------------------------------------loading img ------------------------------------------------");
+            cout << "image num : " << i << endl;
+
+            // QString baseName = QString::fromStdString(images[i].getPath().filename().string());
+            std::string fileName = images[i].getPath().filename().string();
+            size_t lastDot = fileName.find_last_of('.');
+
+            // Check if there's an extension and remove it if found
+            if (lastDot != std::string::npos) {
+                fileName = fileName.substr(0, lastDot); // Remove the extension
+            }
+
+            // Convert the result to QString
+            QString baseName = QString::fromStdString(fileName);
+
+            // Get the OpenCV image from the vector
+            cv::Mat matImg = images[i].getImageMat();
+
+            // Convert to QImage
+            QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+            // Generate a unique filename for each image
+            QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+
+            // Save the image with the unique filename
+            qImg.save(numberedFileName);
+        }
     }
+
+    qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
+
+
+    // qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
+    // // QImage image(QSize(128, 128), QImage::Format_ARGB32);
+    // // image.fill(Qt::red); // A red rectangle.
+
+    // // // Set up the save file dialog with the specified format
+    // QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+    // // if (!fileName.isEmpty()) {
+
+    // //     image.save(fileName);
+    // // }
+
+    // if(!fileName.isEmpty()){
+
+    //     std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+    //     cout<<"image size : "<<images.size()<<endl;
+    //     for(int i=0; i<images.size(); i++){
+    //         qDebug("-------------------------------------------------loading img ------------------------------------------------");
+    //         cout<<"imag num : "<<i<<endl;
+    //         cv::Mat matImg =images[i].getImageMat();
+    //         QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+    //         // Use getPath() to get the filename for each image
+    //         std::filesystem::path imagePath = images[i].getPath();
+    //         QString imageFileName = QString::fromStdString("aloo");
+
+
+    //         // Save the image using its path
+    //         qImg.save("aloooo");
+    //     }
+    // }
+
+    //qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
 
     //////////////////////
 
