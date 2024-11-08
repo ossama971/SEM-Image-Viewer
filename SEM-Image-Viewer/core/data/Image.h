@@ -14,11 +14,11 @@ public:
     ~Image();
 
     bool load(const std::string &path);
-    bool setImage(cv::Mat image, std::unique_ptr<ICommand> cmd, ImageStateSource newState = ImageStateSource::Origin);
+    bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
 
     Image clone();
 
-    cv::Mat getImageMat() const;
+    cv::Mat& getImageMat() const;
     ImageStateSource getImageState() const;
     std::string getPath() const;
     ImageMetadata getMetadata() const;
@@ -31,7 +31,7 @@ private:
     std::string _path;
     ImageMetadata _metadata;
     std::list<ImageState> _states;
-    std::list<ImageState> _undone;
+    std::list<ImageState> _undo;
 };
 
 #endif // IMAGE_H

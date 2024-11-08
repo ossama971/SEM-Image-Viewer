@@ -1,7 +1,6 @@
 #ifndef IMAGE_STATE_H
 #define IMAGE_STATE_H
 
-#include "../commands/ICommand.h"
 #include <memory>
 #include <opencv2/opencv.hpp>
 
@@ -16,8 +15,7 @@ enum class ImageStateSource
 
 struct ImageState {
     ImageStateSource State;
-    std::unique_ptr<ICommand> Command;
-    cv::Mat Image;
+    std::unique_ptr<cv::Mat> Image;
 };
 
 #endif // IMAGE_STATE_H

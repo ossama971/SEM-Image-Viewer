@@ -1,7 +1,7 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 
-#include "../engines/ImageSession.h"
+#include "../data/SessionData.h"
 
 class Workspace
 {
@@ -10,11 +10,11 @@ private:
 public:
     ~Workspace() = default;
 
-    ImageSession& getActiveSession();
+    SessionData& getActiveSession();
     static Workspace& Instance();
 	
 private:
-    ImageSession _activeSession;
+    SessionData _activeSession;
 
     static Workspace _instance;
 };

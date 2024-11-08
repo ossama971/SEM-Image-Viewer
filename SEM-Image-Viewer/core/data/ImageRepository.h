@@ -1,8 +1,8 @@
 #ifndef IMAGE_REPO_H
 #define IMAGE_REPO_H
 
-#include "../data/Image.h"
-#include "../data/ImageFormat.h"
+#include "Image.h"
+#include "ImageFormat.h"
 #include <QObject>
 #include <string>
 #include <vector>

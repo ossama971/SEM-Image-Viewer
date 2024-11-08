@@ -1,16 +1,15 @@
-#include "ImageSession.h"
+#include "SessionData.h"
 #include "../data/Image.h"
-#include "../commands/FilterCommand.h"
 
-void ImageSession::loadDirectory(const std::string path) {
+void SessionData::loadDirectory(const std::string path) {
     _imageRepo.load_directory(path);
 }
 
-void ImageSession::loadImage(const std::string path) {
+void SessionData::loadImage(const std::string path) {
     _imageRepo.load_image(path);
 }
 
-void ImageSession::saveImage(const std::string path, ImageFormat format) {
+void SessionData::saveImage(const std::string path, ImageFormat format) {
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
@@ -18,20 +17,16 @@ void ImageSession::saveImage(const std::string path, ImageFormat format) {
     _imageRepo.save(*selectedImage, format, path);
 }
 
-void ImageSession::applyFilter(std::unique_ptr<ImageFilter> filter) {
+void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
 
-    const ImageStateSource source = filter->getImageSource();
-    std::unique_ptr<FilterCommand> cmd = std::make_unique<FilterCommand>(std::move(filter));
-    cmd->setImage(selectedImage);
-
-    selectedImage->setImage(cmd->execute(), std::move(cmd), source);
+    selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
 }
 
 std::vector<int>
-ImageSession::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
+SessionData::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
     cv::Mat gray;
     cv::cvtColor(_imageRepo.getImage()->getImageMat(), gray, cv::COLOR_BGR2GRAY);
     std::vector<int> intensities;
@@ -41,14 +36,14 @@ ImageSession::pixelIntensity(const std::vector<std::pair<int, int>> &points) {
     return intensities;
 }
 
-cv::Mat ImageSession::heatMap() {
+cv::Mat SessionData::heatMap() {
     cv::Mat gray;
     cv::cvtColor(_imageRepo.getImage()->getImageMat(), gray, cv::COLOR_BGR2GRAY);
     cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
     return gray;
 }
 
-cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
+cv::Mat SessionData::diffTwoImages(const cv::Mat &image2,
                                     const int threshold) {
     const cv::Mat& image1 = _imageRepo.getImage()->getImageMat();
     cv::Mat diff;
@@ -68,18 +63,10 @@ cv::Mat ImageSession::diffTwoImages(const cv::Mat &image2,
     return res;
 }
 
-cv::Mat ImageSession::undo() {
-    return _undoManager.undo();
-}
-
-cv::Mat ImageSession::redo() {
-    return _undoManager.redo();
-}
-
-ImageRepository& ImageSession::getImageRepo() {
+ImageRepository& SessionData::getImageRepo() {
     return _imageRepo;
 }
 
-Image* ImageSession::getSelectedImage(void) {
+Image* SessionData::getSelectedImage(void) {
     return _imageRepo.getImage();
 }

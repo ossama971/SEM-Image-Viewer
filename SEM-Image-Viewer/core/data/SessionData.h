@@ -2,10 +2,10 @@
 #define IMAGE_SESSION_H
 
 #include "ImageRepository.h"
-#include "UndoManager.h"
+#include "../filters/ImageFilter.h"
 #include <QObject.h>
 
-class ImageSession : public QObject {
+class SessionData : public QObject {
 public:
     void loadDirectory(const std::string path);
     void loadImage(const std::string path);
@@ -27,7 +27,7 @@ signals:
 
 private:
     ImageRepository _imageRepo;
-    UndoManager _undoManager;
+    //UndoManager _undoManager;
 };
 
 #endif // IMAGE_SESSION_H

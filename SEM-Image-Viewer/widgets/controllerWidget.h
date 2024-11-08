@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <opencv2/opencv.hpp>
-#include "../core/engines/ImageSession.h"
+#include "../core/engines/SessionData.h"
 #include "../core/engines/Workspace.h"
 #include "historywidget.h"
 class LoggerWidget;

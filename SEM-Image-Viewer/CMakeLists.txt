@@ -61,11 +61,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         core/filters/EdgeDetectionFilter.cpp core/filters/EdgeDetectionFilter.h core/filters/NoiseReductionFilter.cpp core/filters/NoiseReductionFilter.h core/filters/GrayScaleFilter.cpp core/filters/GrayScaleFilter.h core/filters/ImageFilter.h
         core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
 
-        core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+        core/engines/UndoManager.cpp core/engines/UndoManager.h
         core/data/ImageMetadata.cpp core/data/ImageMetadata.h
         core/data/ImageFormat.h
-        core/engines/ImageRepository.cpp core/engines/ImageRepository.h
-        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/ImageRepository.cpp core/engines/ImageRepository.h core/engines/Logger.cpp core/engines/Logger.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+
+        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h     core/engines/Logger.cpp core/engines/Logger.h core/engines/UndoManager.cpp core/engines/UndoManager.h
         core/filters/SharpenFilter.cpp core/filters/SharpenFilter.h
         core/data/Image.cpp core/data/Image.h
         core/engines/Workspace.cpp core/engines/Workspace.h
@@ -94,6 +94,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         core/imageeditor.h core/imageeditor.cpp
         widgets/historywidget.h widgets/historywidget.cpp
         core/data/ImageState.cpp core/data/ImageState.h
+        core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SEM-Image-Viewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
