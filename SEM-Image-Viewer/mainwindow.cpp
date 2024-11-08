@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget->setLayout(layout);
 
 
-    menuBarWidget = new MenuBarWidget();
+    menuBarWidget = new MenuBarWidget(this);
 
 
     connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);

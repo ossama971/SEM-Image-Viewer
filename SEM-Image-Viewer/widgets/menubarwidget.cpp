@@ -1,6 +1,6 @@
 #include "menubarwidget.h"
 
-MenuBarWidget::MenuBarWidget(QMenuBar *parent) : QMenuBar(parent) {
+MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
     fileMenu();
     editMenu();
@@ -45,6 +45,7 @@ void MenuBarWidget::exportImage(QString format){
     // Set up the save file dialog with the specified format
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
     if (!fileName.isEmpty()) {
+
         image.save(fileName);
     }
 

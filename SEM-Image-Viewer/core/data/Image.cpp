@@ -8,9 +8,7 @@ Image::Image(const std::string &path) {
     load(path);
 }
 
-Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _metadata(image._metadata)
-    //, _states(image._states), _undo(image._undo)
-{
+Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _metadata(image._metadata) {
     _states.reserve(image._states.size());
     for (const std::unique_ptr<ImageState>& it : image._states)
         _states.push_back(std::make_unique<ImageState>(*it));

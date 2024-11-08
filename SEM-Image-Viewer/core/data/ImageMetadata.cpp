@@ -12,18 +12,18 @@ void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
 
 ImageFormat ImageMetadata::getImageFormat(const std::string &path) {
     std::string::size_type i = path.find_last_of(".");
-    if (i == std::string::npos || i + 1 <= path.length())
+    if (i == std::string::npos || i + 1 >= path.length())
         return ImageFormat::Unknown;
 
     std::string extension(path.substr(i + 1));
     if (extension.length() < 3)
         return ImageFormat::Unknown;
 
-    if (boost::equals(extension, "PNG"))
+    if (boost::iequals(extension, "PNG"))
         return ImageFormat::PNG;
-    else if (boost::equals(extension, "JPG"))
+    else if (boost::iequals(extension, "JPG"))
         return ImageFormat::JPG;
-    else if (boost::equals(extension, "BMP"))
+    else if (boost::iequals(extension, "BMP"))
         return ImageFormat::BMP;
 
     return ImageFormat::Unknown;
