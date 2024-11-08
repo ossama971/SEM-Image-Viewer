@@ -1,7 +1,7 @@
 #include "LoggerWidget.h"
 
-LoggerWidget::LoggerWidget(QWidget *parent)
-    : QWidget(parent)
+LoggerWidget::LoggerWidget(QWidget *parent, std::shared_ptr<MessageDataModel> dataModel)
+    : QWidget(parent), m_dataModel(std::move(dataModel))
 {
 
     // Layout setup
@@ -12,6 +12,12 @@ LoggerWidget::LoggerWidget(QWidget *parent)
     // Set initial state
     isExpanded = true;
     stackedWidget->setCurrentIndex(0);
+
+    if (m_dataModel == nullptr) {
+        m_dataModel = std::make_shared<MessageDataModel>();
+    }
+    Logger::instance()->setModel(m_dataModel);
+    this->logListWidget->setModel(m_dataModel.get());
 }
 
 void LoggerWidget::createButtons()
@@ -73,7 +79,7 @@ void LoggerWidget::createButtons()
         "}");
 
     // Log list widget for displaying messages
-    logListWidget = new QListWidget(this);
+    logListWidget = new QListView(this);
     logListWidget->setStyleSheet(
         "QListWidget {"
         "border: none;"
@@ -143,60 +149,25 @@ void LoggerWidget::createLayouts()
     setLayout(mainLayout);
 }
 
-void LoggerWidget::addLogMessage(const QString &type, const QString &message)
-{
-    // Need to Change
-    QString logText = QString("[%1] %2").arg(type, message);
-    QListWidgetItem *item = new QListWidgetItem(logText);
-
-    if (type == "Info")
-    {
-        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/information_icon.png")); // Placeholder icon
-    }
-    else if (type == "Warning")
-    {
-        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/warnings_icon.png")); // Placeholder icon
-    }
-    else if (type == "Error")
-    {
-        item->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/errors_icon.png")); // Placeholder icon
-    }
-
-    logListWidget->addItem(item);
-    filterLogs();
-}
-
 void LoggerWidget::filterLogs()
 {
     QString filterText = searchLineEdit->text().toLower();
-    QString selectedType;
+    QString selectedType = "";
     QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
 
-    if (clickedButton == infoShowButton)
-    {
+    if (clickedButton == infoShowButton) {
         selectedType = "Info";
     }
-    else if (clickedButton == warningsShowButton)
-    {
+    else if (clickedButton == warningsShowButton) {
         selectedType = "Warning";
     }
-    else if (clickedButton == errorsShowButton)
-    {
+    else if (clickedButton == errorsShowButton) {
         selectedType = "Error";
     }
-    else
-    {
-        selectedType = "All";
-    }
-
-    for (int i = 0; i < logListWidget->count(); ++i)
-    {
-        QListWidgetItem *item = logListWidget->item(i);
-        bool matchesType = (selectedType == "All" || item->text().startsWith("[" + selectedType + "]"));
-        bool matchesText = item->text().toLower().contains(filterText);
-        item->setHidden(!(matchesType && matchesText));
-    }
+    std::string fmt = boost::str(boost::format("%1% %2%") % filterText.toStdString() % selectedType.toStdString());
+    this->m_dataModel->setFilterText(QString::fromStdString(fmt));
 }
+
 void LoggerWidget::switchLayout()
 {
     if (isExpanded)

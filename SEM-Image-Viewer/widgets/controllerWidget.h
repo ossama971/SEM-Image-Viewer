@@ -41,7 +41,7 @@ private:
     Controller &operator=(const Controller &) = delete;
     void printMat(const cv::Mat &mat);
 
-    ImageSession &ImageSession;
+    ImageSession &ImageSession_;
 
     LoggerWidget *loggerWidget = nullptr;
     HistoryWidget* historyWidget=nullptr;

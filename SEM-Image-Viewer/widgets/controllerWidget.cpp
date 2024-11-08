@@ -10,10 +10,9 @@
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() : ImageSession(Workspace::Instance().getActiveSession()) {
-    ImageSession.loadImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
-
-                           };
+Controller::Controller() : ImageSession_(Workspace::Instance().getActiveSession()) {
+  ImageSession_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+}
 
 void Controller::setLoggerWidget(LoggerWidget *widget)
 {
@@ -58,23 +57,21 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
 {
-    int low = edgeExtractionWidget->getLowThreshold();
-    int high = edgeExtractionWidget->getHighThreshold();
+    // int low = edgeExtractionWidget->getLowThreshold();
+    // int high = edgeExtractionWidget->getHighThreshold();
+    //
+    // std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
+    // filter->setThresholdLow(low);
+    // filter->setTHresholdHigh(high);
+    //
+    //
+    //
+    // auto updatedImage = ImageSession_.applyFilter(std::move(filter));
+    // ImageSession_.getImage().setMat(updatedImage);
+    //
+    // emit imageUpdated(updatedImage);
 
-    std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
-    filter->setThresholdLow(low);
-    filter->setTHresholdHigh(high);
-
-
-
-    auto updatedImage = ImageSession.applyFilter(std::move(filter));
-    ImageSession.getImage().setMat(updatedImage);
-
-    emit imageUpdated(updatedImage);
-
-    historyWidget->addAction("Edge Filter");
-
-    loggerWidget->addLogMessage("Info", "Edge Filter Applied");
+    // loggerWidget->addLogMessage("Info", "filter Applied");
 }
 
 void Controller::onContourFilterApplied()
@@ -82,14 +79,13 @@ void Controller::onContourFilterApplied()
 
     std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
 
-    auto updatedImage = ImageSession.applyFilter(std::move(filter));
-    ImageSession.getImage().setMat(updatedImage);
+    auto updatedImage = ImageSession_.applyFilter(std::move(filter));
+    ImageSession_.getImage().setMat(updatedImage);
 
     emit imageUpdated(updatedImage);
 
     historyWidget->addAction("Contour Filter");
-
-    loggerWidget->addLogMessage("Info", "Contour Filter Applied");
+    // loggerWidget->addLogMessage("Info", "filter Applied2");
 }
 
 void Controller::printMat(const cv::Mat &mat)
@@ -126,12 +122,13 @@ void Controller::printMat(const cv::Mat &mat)
 
 void Controller::undoAction(){
 
-    auto _res=ImageSession.undo();
+    auto _res=ImageSession_.undo();
     if(!_res.empty())
         emit imageUpdated(_res);
 }
+
 void Controller::redoAction(){
-   auto _res= ImageSession.redo();
+   auto _res= ImageSession_.redo();
 
     if(!_res.empty())
         emit imageUpdated(_res);

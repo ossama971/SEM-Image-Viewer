@@ -2,9 +2,11 @@
 #define ERROR_MESSAGE_H
 
 #include "IMessage.h"
+#include <boost/format.hpp>
 
 class ErrorMessage : public IMessage {
-    ErrorMessage(int msgId, const std::string msg);
+public:
+    ErrorMessage(int msgId, const boost::format msg);
 };
 
 #endif // ERROR_MESSAGE_H

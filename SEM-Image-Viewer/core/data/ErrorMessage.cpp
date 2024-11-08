@@ -1,6 +1,6 @@
 #include "ErrorMessage.h"
 
-ErrorMessage::ErrorMessage(int msgId, const std::string msg) : IMessage(msgId) {
+ErrorMessage::ErrorMessage(int msgId, const boost::format msg) : IMessage(msgId) {
     _msg = msg;
-    _type = "Error";
+    _type = MessageLevel::ERROR;
 }

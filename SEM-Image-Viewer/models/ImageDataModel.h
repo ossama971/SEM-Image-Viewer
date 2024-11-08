@@ -1,7 +1,7 @@
 #ifndef IMAGEDATAMODEL_H
 #define IMAGEDATAMODEL_H
 
-#include "../core/data/image.h"
+#include "../core/data/Image.h"
 #include <QAbstractListModel>
 #include <QImage>
 #include <QDir>
