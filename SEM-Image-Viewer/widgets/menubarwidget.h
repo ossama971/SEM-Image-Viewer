@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QObject>
+#include <QImage>
+#include <QFileDialog>
 
 
 
@@ -27,6 +29,9 @@ signals:
     void showRightSidebarClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void showImageClicked(bool isChecked);
+private slots:
+    void exportImage(QString format);
+    // void exportAll();
 
 };
 
