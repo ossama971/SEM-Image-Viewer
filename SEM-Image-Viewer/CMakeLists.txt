@@ -47,13 +47,13 @@ set(PROJECT_SOURCES
         widgets/LoggerWidget.h
         widgets/LoggerWidget.cpp
         assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
-        core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
 
-        core/engines/UndoManager.cpp core/engines/UndoManager.h
+
+
         core/data/ImageMetadata.cpp core/data/ImageMetadata.h
         core/data/ImageFormat.h
 
-        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h     core/engines/Logger.cpp core/engines/Logger.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h     core/engines/Logger.cpp core/engines/Logger.h
         core/filters/SharpenFilter.cpp core/filters/SharpenFilter.h
         core/data/Image.cpp core/data/Image.h
         core/engines/Workspace.cpp core/engines/Workspace.h

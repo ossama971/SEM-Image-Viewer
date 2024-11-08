@@ -4,7 +4,7 @@
 #include "ImageFormat.h"
 #include "ImageColorSpace.h"
 #include <string>
-#include <time.h>
+#include <filesystem>
 #include <opencv2/opencv.hpp>
 
 class ImageMetadata {
@@ -25,8 +25,8 @@ private:
     int _width, _height;
     ImageFormat _format;
     ColorSpace _colorSpace;
-    //time_t _dateCreated;
-    time_t _dateModified;
+    //std::filesystem::file_time_type _dateCreated;
+    std::filesystem::file_time_type _dateModified;
 };
 
 #endif // IMAGE_METADATA_H

@@ -8,6 +8,8 @@
 #include <vector>
 
 class ImageRepository : public QObject {
+    Q_OBJECT
+
 public:
     ImageRepository();
 

@@ -1,7 +1,6 @@
 #ifndef IMAGE_STATE_H
 #define IMAGE_STATE_H
 
-#include <memory>
 #include <opencv2/opencv.hpp>
 
 enum class ImageStateSource
@@ -15,7 +14,10 @@ enum class ImageStateSource
 
 struct ImageState {
     ImageStateSource State;
-    std::unique_ptr<cv::Mat> Image;
+    cv::Mat Image;
+
+    ImageState();
+    ImageState(ImageStateSource state, cv::Mat image);
 };
 
 #endif // IMAGE_STATE_H

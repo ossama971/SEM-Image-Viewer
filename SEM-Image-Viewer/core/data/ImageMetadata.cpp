@@ -1,5 +1,4 @@
 #include "ImageMetadata.h"
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
 void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
@@ -7,7 +6,8 @@ void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
     _height = image.rows;
     _format = getImageFormat(path);
     _colorSpace = isGreyScale(image) ? ColorSpace::Gray : ColorSpace::RGB;
-    _dateModified = boost::filesystem::last_write_time(path);
+    _dateModified = std::filesystem::last_write_time(path);
+
 }
 
 ImageFormat ImageMetadata::getImageFormat(const std::string &path) {

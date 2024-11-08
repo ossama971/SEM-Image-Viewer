@@ -1,6 +1,7 @@
 #include "ImageRepository.h"
-#include <boost/filesystem.hpp>
-#include <boost/regex.hpp>
+#include <filesystem>
+#include <string>
+#include <regex>
 
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
@@ -11,17 +12,18 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr) {
 bool ImageRepository::load_directory(const std::string &path) {
     try
     {
-        const boost::regex filter(IMAGE_FILE_REGEX);
-        boost::smatch what;
+        const std::regex filter(IMAGE_FILE_REGEX);
+        std::smatch what;
         std::string image_path;
         std::vector<Image> images;
 
-        for (boost::filesystem::recursive_directory_iterator it(path + "*.png"); it != boost::filesystem::recursive_directory_iterator(); ++it)
+        for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it)
         {
-            if (!boost::filesystem::is_regular_file(it->status()))
+            if (!std::filesystem::is_regular_file(it->status()))
                 continue;
 
-            if (!boost::regex_search(it->path().leaf().string(), what, filter))
+            const std::string filename = it->path().filename().string();
+            if (!std::regex_search(filename, what, filter))
                 continue;
 
             image_path = it->path().string();
@@ -37,22 +39,22 @@ bool ImageRepository::load_directory(const std::string &path) {
 
         return true;
     }
-    catch (boost::filesystem::filesystem_error ex) {
+    catch (std::filesystem::filesystem_error ex) {
     }
-    catch (boost::regex_error ex) {
+    catch (std::regex_error ex) {
     }
 
     return false;
 }
 
 bool ImageRepository::load_image(const std::string &path) {
-    if (!boost::filesystem::exists(path))
+    if (!std::filesystem::exists(path))
         return false;
 
-    const boost::regex filter(IMAGE_FILE_REGEX);
-    boost::smatch what;
+    const std::regex filter(IMAGE_FILE_REGEX);
+    std::smatch what;
 
-    if (!boost::regex_search(path, what, filter))
+    if (!std::regex_search(path, what, filter))
         return false;
 
     Image img;
@@ -64,7 +66,7 @@ bool ImageRepository::load_image(const std::string &path) {
 }
 
 bool ImageRepository::save(Image& image, const ImageFormat format, const std::string path) {
-
+    return false;
 }
 
 void ImageRepository::selectImage(int index) {
