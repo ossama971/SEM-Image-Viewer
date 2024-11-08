@@ -72,7 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 void MainWindow::onShowLeftSidebarClicked(bool isChecked) {
-    qDebug("inside onShowLeftSidebarClicked");
     if (isChecked) {
         leftSidebarWidget->show();
     } else {
@@ -82,7 +81,6 @@ void MainWindow::onShowLeftSidebarClicked(bool isChecked) {
 }
 
 void MainWindow::onShowRightSidebarClicked(bool isChecked) {
-    qDebug("inside onShowRightSidebarClicked");
     if (isChecked) {
         rightSidebarWidget->show();
     } else {
@@ -91,7 +89,6 @@ void MainWindow::onShowRightSidebarClicked(bool isChecked) {
 }
 
 void MainWindow::onShowLoggerClicked(bool isChecked) {
-    qDebug("inside onShowLoggerClicked");
     if (isChecked) {
         bottomMiddleWidget->show();
     } else {
@@ -100,7 +97,6 @@ void MainWindow::onShowLoggerClicked(bool isChecked) {
 }
 
 void MainWindow::onShowImageClicked(bool isChecked) {
-    qDebug("inside onShowImageClicked");
     if (isChecked) {
         topMiddleWidget->show();
 

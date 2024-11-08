@@ -1,6 +1,6 @@
 #include "InfoMessage.h"
 
-InfoMessage::InfoMessage(int msgId, const std::string msg) : IMessage(msgId) {
+InfoMessage::InfoMessage(int msgId, const boost::format msg) : IMessage(msgId) {
     _msg = msg;
-    _type = "Info";
+    _type = MessageLevel::INFO;
 }

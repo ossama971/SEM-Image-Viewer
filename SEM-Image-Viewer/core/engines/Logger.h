@@ -2,34 +2,26 @@
 #define LOGGER_H
 
 #include "../data/IMessage.h"
-#include <vector>
+#include "../../models/MessageDataModel.h"
+
 #include <memory>
-#include <atomic>
+#include <mutex>
 
 class Logger
 {
+public:
+    virtual ~Logger() = default;
+    void log(std::unique_ptr<IMessage> msg);
+    void setModel(std::shared_ptr<MessageDataModel> model);
+    static std::unique_ptr<Logger>& instance();
+
 private:
     Logger() = default;
-public:
-    ~Logger() = default;
-
-    void createInfoMsg(std::string msg);
-    void createWarningMsg(std::string msg);
-    void createErrorMsg(std::string msg);
 
 private:
-    void add(std::unique_ptr<IMessage> msg);
-public:
-    void remove(int msgId);
-
-    std::vector<std::unique_ptr<IMessage>> getMsgs();
-    static Logger& Instance();
-	
-private:
-    std::vector<std::unique_ptr<IMessage>> _msgs;
-    std::atomic<int> _nextMsgId;
-
-    static Logger _instance;
+    std::shared_ptr<MessageDataModel> m_dataModel;
+    static std::unique_ptr<Logger> m_instance;
+    static std::mutex m_mutex;
 };
 
 #endif // LOGGER_H

@@ -2,9 +2,11 @@
 #define WARNING_MESSAGE_H
 
 #include "IMessage.h"
+#include <boost/format.hpp>
 
 class WarningMessage : public IMessage {
-    WarningMessage(int msgId, const std::string msg);
+public:
+    WarningMessage(int msgId, const boost::format msg);
 };
 
 #endif // WARNING_MESSAGE_H
