@@ -41,9 +41,12 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
+    scene->clear(); // Clear previous items from the scene
+    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     scene->installEventFilter(this);
 }
+
+
 
 bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
 {
@@ -116,6 +119,7 @@ void ImageWidget::setImage(const QPixmap &pixmap)
 void ImageWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
+    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     // Reposition the zoom widget at the top-right corner
     if (zoomWidget)
