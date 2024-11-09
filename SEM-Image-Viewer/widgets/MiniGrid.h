@@ -20,11 +20,12 @@ private:
 
     void setModel(ImageDataModel *model);
     void initializeMiniGrid();
-    void loadImages(const QString &path);
 
 private slots:
     void scrollLeft();
     void scrollRight();
+    void handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onImageChanged(Image* newImage);
 };
 
 #endif // MINIGRID_H

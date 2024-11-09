@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "widgets/MiniGrid.h"
 
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -39,8 +40,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
+    // Create the MiniGrid instance
+    MiniGrid *miniGrid = new MiniGrid(this);
+
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(topMiddleWidget);
+    middleSplitter->addWidget(miniGrid); // Add MiniGrid here
     middleSplitter->addWidget(bottomMiddleWidget);
     middleSplitter->setStretchFactor(0, 1);
     middleSplitter->setStretchFactor(1, 1);
