@@ -2,6 +2,8 @@
 #include "sharpen_filter_widget.h"
 #include "controllerWidget.h"
 #include "edge_extraction_wigdet.h"
+#include "grayscalewidget.h"
+#include "noisereductionwidget.h"
 #include "historywidget.h"
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
@@ -13,19 +15,25 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     QVBoxLayout *rightSidebarLayout = new QVBoxLayout();
 
 
-    QWidget *rightContent = new QWidget(parent);
-   // rightContent->setStyleSheet("background-color: #627e7c;");
+    //QWidget *rightContent = new QWidget(parent);
+    //rightContent->setStyleSheet("background-color: #627e7c;");
     ContourWidget* _contourWidget=new ContourWidget();
     EdgeExtractionWidget* _edgeExtractionWidget= new EdgeExtractionWidget();
+    GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
+    NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
     HistoryWidget * _historyWidget=new HistoryWidget();
+
     rightSidebarLayout->addWidget(_contourWidget);
+    rightSidebarLayout->addWidget(_grayScaleWidget);
     rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    rightSidebarLayout->addWidget(_noiseReductionWidget);
     rightSidebarLayout->addWidget(_historyWidget);
 
 
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
     controller.setContourWidget(_contourWidget);
+    controller.setNoiseReductionWidget(_noiseReductionWidget);
     controller.setHistoryWidget(_historyWidget);
 
 

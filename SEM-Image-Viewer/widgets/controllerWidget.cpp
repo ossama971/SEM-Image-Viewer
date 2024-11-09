@@ -3,17 +3,17 @@
 #include "LoggerWidget.h"
 
 #include "../core/filters/EdgeDetectionFilter.h"
-// #include "../core/filters/NoiseReductionFilter.h"
+#include "../core/filters/NoiseReductionFilter.h"
  #include "../core/filters/SharpenFilter.h"
 
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
+#include "noisereductionwidget.h"
 #include <opencv2/imgproc.hpp>
 
 Controller::Controller() : ImageSession(Workspace::Instance().getActiveSession()) {
-    ImageSession.loadImage("B:/wallpapers/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-b8660d38f0f0bc78605c41aec8f204da.jpg");
-
-                           };
+    ImageSession.loadImage("E:\\Siemens\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
+}
 
 void Controller::setLoggerWidget(LoggerWidget *widget)
 {
@@ -54,6 +54,15 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
         connect(edgeExtractionWidget, &EdgeExtractionWidget::applyFilter, this, &Controller::onEdgeWidgetFilterApplied);
     }
 }
+void Controller::setNoiseReductionWidget(NoiseReductionWidget *widget)
+{
+    noiseReductionWidget = widget;
+    if (noiseReductionWidget)
+    {
+        // Connect the EdgeExtractionWidget's signal to the controller's slot
+        connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
+    }
+}
 
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
@@ -75,6 +84,25 @@ void Controller::onEdgeWidgetFilterApplied()
     historyWidget->addAction("Edge Filter");
 
     loggerWidget->addLogMessage("Info", "Edge Filter Applied");
+}
+void Controller::onNoiseReductionFilterApplied()
+{
+    // Check the intensity or parameters being passed to the filter
+    //int intensity = 30;  // or dynamically get the value from the widget if applicable
+
+    //std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(intensity);
+
+    // Apply the filter and get the updated image
+   //auto updatedImage = ImageSession.applyFilter(std::move(filter));
+
+    //ImageSession.getImage().setMat(updatedImage);
+
+    // Emit the updated image to update the UI
+   //emit imageUpdated(updatedImage);
+
+    // Add to history and log
+    historyWidget->addAction("Denoise Filter");
+    loggerWidget->addLogMessage("Info", "Noise Reduction Filter Applied");
 }
 
 void Controller::onContourFilterApplied()

@@ -17,13 +17,12 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     toggleButton->setArrowType(Qt::DownArrow);
     toggleButton->setCheckable(true);
 
-    label->setText("Contour");
+    label->setText("Edge Extraction");
 
-    QPushButton *applyButton = new QPushButton(this);
+    QPushButton *applyButton = new QPushButton("Apply",this);
     //QIcon Icon("/absolute/path/to/icons/icons8-triangle-48.png");
     //applyButton->setIcon(Icon);
     //applyButton->setStyleSheet("border: none; background: transparent;");
-    applyButton->setText("Apply");
 
     compactLayout->addWidget(toggleButton);
     compactLayout->addWidget(label);
@@ -42,15 +41,30 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     lowThresholdSlider->setRange(0, 255);
     highThresholdSlider->setRange(0, 255);
 
+    //slider low with label value
+    QHBoxLayout *sliderlabelLayoutLow = new QHBoxLayout();
+    low = new QLabel();
+
+    sliderlabelLayoutLow->addWidget(lowThresholdSlider);
+    sliderlabelLayoutLow->addWidget(low);
+
+    //slider high with label value
+    QHBoxLayout *sliderlabelLayoutHigh = new QHBoxLayout();
+    high= new QLabel();
+
+    sliderlabelLayoutHigh->addWidget(highThresholdSlider);
+    sliderlabelLayoutHigh->addWidget(high);
+
+
     // Low threshold slider with label
     QLabel *lowLabel = new QLabel("Low Threshold", this);
     slidersLayout->addWidget(lowLabel);
-    slidersLayout->addWidget(lowThresholdSlider);
+    slidersLayout->addLayout(sliderlabelLayoutLow);
 
     // High threshold slider with label
     QLabel *highLabel = new QLabel("High Threshold", this);
     slidersLayout->addWidget(highLabel);
-    slidersLayout->addWidget(highThresholdSlider);
+    slidersLayout->addLayout(sliderlabelLayoutHigh);
 
     slidersWidget->setLayout(slidersLayout);
     mainLayout->addWidget(slidersWidget);
@@ -83,11 +97,13 @@ void EdgeExtractionWidget::handleApplyFilter()
 
 void EdgeExtractionWidget::handleLowThresholdChange(int value)
 {
+    low->setText(QString::number(value));
     emit thresholdLowChanged(value);
 }
 
 void EdgeExtractionWidget::handleHighThresholdChange(int value)
 {
+    high->setText(QString::number(value));
     emit thresholdHighChanged(value);
 }
 int EdgeExtractionWidget::getLowThreshold() const
