@@ -12,23 +12,185 @@ MenuBarWidget::MenuBarWidget(QMenuBar *parent) : QMenuBar(parent) {
 void MenuBarWidget::fileMenu(){
 
     QMenu *fileMenu = this->addMenu("File");
+<<<<<<< Updated upstream
     QMenu *exportMenu = new QMenu("Export", fileMenu);
 
     QAction *openImageAction = new QAction("Open Image", this);
     QAction *openFolderAction = new QAction("Open Forlder", this);
     QAction *PDFAction = new QAction("PDF", this);
+=======
+    QMenu *exportAllMenu = new QMenu("Export All", fileMenu);
+    QMenu *exportMenu = new QMenu("Export", fileMenu);//selected image
+
+    QAction *openImageAction = new QAction("Open Image", this);
+    QAction *openFolderAction = new QAction("Open Forlder", this);
+
+    //selected image
+    QAction *JPGAction = new QAction("JPG", this);
+>>>>>>> Stashed changes
     QAction *PNGAction = new QAction("PNG", this);
 
+<<<<<<< Updated upstream
     exportMenu->addAction(PDFAction);
+=======
+    QAction *JPGAllAction = new QAction("JPG", this);
+    QAction *PNGAllAction = new QAction("PNG", this);
+    QAction *BMPAllAction = new QAction("BMP", this);
+
+    exportAllMenu->addAction(JPGAllAction);
+    exportAllMenu->addAction(PNGAllAction);
+    exportAllMenu->addAction(BMPAllAction);
+
+    //selected image
+    exportMenu->addAction(JPGAction);
+>>>>>>> Stashed changes
     exportMenu->addAction(PNGAction);
 
     fileMenu->addAction(openImageAction);
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addMenu(exportMenu);
+    fileMenu->addMenu(exportAllMenu);
 
+<<<<<<< Updated upstream
 }
 
+=======
+    connect(JPGAllAction, &QAction::triggered, this, [=]() { exportImages("*.jpg"); });
+    connect(PNGAllAction, &QAction::triggered, this, [=]() { exportImages("*.png"); });
+    connect(BMPAllAction, &QAction::triggered, this, [=]() { exportImages("*.bmp"); });
+
+    //selected image
+    connect(JPGAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.jpg"); });
+    connect(PNGAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.png"); });
+    connect(BMPAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.bmp"); });
+}
+
+void MenuBarWidget::exportSelectedImage(QString format){
+    qDebug("-------------------------------------------------exportSelctedImage called-------------------------------------------------");
+    Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+
+    string fileName = image->getPath().filename().string();
+    size_t lastDot = fileName.find_last_of('.');
+
+    if (lastDot != string::npos) {
+        fileName = fileName.substr(0, lastDot); // Remove the extension
+    }
+
+    QString baseName = QString::fromStdString(fileName);
+
+    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
+
+    if (!baseFileName.isEmpty()) {
+        QFileInfo fileInfo(baseFileName);
+        QString extension = fileInfo.completeSuffix();
+        QString filePath = fileInfo.path();
+
+        cv::Mat matImg = image->getImageMat();
+
+        QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+        QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+
+        qImg.save(numberedFileName);
+    }
+}
+
+
+
+void MenuBarWidget::exportImages(QString format){
+
+    qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
+
+    vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+
+    cout<<"size => "<<images.size()<<endl;
+    // Get the number of available CPU cores
+    unsigned int numCores = std::thread::hardware_concurrency();
+    unsigned int imagesPerThread = images.size() / numCores;
+
+    cout<<"num of cores => "<<numCores<<endl;
+    cout<<"imagesPerThread => "<<numCores<<endl;
+
+    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+
+    QFileInfo fileInfo(baseFileName);
+    QString extension = fileInfo.completeSuffix();
+    QString filePath = fileInfo.path();
+
+    if (baseFileName.isEmpty()) {
+        //todo
+    }
+
+    // Function for saving a subset of images
+    auto saveImagesSubset = [&](size_t start, size_t end) {
+        for (size_t i = start; i < end; ++i) {
+            std::string fileName = images[i].getPath().filename().string();
+            size_t lastDot = fileName.find_last_of('.');
+
+            if (lastDot != std::string::npos) {
+                fileName = fileName.substr(0, lastDot); // Remove the extension
+            }
+
+            QString baseName = QString::fromStdString(fileName);
+            cv::Mat matImg = images[i].getImageMat();
+            QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+            QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+            qImg.save(numberedFileName);
+        }
+    };
+
+    // Vector to hold the threads
+    std::vector<std::thread> threads;
+
+    // Launch threads for each subset of images
+    for (unsigned int i = 0; i < numCores; ++i) {
+        size_t startIdx = i * imagesPerThread;
+        size_t endIdx = (i == numCores - 1) ? images.size() : (startIdx + imagesPerThread); // Last thread may take extra images
+        threads.emplace_back(saveImagesSubset, startIdx, endIdx);
+    }
+
+    // Wait for all threads to complete
+    for (auto& thread : threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+}
+
+// void MenuBarWidget::exportImages(QString format){
+
+//     qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
+
+//     QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+
+//     if (!baseFileName.isEmpty()) {
+//         QFileInfo fileInfo(baseFileName);
+//         QString extension = fileInfo.completeSuffix();
+//         QString filePath = fileInfo.path();
+
+//         vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+
+//         for (int i = 0; i < images.size(); i++) {
+//             std::string fileName = images[i].getPath().filename().string();
+//             size_t lastDot = fileName.find_last_of('.');
+
+//             if (lastDot != std::string::npos) {
+//                 fileName = fileName.substr(0, lastDot); // Remove the extension
+//             }
+
+//             QString baseName = QString::fromStdString(fileName);
+//             cv::Mat matImg = images[i].getImageMat();
+//             QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+//             QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+//             qImg.save(numberedFileName);
+//         }
+//     }
+// }
+
+
+
+>>>>>>> Stashed changes
 void MenuBarWidget::editMenu(){
     QMenu *editMenu = this->addMenu("Edit");
 

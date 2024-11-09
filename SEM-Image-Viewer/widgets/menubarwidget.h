@@ -7,6 +7,14 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QObject>
+<<<<<<< Updated upstream
+=======
+#include <QImage>
+#include <QFileDialog>
+#include <iostream>
+#include <thread>
+#include <vector>
+>>>>>>> Stashed changes
 
 
 
@@ -27,6 +35,13 @@ signals:
     void showRightSidebarClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void showImageClicked(bool isChecked);
+<<<<<<< Updated upstream
+=======
+private slots:
+    void exportImages(QString format);
+    void exportSelectedImage(QString format);
+    // void exportAll();
+>>>>>>> Stashed changes
 
 };
 
