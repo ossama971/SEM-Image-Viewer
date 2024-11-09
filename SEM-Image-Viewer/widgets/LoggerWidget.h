@@ -1,7 +1,8 @@
 #ifndef LOGGERWIDGET_H
 #define LOGGERWIDGET_H
+
 #include <QWidget>
-#include <QListWidget>
+#include <QListView>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QPushButton>
@@ -10,13 +11,15 @@
 #include <QLabel>
 #include <QStackedWidget>
 
+#include "../models/MessageDataModel.h"
+#include "../core/engines/Logger.h"
+
 class LoggerWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LoggerWidget(QWidget *parent = nullptr);
-    void addLogMessage(const QString &type, const QString &message);
+    explicit LoggerWidget(QWidget *parent = nullptr, std::shared_ptr<MessageDataModel> dataModel = nullptr);
 
 private slots:
     void filterLogs();
@@ -39,7 +42,9 @@ private:
     bool isExpanded;
 
     QLineEdit *searchLineEdit;
-    QListWidget *logListWidget;
+    QListView *logListWidget;
+
+    std::shared_ptr<MessageDataModel> m_dataModel;
 };
 
 #endif // LOGGERWIDGET_H

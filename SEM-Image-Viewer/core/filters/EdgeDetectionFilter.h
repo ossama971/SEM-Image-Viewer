@@ -2,6 +2,8 @@
 #define CONTOURS_FILTER_H
 
 #include "ImageFilter.h"
+#include "../engines/Logger.h"
+#include "../data/InfoMessage.h"
 
 class EdgeDetectionFilter : public ImageFilter {
 private:
@@ -18,6 +20,7 @@ public:
     int get_threshold_high();
     cv::Mat applyFilter(const Image &inputImage) const override;
 
+    ImageStateSource getImageSource() const override;
 };
 
 #endif // CONTOURS_FILTER_H

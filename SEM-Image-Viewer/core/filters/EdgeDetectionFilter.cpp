@@ -31,6 +31,7 @@ cv::Mat EdgeDetectionFilter::ToGrayscale(const cv::Mat &image) const
 }
 cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
+    Logger::instance()->log(std::make_unique<InfoMessage>(1, boost::format("EdgeDetectionFilter::applyFilter()")));
     //const cv::Mat image =inputImage.getImageMat();
 
 
@@ -57,4 +58,8 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
     }
 
     return output;
+}
+
+ImageStateSource EdgeDetectionFilter::getImageSource() const {
+    return ImageStateSource::EdgeDetectionFilter;
 }

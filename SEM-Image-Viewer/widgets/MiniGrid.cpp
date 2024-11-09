@@ -2,7 +2,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollBar>
-#include <QDebug>
 
 MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);

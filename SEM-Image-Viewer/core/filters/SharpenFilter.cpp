@@ -9,6 +9,8 @@ cv::Mat SharpenFilter::applyFilter(const Image& inputImage) const {
     // filter2D(image.clone(), outputImage, image.depth(), kern, cv::Point(-1, -1)); // Applies the masking operator to the image
     // return outputImage;
 
+    Logger::instance()->log(std::make_unique<InfoMessage>(1, boost::format("Sharpening image")));
+
     cv::Vec3b warmTint(20, 10, -10); // Add to red and green, subtract from blue
     cv::Mat output = inputImage.getImageMat().clone();
 
@@ -25,4 +27,8 @@ cv::Mat SharpenFilter::applyFilter(const Image& inputImage) const {
 
     return output;
 
+}
+
+ImageStateSource SharpenFilter::getImageSource() const {
+    return ImageStateSource::SharpenFilter;
 }

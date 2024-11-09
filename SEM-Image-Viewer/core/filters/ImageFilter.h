@@ -10,6 +10,8 @@ public:
     virtual ~ImageFilter() = default;
 
     virtual cv::Mat applyFilter(const Image& inputImage) const = 0;
+
+    virtual ImageStateSource getImageSource() const = 0;
 };
 
 #endif // IMAGE_FILTER_H
