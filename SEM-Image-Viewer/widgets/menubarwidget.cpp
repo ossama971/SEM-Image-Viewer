@@ -93,7 +93,7 @@ void MenuBarWidget::exportImage(QString format){
         // Access the images from the vector
         std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
         cout << "image size : " << images.size() << endl;
-
+        emit exportStarted(images.size());
         for (int i = 0; i < images.size(); i++) {
             qDebug("-------------------------------------------------loading img ------------------------------------------------");
             cout << "image num : " << i << endl;
@@ -121,7 +121,9 @@ void MenuBarWidget::exportImage(QString format){
 
             // Save the image with the unique filename
             qImg.save(numberedFileName);
+            emit exportProgressUpdated();
         }
+         emit exportFinished();
     }
 
     qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
