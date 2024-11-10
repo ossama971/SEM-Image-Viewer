@@ -52,101 +52,99 @@ void MenuBarWidget::fileMenu(){
     connect(BMPAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.bmp"); });
 }
 
-void MenuBarWidget::exportSelectedImage(QString format){
-    qDebug("-------------------------------------------------exportSelctedImage called-------------------------------------------------");
-    Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+// void MenuBarWidget::exportSelectedImage(QString format){
+//     qDebug("-------------------------------------------------exportSelctedImage called-------------------------------------------------");
+//     Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
 
-    string fileName = image->getPath().filename().string();
-    size_t lastDot = fileName.find_last_of('.');
+//     string fileName = image->getPath().filename().string();
+//     size_t lastDot = fileName.find_last_of('.');
 
-    if (lastDot != string::npos) {
-        fileName = fileName.substr(0, lastDot); // Remove the extension
-    }
-
-    QString baseName = QString::fromStdString(fileName);
-
-    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
-
-    if (!baseFileName.isEmpty()) {
-        QFileInfo fileInfo(baseFileName);
-        QString extension = fileInfo.completeSuffix();
-        QString filePath = fileInfo.path();
-
-        cv::Mat matImg = image->getImageMat();
-
-        QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
-
-        QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
-
-        qImg.save(numberedFileName);
-    }
-}
-
-
-
-// void MenuBarWidget::exportImages(QString format){
-
-//     qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
-
-//     vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
-
-//     cout<<"size => "<<images.size()<<endl;
-//     // Get the number of available CPU cores
-//     unsigned int numCores = std::thread::hardware_concurrency();
-//     unsigned int imagesPerThread = images.size() / numCores;
-
-//     cout<<"num of cores => "<<numCores<<endl;
-//     cout<<"imagesPerThread => "<<numCores<<endl;
-
-//     QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
-
-//     QFileInfo fileInfo(baseFileName);
-//     QString extension = fileInfo.completeSuffix();
-//     QString filePath = fileInfo.path();
-
-//     if (baseFileName.isEmpty()) {
-//         //todo
+//     if (lastDot != string::npos) {
+//         fileName = fileName.substr(0, lastDot); // Remove the extension
 //     }
 
-//     // Function for saving a subset of images
-//     auto saveImagesSubset = [&](size_t start, size_t end) {
-//         for (size_t i = start; i < end; ++i) {
-//             std::string fileName = images[i].getPath().filename().string();
-//             size_t lastDot = fileName.find_last_of('.');
+//     QString baseName = QString::fromStdString(fileName);
 
-//             if (lastDot != std::string::npos) {
-//                 fileName = fileName.substr(0, lastDot); // Remove the extension
-//             }
+//     QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
 
-//             QString baseName = QString::fromStdString(fileName);
-//             cv::Mat matImg = images[i].getImageMat();
-//             QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
-//             QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
-//             qImg.save(numberedFileName);
-//             emit exportProgressUpdated();
-//         }
-//     };
+//     if (!baseFileName.isEmpty()) {
+//         QFileInfo fileInfo(baseFileName);
+//         QString extension = fileInfo.completeSuffix();
+//         QString filePath = fileInfo.path();
 
-//     // Vector to hold the threads
-//     emit exportStarted(images.size());
-//     std::vector<std::thread> threads;
+//         cv::Mat matImg = image->getImageMat();
 
-//     // Launch threads for each subset of images
+//         QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
 
-//     for (unsigned int i = 0; i < numCores; ++i) {
-//         size_t startIdx = i * imagesPerThread;
-//         size_t endIdx = (i == numCores - 1) ? images.size() : (startIdx + imagesPerThread); // Last thread may take extra images
-//         threads.emplace_back(saveImagesSubset, startIdx, endIdx);
+//         QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+
+//         qImg.save(numberedFileName);
 //     }
-
-//     // Wait for all threads to complete
-//     for (auto& thread : threads) {
-//         if (thread.joinable()) {
-//             thread.join();
-//         }
-//     }
-//      emit exportFinished();
 // }
+
+
+
+void MenuBarWidget::exportSelectedImage(QString format){
+
+    qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
+
+    vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+
+    cout << "size => " << images.size() << endl;
+    unsigned int numCores = std::thread::hardware_concurrency();
+    unsigned int imagesPerThread = images.size() / numCores;
+
+    cout << "num of cores => " << numCores << endl;
+    cout << "imagesPerThread => " << imagesPerThread << endl;
+
+    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+    QFileInfo fileInfo(baseFileName);
+    QString extension = fileInfo.completeSuffix();
+    QString filePath = fileInfo.path();
+
+    if (baseFileName.isEmpty()) {
+        return; // Return early if no file name is chosen
+    }
+
+    auto saveImagesSubset = [&](size_t start, size_t end) {
+        for (size_t i = start; i < end; ++i) {
+            std::string fileName = images[i].getPath().filename().string();
+            size_t lastDot = fileName.find_last_of('.');
+
+            if (lastDot != std::string::npos) {
+                fileName = fileName.substr(0, lastDot); // Remove the extension
+            }
+
+            QString baseName = QString::fromStdString(fileName);
+            cv::Mat matImg = images[i].getImageMat();
+            QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+            QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+            qImg.save(numberedFileName);
+
+            // Emit exportProgressUpdated() from the main thread
+            QMetaObject::invokeMethod(this, "exportProgressUpdated", Qt::QueuedConnection);
+        }
+    };
+
+    emit exportStarted(images.size());
+
+    std::vector<std::thread> threads;
+
+    for (unsigned int i = 0; i < numCores; ++i) {
+        size_t startIdx = i * imagesPerThread;
+        size_t endIdx = (i == numCores - 1) ? images.size() : (startIdx + imagesPerThread);
+        threads.emplace_back(saveImagesSubset, startIdx, endIdx);
+    }
+
+    for (auto& thread : threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+
+    // Emit exportFinished() from the main thread
+    QMetaObject::invokeMethod(this, "exportFinished", Qt::QueuedConnection);
+}
 
 void MenuBarWidget::exportImages(QString format){
 
@@ -175,6 +173,7 @@ void MenuBarWidget::exportImages(QString format){
             QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
             qImg.save(numberedFileName);
             emit exportProgressUpdated();
+
         }
         emit exportFinished();
     }
