@@ -81,6 +81,7 @@ set(PROJECT_SOURCES
         widgets/edge_extraction_wigdet.h widgets/edge_extraction_wigdet.cpp
         widgets/controllerWidget.h
         widgets/controllerWidget.cpp
+        widgets/ThumbnailDelegate.h
         core/imageeditor.h core/imageeditor.cpp
         widgets/historywidget.h widgets/historywidget.cpp
         core/data/ImageState.cpp core/data/ImageState.h

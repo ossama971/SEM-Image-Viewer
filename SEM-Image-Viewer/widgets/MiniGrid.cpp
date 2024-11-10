@@ -2,10 +2,12 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollBar>
+#include "../core/engines/Workspace.h"
+#include "ThumbnailDelegate.h"
 
 MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
-
+    listView->setSelectionMode(QAbstractItemView::SingleSelection); // Enable single selection
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QHBoxLayout *buttonLayout = new QHBoxLayout();
 
@@ -56,16 +58,21 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     setLayout(mainLayout);
 
     // Set a fixed height for the list view
-    int rowHeight = 70;
+    int rowHeight = 110;
     listView->setFixedHeight(rowHeight);
+
+    // Add top margin to the listView widget to create vertical padding between the thumbnails and the widget top
+    listView->setContentsMargins(2, 2, 2, 2);  // Adds padding on top of the list view
 
     // Connect buttons to slots
     connect(leftButton, &QPushButton::clicked, this, &MiniGrid::scrollLeft);
     connect(rightButton, &QPushButton::clicked, this, &MiniGrid::scrollRight);
 
-    // set up the model and initialize the grid
+    // Set up the model and initialize the grid
     setModel(imageDataModel);
-    loadImages("C:/Users/nahel/OneDrive/Pictures/test");
+    listView->setItemDelegate(new ThumbnailDelegate(this));
+    connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MiniGrid::handleSelectionChanged);
+    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
 }
 
 void MiniGrid::setModel(ImageDataModel *model) {
@@ -76,11 +83,12 @@ void MiniGrid::setModel(ImageDataModel *model) {
 
 void MiniGrid::initializeMiniGrid() {
     listView->setViewMode(QListView::IconMode);
-    listView->setSpacing(50);
+    listView->setSpacing(50);  // Control the spacing between thumbnails
     listView->setResizeMode(QListView::Adjust);
     listView->setFlow(QListView::LeftToRight);
     listView->setUniformItemSizes(true);
-    listView->setGridSize(QSize(120, 120));
+    //listView->setGridSize(QSize(150, 150));  // Adjust this to match the size of your thumbnails
+
 
     listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -99,9 +107,18 @@ void MiniGrid::scrollRight() {
     listView->horizontalScrollBar()->setValue(currentValue + stepSize);
 }
 
-
-void MiniGrid::loadImages(const QString &path) {
-    if (!imageDataModel->loadImagesFromPath(path)) {
-        // Handle error (e.g., log or show a message)
+void MiniGrid::handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+    QModelIndexList selectedIndexes = selected.indexes();
+    if (!selectedIndexes.isEmpty()) {
+        int selectedIndex = selectedIndexes.first().row();  // Get the first selected index
+        if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
+            qDebug() << "Selected Image Row:" << selectedIndex;
+            // Notify the ImageRepository about the selection change
+            Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+        }
     }
+}
+
+void MiniGrid::onImageChanged(Image* newImage) {
+
 }
