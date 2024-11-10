@@ -3,6 +3,7 @@
 #include "controllerWidget.h"
 #include "edge_extraction_wigdet.h"
 #include "historywidget.h"
+#include "progressbar.h"
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -18,8 +19,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     ContourWidget* _contourWidget=new ContourWidget();
     EdgeExtractionWidget* _edgeExtractionWidget= new EdgeExtractionWidget();
     HistoryWidget * _historyWidget=new HistoryWidget();
+    ProgressBarComponent* _progressBar = new ProgressBarComponent();
     rightSidebarLayout->addWidget(_contourWidget);
     rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    rightSidebarLayout->addWidget(_progressBar);
     rightSidebarLayout->addWidget(_historyWidget);
 
 
