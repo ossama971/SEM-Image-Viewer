@@ -83,5 +83,9 @@ Image* ImageRepository::getImage() {
 }
 
 std::vector<Image> ImageRepository::getImages(){
+    for (auto image = _images.begin(); image != _images.end(); ++image)
+    {
+        printf("Image path => [%s]\n", image->getPath().c_str());
+    }
     return _images;
 }
