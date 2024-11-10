@@ -24,6 +24,7 @@ public:
 
 public slots:
     void setMaxMinHeight(int mn, int mx);
+    void openDiffView();
 };
 
 #endif // TOPMIDDLEWIDGET_H
