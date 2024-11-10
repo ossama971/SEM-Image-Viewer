@@ -26,6 +26,12 @@ public:
 public slots:
     void setMaxMinHeight(int mn, int mx);
     void openDiffView();
+
+private:
+    QVBoxLayout *topMiddleLayout;
+    ImageWidget *image;
+    GridView *gridView;
+    DiffViewWidget *diffView;
 };
 
 #endif // TOPMIDDLEWIDGET_H

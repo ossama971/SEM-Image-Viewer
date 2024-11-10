@@ -1,10 +1,11 @@
 #include "Image.h"
+#include <QDebug>
 
 Image::Image() : _loaded(false) {
 }
 
 Image::Image(std::filesystem::path path) {
-    Image();
+    // Image();
     load(path);
 }
 
@@ -57,6 +58,7 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
 //}
 
 cv::Mat& Image::getImageMat() const {
+    // qDebug() << "Image::getImageMat().size() -> " << _states.size();
     return _states.front()->Image;
 }
 

@@ -8,24 +8,24 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     setMinimumWidth(mainScreenWidth*0.3);
     setMaximumWidth(mainScreenWidth*1.0);
 
-    ImageWidget *image = new ImageWidget();
-    GridView *gridView = new GridView();
-    DiffViewWidget *diffView = new DiffViewWidget();
-
-    QVBoxLayout *topMiddleLayout = new QVBoxLayout();
+    image = new ImageWidget();
+    gridView = new GridView();
+    diffView = new DiffViewWidget();
+    topMiddleLayout = new QVBoxLayout();
 
     Controller &controller = Controller::instance();
 
-    QWidget *topMiddleContent = new QWidget(parent);
+    // QWidget *topMiddleContent = new QWidget(parent);
     //topMiddleContent->setStyleSheet("background-color: #627e7c;");
 
     // Connect signal to open DiffView
-    connect(gridView, &GridView::openDiffViewRequested, this, &TopMiddleWidget::openDiffView);
+    connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
+    connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
 
-    topMiddleLayout->addWidget(topMiddleContent);
-    topMiddleLayout->addWidget(diffView);
+    // topMiddleLayout->addWidget(topMiddleContent);
+    // topMiddleLayout->addWidget(diffView);
     // topMiddleLayout->addWidget(image);
-    //topMiddleLayout->addWidget(gridView);
+    topMiddleLayout->addWidget(gridView);
 
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);
@@ -37,8 +37,8 @@ void TopMiddleWidget::setMaxMinHeight(int mn, int mx){
 }
 
 void TopMiddleWidget::openDiffView() {
-    // topMiddleLayout->removeWidget(gridView);
-    // gridView->setVisible(false);
-    // topMiddleLayout->addWidget(diffView);
-    // diffView->setVisible(true);
+    topMiddleLayout->removeWidget(gridView);
+    gridView->setVisible(false);
+    topMiddleLayout->addWidget(diffView);
+    diffView->setVisible(true);
 }

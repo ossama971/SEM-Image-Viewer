@@ -16,6 +16,9 @@ public:
 private slots:
     void updateDiffImage();
 
+public slots:
+  void setImages(const Image &upperImage, const Image &lowerImage);
+
 private:
   ImageWidget *upperImageWidget;
   ImageWidget *lowerImageWidget;

@@ -88,16 +88,13 @@ set(PROJECT_SOURCES
         core/data/ImageState.cpp core/data/ImageState.h
         core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
 
+        widgets/progressbar.h widgets/progressbar.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SEM-Image-Viewer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        widgets/progressbar.h
-        widgets/progressbar.cpp
-
-
 
     )
 # Define target properties for Android with Qt 6 as:

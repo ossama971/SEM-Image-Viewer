@@ -18,12 +18,6 @@ DiffViewWidget::DiffViewWidget(QWidget *parent)
 
   setLayout(hlayout);
 
-  upperImageWidget->loadAndDisplayImage(
-      "/home/bigfish/wsp/siemens/qt-diff-view/images/window.png");
-
-  lowerImageWidget->loadAndDisplayImage(
-      "/home/bigfish/wsp/siemens/qt-diff-view/images/window-with-hand.png");
-
   connect(upperImageWidget, &ImageWidget::imageUpdated, this,
           &DiffViewWidget::updateDiffImage);
 
@@ -39,10 +33,17 @@ void DiffViewWidget::updateDiffImage() {
   cv::Mat upperImage = upperImageWidget->getImage();
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
-  if (!upperImage.empty() && !lowerImage.empty() &&
-      upperImage.size() == lowerImage.size()) {
-    cv::Mat diffImage =
-        ImageUtils::diffTwoImages(upperImage, lowerImage, threshold);
+  if (!upperImage.empty() && !lowerImage.empty() && upperImage.size() == lowerImage.size()) {
+    cv::Mat diffImage = ImageUtils::diffTwoImages(upperImage, lowerImage, threshold);
     diffImageWidget->updateImage(diffImage);
   }
+}
+
+void DiffViewWidget::setImages(const Image &upperImage, const Image &lowerImage) {
+  qDebug() << "Setting images in diff view";
+  qDebug() << "Upper image path: " << upperImage.getPath().string().c_str();
+  qDebug() << "Lower image path: " << lowerImage.getPath().string().c_str();
+  upperImageWidget->loadAndDisplayImage(upperImage);
+  lowerImageWidget->loadAndDisplayImage(lowerImage);
+  // updateDiffImage();
 }

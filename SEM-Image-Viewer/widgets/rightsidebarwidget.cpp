@@ -3,6 +3,7 @@
 #include "controllerWidget.h"
 #include "edge_extraction_wigdet.h"
 #include "historywidget.h"
+#include "progressbar.h"
 
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
