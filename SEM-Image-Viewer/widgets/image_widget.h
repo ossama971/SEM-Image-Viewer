@@ -10,8 +10,9 @@
 #include <QMouseEvent>
 #include "zoom_widget.h"
 #include <opencv2/opencv.hpp>
-
+#include "../core/data/ImageRepository.h"
 #include "image_info_bar.h" // Include the new widget
+#include "../core/data/Image.h"
 
 class ImageWidget : public QWidget
 {
@@ -19,8 +20,9 @@ class ImageWidget : public QWidget
 
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
-    void loadAndDisplayImage(const QString &imagePath);
+    void loadAndDisplayImage(const Image &image);
     cv::Mat getImage() const;
+    ImageRepository *imagerepo = new ImageRepository;
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -32,13 +34,15 @@ protected:
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
+
 private:
     QGraphicsView *graphicsView;
     QGraphicsScene *scene;
     ZoomWidget *zoomWidget; // Separate zoom widget for zoom controls
 
-    std::optional<QPixmap> loadAndPrepareImage(const QString &path, const QSize &targetSize);
+    std::optional<QPixmap> loadAndPrepareImage(const Image &image, const QSize &targetSize);
     void setImage(const QPixmap &pixmap);
+
 
     ImageInfoBar *infoBar; // New info bar widget
     cv::Mat currentImage;
@@ -46,9 +50,11 @@ private:
     bool isPanning = false;
     double zoomFactor = 1.0;
 
+
 private slots:
     void zoomIn();
     void zoomOut();
+    void reload();
 
 signals:
     void imageLoadFailed();
