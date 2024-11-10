@@ -18,9 +18,11 @@ void SessionData::saveImage(const std::string path, ImageFormat format) {
 }
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
+
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
+
 
     selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
 }

@@ -41,10 +41,14 @@ bool Image::load(const std::filesystem::path path) {
 }
 
 bool Image::setImage(cv::Mat image, ImageStateSource newState) {
-    if (!_loaded)
+    if (!_loaded){
+
         return false;
-    if (image.empty())
+    }
+    if (image.empty()){
+
         return false;
+    }
 
     _states.push_back(std::make_unique<ImageState>(newState, std::move(image)));
 

@@ -41,8 +41,10 @@ ImageWidget::ImageWidget(QWidget *parent)
     connect(zoomWidget, &ZoomWidget::zoomOutRequested, this, &ImageWidget::zoomOut);
 
     connect(imagerepo, &ImageRepository::onImageChanged,this, &ImageWidget::reload);
-    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
+    // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
+
 }
+
 
 
 
@@ -232,13 +234,25 @@ void ImageWidget::updateImage(const cv::Mat &image)
     setImage(pixmap);
 }
 
+void ImageWidget::onupdateImageState(std::vector<std::unique_ptr<ImageState>>& states)
+{
+    auto image=states.front()->Image;
+    currentImage=image;
+    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    QPixmap pixmap = QPixmap::fromImage(qImage);
+    setImage(pixmap);
+}
+
+
 cv::Mat ImageWidget::getImage() const
 {
     return currentImage; // Return the stored cv::Mat image
 }
 void ImageWidget::reload()
 {
-    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
+    // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
+    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::onupdateImageState);
+    //check null
     Image image = *(imagerepo->getImage());
     loadAndDisplayImage(image);
 }

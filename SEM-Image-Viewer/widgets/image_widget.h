@@ -60,6 +60,7 @@ signals:
     void imageLoadFailed();
 public slots:
     void updateImage(const cv::Mat &image);
+    void onupdateImageState(std::vector<std::unique_ptr<ImageState>>& states);
 };
 
 #endif // IMAGEWIDGET_H
