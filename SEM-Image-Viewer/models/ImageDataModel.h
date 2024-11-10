@@ -23,7 +23,7 @@ public slots:
 
 private:
     QList<Image> images;
-    QSize thumbnailSize = QSize(100, 100);
+    QSize thumbnailSize = QSize(80, 80);
     mutable QHash<int, QImage> m_thumbnails; // Cache for thumbnails
     QImage generateThumbnail(const Image &image) const;
 };

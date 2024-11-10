@@ -1,6 +1,7 @@
 #include "GridView.h"
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include <QMenu>
 #include "../core/engines/Workspace.h"
 #include "ThumbnailDelegate.h"
 
@@ -8,11 +9,15 @@
 
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
-    listView->setSelectionMode(QAbstractItemView::SingleSelection); // Enable single selection
+    listView->setSelectionMode(QAbstractItemView::MultiSelection);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(listView);
     setLayout(layout);
+
+    // To show menu bar
+    listView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(listView, &QListView::customContextMenuRequested, this, &GridView::showContextMenu);
 
     // Set up the model and load images automatically
     setModel(imageDataModel);
@@ -30,13 +35,18 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
 
 void GridView::handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
-    QModelIndexList selectedIndexes = selected.indexes();
+    QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
     if (!selectedIndexes.isEmpty()) {
         int selectedIndex = selectedIndexes.first().row();  // Get the first selected index
         if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
-            qDebug() << "Selected Image Row:" << selectedIndex;
-            // Notify the ImageRepository about the selection change
+            //qDebug() << "Selected Image Row:" << selectedIndex;
             Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+        }
+
+        // Store two selected images if exactly two are selected
+        if (selectedIndexes.size() == 2) {
+            firstImage = imageDataModel->getImageAt(selectedIndexes[0].row());
+            secondImage = imageDataModel->getImageAt(selectedIndexes[1].row());
         }
     }
 }
@@ -81,4 +91,20 @@ void GridView::onScroll(int value) {
         int endIndex = startIndex + 20; // Load the next 20 images (example)
         imageDataModel->loadImages(startIndex, endIndex);
     }
+}
+
+void GridView::showContextMenu(const QPoint &pos) {
+    QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() == 2) {
+        QMenu contextMenu;
+        QAction *openInDiffView = new QAction("Open in Diff View", this);
+        connect(openInDiffView, &QAction::triggered, this, &GridView::openInDiffView);
+        contextMenu.addAction(openInDiffView);
+        contextMenu.exec(listView->viewport()->mapToGlobal(pos));
+    }
+}
+
+void GridView::openInDiffView() {
+    emit openDiffView();
+    emit openDiffViewRequested(firstImage, secondImage);
 }

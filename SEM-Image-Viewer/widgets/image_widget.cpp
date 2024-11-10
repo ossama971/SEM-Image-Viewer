@@ -12,7 +12,7 @@ ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent), graphicsView(new QGraphicsView(this)), scene(new QGraphicsScene(this)),
       zoomWidget(new ZoomWidget(this)), infoBar(new ImageInfoBar(this))
 {
-    // setMinimumSize(600, 400);
+    imagerepo->selectImage(0);
     graphicsView->setScene(scene);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -33,15 +33,26 @@ ImageWidget::ImageWidget(QWidget *parent)
     graphicsView->setMouseTracking(true); // Enable mouse tracking
     graphicsView->installEventFilter(this);
 
+
+
+
     // Connect zoomWidget signals to ImageWidget's zoom slots
     connect(zoomWidget, &ZoomWidget::zoomInRequested, this, &ImageWidget::zoomIn);
     connect(zoomWidget, &ZoomWidget::zoomOutRequested, this, &ImageWidget::zoomOut);
+
+    connect(imagerepo, &ImageRepository::onImageChanged,this, &ImageWidget::reload);
+    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
 }
+
+
 
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
     // loadAndDisplayImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+    // QString image_path = QString::fromStdString(imagerepo->getImage()->getPath().string());
+    // loadAndDisplayImage(image_path);
+    reload();
     scene->installEventFilter(this);
 }
 
@@ -74,9 +85,9 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void ImageWidget::loadAndDisplayImage(const QString &imagePath)
+void ImageWidget::loadAndDisplayImage(const Image &image)
 {
-    auto pixmap = loadAndPrepareImage(imagePath, graphicsView->size());
+    auto pixmap = loadAndPrepareImage(image, graphicsView->size());
     if (pixmap)
     {
         setImage(*pixmap);
@@ -89,9 +100,9 @@ void ImageWidget::loadAndDisplayImage(const QString &imagePath)
     emit imageUpdated(currentImage);
 }
 
-optional<QPixmap> ImageWidget::loadAndPrepareImage(const QString &path, const QSize &targetSize)
+optional<QPixmap> ImageWidget::loadAndPrepareImage(const Image &selected_image, const QSize &targetSize)
 {
-    Mat image = imread(path.toStdString());
+    Mat image = selected_image.getImageMat();
     currentImage=image;
     if (image.empty())
     {
@@ -99,7 +110,8 @@ optional<QPixmap> ImageWidget::loadAndPrepareImage(const QString &path, const QS
     }
 
     QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
-    QPixmap pixmap = QPixmap::fromImage(qImage.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    // QPixmap pixmap = QPixmap::fromImage(qImage.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap pixmap = QPixmap::fromImage(qImage);
     return pixmap;
 }
 
@@ -110,7 +122,7 @@ void ImageWidget::setImage(const QPixmap &pixmap)
     image->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsMovable);
     image->setAcceptHoverEvents(true);
     image->setAcceptedMouseButtons(Qt::LeftButton);
-    graphicsView->fitInView(image, Qt::KeepAspectRatio);
+    // graphicsView->fitInView(image, Qt::KeepAspectRatio);
     graphicsView->setSceneRect(image->boundingRect());
     infoBar->setImageSize(pixmap.width(), pixmap.height());
 }
@@ -119,7 +131,8 @@ void ImageWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     // loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
-    graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
+    reload();
+    // graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     // Reposition the zoom widget at the top-right corner
     if (zoomWidget)
     {
@@ -225,4 +238,10 @@ void ImageWidget::updateImage(const cv::Mat &image)
 cv::Mat ImageWidget::getImage() const
 {
     return currentImage; // Return the stored cv::Mat image
+}
+void ImageWidget::reload()
+{
+    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
+    Image image = *(imagerepo->getImage());
+    loadAndDisplayImage(image);
 }
