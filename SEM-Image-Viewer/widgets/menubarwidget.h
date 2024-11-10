@@ -36,6 +36,10 @@ signals:
     void showRightSidebarClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void showImageClicked(bool isChecked);
+    void exportProgressUpdated();
+    void exportStarted(int maxIterations);
+    void exportFinished();
+
 private slots:
     void exportImage(QString format);
     // void exportAll();

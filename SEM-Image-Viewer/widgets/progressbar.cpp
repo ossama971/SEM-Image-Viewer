@@ -1,10 +1,9 @@
 #include "progressbar.h"
 
-ProgressBarComponent::ProgressBarComponent(QWidget *parent) : QWidget(parent) {
-    progressBar = new QProgressBar(this);
-    progressBar->setTextVisible(true);
-    progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setStyleSheet(
+ProgressBarComponent::ProgressBarComponent(QWidget *parent) : QProgressBar(parent) {
+    setTextVisible(true);
+    setAlignment(Qt::AlignCenter);
+    setStyleSheet(
         "QProgressBar {"
         "    border: 2px solid #555;"
         "    border-radius: 10px;"
@@ -20,9 +19,8 @@ ProgressBarComponent::ProgressBarComponent(QWidget *parent) : QWidget(parent) {
         "    font: bold 12px;"  // Change font size and make it bold
         "}"
         );
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(progressBar);
-    setLayout(layout);
+
+    // Remove unnecessary QVBoxLayout and hide directly
     hide();
 }
 

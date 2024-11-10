@@ -4,12 +4,11 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 
-class ProgressBarComponent : public QWidget {
+class ProgressBarComponent : public QProgressBar  {
     Q_OBJECT
 
 public:
-    ProgressBarComponent(QWidget *parent = nullptr);
-
+    explicit ProgressBarComponent(QWidget *parent = nullptr);
 public slots:
     void setMaxIterations(int max);
     void incrementProgress();
