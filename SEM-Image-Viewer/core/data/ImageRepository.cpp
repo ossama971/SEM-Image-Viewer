@@ -6,8 +6,7 @@
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {
-    load_directory("C:/Users/Omar-Harridy/Pictures/2017-06-27");
-    printf("Images loaded: %d\n", _images.size());
+    load_directory("//Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets");
 }
 
 bool ImageRepository::load_directory(const std::string &path) {
