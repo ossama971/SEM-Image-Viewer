@@ -6,7 +6,7 @@
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {
-    load_directory("B:/wallpapers");
+    load_directory("D:/Test");
     selectImage(0);
 }
 

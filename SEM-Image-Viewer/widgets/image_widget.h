@@ -22,7 +22,7 @@ public:
     explicit ImageWidget(QWidget *parent = nullptr);
     void loadAndDisplayImage(const Image &image);
     cv::Mat getImage() const;
-    ImageRepository *imagerepo = new ImageRepository;
+    ImageRepository *imagerepo;
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;

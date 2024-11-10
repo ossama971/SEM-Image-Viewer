@@ -1,4 +1,5 @@
 #include "image_widget.h"
+#include "../core/engines/Workspace.h"
 #include <QGraphicsPixmapItem>
 #include <QVBoxLayout>
 #include <QShowEvent>
@@ -12,6 +13,8 @@ ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent), graphicsView(new QGraphicsView(this)), scene(new QGraphicsScene(this)),
       zoomWidget(new ZoomWidget(this)), infoBar(new ImageInfoBar(this))
 {
+    imagerepo = &Workspace::Instance().getActiveSession().getImageRepo();
+
     imagerepo->selectImage(0);
     graphicsView->setScene(scene);
 
@@ -236,11 +239,7 @@ void ImageWidget::updateImage(const cv::Mat &image)
 
 void ImageWidget::onupdateImageState(std::vector<std::unique_ptr<ImageState>>& states)
 {
-    auto image=states.front()->Image;
-    currentImage=image;
-    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
-    QPixmap pixmap = QPixmap::fromImage(qImage);
-    setImage(pixmap);
+    updateImage(states.front()->Image);
 }
 
 
@@ -250,9 +249,11 @@ cv::Mat ImageWidget::getImage() const
 }
 void ImageWidget::reload()
 {
+    disconnect(this, SIGNAL(onImageStateUpdated()), nullptr, nullptr);
+
     // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
     connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::onupdateImageState);
     //check null
-    Image image = *(imagerepo->getImage());
-    loadAndDisplayImage(image);
+    //Image image = *(imagerepo->getImage());
+    loadAndDisplayImage(*imagerepo->getImage());
 }
