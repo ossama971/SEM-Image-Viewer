@@ -2,7 +2,7 @@
 
 Workspace Workspace::_instance;
 
-ImageSession& Workspace::getActiveSession() {
+SessionData& Workspace::getActiveSession() {
     return _activeSession;
 }
 

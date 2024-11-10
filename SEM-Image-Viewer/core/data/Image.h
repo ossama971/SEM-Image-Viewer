@@ -1,24 +1,44 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include "ImageState.h"
 #include "ImageMetadata.h"
+#include <memory>
+#include <vector>
+#include <filesystem>
+#include <QObject>
 #include <opencv2/opencv.hpp>
 
-class Image {
+class Image : public QObject {
+    Q_OBJECT
+
 public:
+    Image();
+    Image(const std::filesystem::path path);
+    Image(const Image& image);
     ~Image();
 
-    void load(const std::string &path);
-    Image clone();
+    Image operator=(const Image& image);
 
-    cv::Mat getImageMat() const;
-    std::string getPath() const;
+    bool load(const std::filesystem::path path);
+    bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
+
+    //Image clone();
+
+    cv::Mat& getImageMat() const;
+    ImageStateSource getImageState() const;
+    std::filesystem::path getPath() const;
     ImageMetadata getMetadata() const;
-    void setMat(cv::Mat _image);
+
+signals:
+    void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);
+
 private:
-    cv::Mat _image;
-    std::string _path;
+    bool _loaded;
+    std::filesystem::path _path;
     ImageMetadata _metadata;
+    std::vector<std::unique_ptr<ImageState>> _states;
+    std::vector<std::unique_ptr<ImageState>> _undo;
 };
 
 #endif // IMAGE_H

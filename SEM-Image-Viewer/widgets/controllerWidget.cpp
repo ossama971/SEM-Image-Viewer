@@ -10,8 +10,8 @@
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() : ImageSession_(Workspace::Instance().getActiveSession()) {
-  ImageSession_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+Controller::Controller() : SessionData_(Workspace::Instance().getActiveSession()) {
+  SessionData_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
 }
 
 void Controller::setLoggerWidget(LoggerWidget *widget)
@@ -22,8 +22,8 @@ void Controller::setHistoryWidget(HistoryWidget *widget)
 {
     historyWidget = widget;
     if(historyWidget){
-        connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
-        connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
+        //connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
+        //connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
     }
 }
 
@@ -76,16 +76,9 @@ void Controller::onEdgeWidgetFilterApplied()
 
 void Controller::onContourFilterApplied()
 {
-
     std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
 
-    auto updatedImage = ImageSession_.applyFilter(std::move(filter));
-    ImageSession_.getImage().setMat(updatedImage);
-
-    emit imageUpdated(updatedImage);
-
-    historyWidget->addAction("Contour Filter");
-    // loggerWidget->addLogMessage("Info", "filter Applied2");
+    SessionData_.applyFilter(std::move(filter));
 }
 
 void Controller::printMat(const cv::Mat &mat)
@@ -118,18 +111,4 @@ void Controller::printMat(const cv::Mat &mat)
         }
         std::cout << std::endl; // New line for each row
     }
-}
-
-void Controller::undoAction(){
-
-    auto _res=ImageSession_.undo();
-    if(!_res.empty())
-        emit imageUpdated(_res);
-}
-
-void Controller::redoAction(){
-   auto _res= ImageSession_.redo();
-
-    if(!_res.empty())
-        emit imageUpdated(_res);
 }

@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if (PROJECT_IS_TOP_LEVEL AND UNIX)
     # Create symlink to compile_commands.json for IDE to pick it up
@@ -47,13 +47,13 @@ set(PROJECT_SOURCES
         widgets/LoggerWidget.h
         widgets/LoggerWidget.cpp
         assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
-        core/commands/FilterCommand.cpp core/commands/FilterCommand.h core/commands/ICommand.cpp core/commands/ICommand.h
 
-        core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+
+
         core/data/ImageMetadata.cpp core/data/ImageMetadata.h
         core/data/ImageFormat.h
-        core/engines/ImageRepository.cpp core/engines/ImageRepository.h
-        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h core/engines/ImageSession.cpp core/engines/ImageSession.h core/engines/ImageRepository.cpp core/engines/ImageRepository.h core/engines/Logger.cpp core/engines/Logger.h core/engines/UndoManager.cpp core/engines/UndoManager.h
+
+        core/data/ErrorMessage.cpp core/data/ErrorMessage.h core/data/ImageFormat.h core/data/ImageMetadata.cpp core/data/ImageMetadata.h core/data/IMessage.cpp core/data/IMessage.h core/data/InfoMessage.cpp core/data/InfoMessage.h core/data/WarningMessage.cpp core/data/WarningMessage.h     core/engines/Logger.cpp core/engines/Logger.h
         core/filters/SharpenFilter.cpp core/filters/SharpenFilter.h
         core/data/Image.cpp core/data/Image.h
         core/engines/Workspace.cpp core/engines/Workspace.h
@@ -83,6 +83,8 @@ set(PROJECT_SOURCES
         widgets/controllerWidget.cpp
         core/imageeditor.h core/imageeditor.cpp
         widgets/historywidget.h widgets/historywidget.cpp
+        core/data/ImageState.cpp core/data/ImageState.h
+        core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
 
 )
 

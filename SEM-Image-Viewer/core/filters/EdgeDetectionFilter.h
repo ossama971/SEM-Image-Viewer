@@ -20,6 +20,7 @@ public:
     int get_threshold_high();
     cv::Mat applyFilter(const Image &inputImage) const override;
 
+    ImageStateSource getImageSource() const override;
 };
 
 #endif // CONTOURS_FILTER_H

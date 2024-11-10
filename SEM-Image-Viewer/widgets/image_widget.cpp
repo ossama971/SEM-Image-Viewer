@@ -45,6 +45,8 @@ void ImageWidget::showEvent(QShowEvent *event)
     scene->installEventFilter(this);
 }
 
+
+
 bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == scene)
@@ -114,6 +116,7 @@ void ImageWidget::setImage(const QPixmap &pixmap)
 void ImageWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
+    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     // Reposition the zoom widget at the top-right corner
     if (zoomWidget)

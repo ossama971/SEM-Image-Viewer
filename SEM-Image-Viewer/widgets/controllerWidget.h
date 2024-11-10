@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <opencv2/opencv.hpp>
-#include "../core/engines/ImageSession.h"
+#include "../core/data/SessionData.h"
 #include "../core/engines/Workspace.h"
 #include "historywidget.h"
 class LoggerWidget;
@@ -32,8 +32,6 @@ private slots:
 
     void onEdgeWidgetFilterApplied();
     void onContourFilterApplied();
-    void undoAction();
-    void redoAction();
 
 private:
     Controller();
@@ -41,7 +39,7 @@ private:
     Controller &operator=(const Controller &) = delete;
     void printMat(const cv::Mat &mat);
 
-    ImageSession &ImageSession_;
+    SessionData &SessionData_;
 
     LoggerWidget *loggerWidget = nullptr;
     HistoryWidget* historyWidget=nullptr;

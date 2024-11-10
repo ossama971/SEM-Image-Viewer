@@ -1,6 +1,6 @@
 #include "menubarwidget.h"
 
-MenuBarWidget::MenuBarWidget(QMenuBar *parent) : QMenuBar(parent) {
+MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
     fileMenu();
     editMenu();
@@ -13,21 +13,194 @@ void MenuBarWidget::fileMenu(){
 
     QMenu *fileMenu = this->addMenu("File");
     QMenu *exportMenu = new QMenu("Export", fileMenu);
+    // QMenu *exportAllMenu = new QMenu("Export All", fileMenu);
 
     QAction *openImageAction = new QAction("Open Image", this);
     QAction *openFolderAction = new QAction("Open Forlder", this);
-    QAction *PDFAction = new QAction("PDF", this);
+    QAction *JPGAction = new QAction("JPG", this);
     QAction *PNGAction = new QAction("PNG", this);
+    QAction *BMPAction = new QAction("BMP", this);
 
-    exportMenu->addAction(PDFAction);
+    exportMenu->addAction(JPGAction);
     exportMenu->addAction(PNGAction);
+    exportMenu->addAction(BMPAction);
 
     fileMenu->addAction(openImageAction);
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addMenu(exportMenu);
 
+    connect(JPGAction, &QAction::triggered, this, [=]() { exportImage("*.jpg"); });
+    connect(PNGAction, &QAction::triggered, this, [=]() { exportImage("*.png"); });
+    connect(BMPAction, &QAction::triggered, this, [=]() { exportImage("*.bmp"); });
 }
+
+
+
+void MenuBarWidget::exportImage(QString format){
+
+
+
+        // qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
+
+        // // Access the images from the vector
+        // std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+        // cout << "image size : " << images.size() << endl;
+
+        // for (int i = 0; i < images.size(); i++) {
+        //     qDebug("-------------------------------------------------loading img ------------------------------------------------");
+        //     cout << "image num : " << i << endl;
+
+        //     // Get the OpenCV image from the vector
+        //     cv::Mat matImg = images[i].getImageMat();
+
+        //     // Convert to QImage
+        //     QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+        //     // Use getPath() to get the specific path for each image
+        //     std::filesystem::path imagePath = images[i].getPath();
+        //     QString fullPath = QString::fromStdString(imagePath.string());
+        //     QFileInfo fileInfo(fullPath);
+
+        //     // Extract base name and directory path from each image's original path
+        //     QString baseName = fileInfo.completeBaseName(); // Image name without extension
+        //     QString filePath = fileInfo.path();             // Directory path where the image will be saved
+
+        //     // Generate the file name with format for saving
+        //     QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(format);
+
+        //     // Save the image with the filename generated from its own path
+        //     qImg.save(numberedFileName);
+        // }
+
+        // qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
+
+
+    qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
+
+    // Prompt the user for a base filename
+    QString baseFileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+
+    if (!baseFileName.isEmpty()) {
+        // Extract the base name and extension
+        QFileInfo fileInfo(baseFileName);
+        // QString baseName = fileInfo.completeBaseName();
+
+        QString extension = fileInfo.completeSuffix();
+        QString filePath = fileInfo.path(); // Path where images will be saved
+
+        // Access the images from the vector
+        std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+        cout << "image size : " << images.size() << endl;
+
+        for (int i = 0; i < images.size(); i++) {
+            qDebug("-------------------------------------------------loading img ------------------------------------------------");
+            cout << "image num : " << i << endl;
+
+            // QString baseName = QString::fromStdString(images[i].getPath().filename().string());
+            std::string fileName = images[i].getPath().filename().string();
+            size_t lastDot = fileName.find_last_of('.');
+
+            // Check if there's an extension and remove it if found
+            if (lastDot != std::string::npos) {
+                fileName = fileName.substr(0, lastDot); // Remove the extension
+            }
+
+            // Convert the result to QString
+            QString baseName = QString::fromStdString(fileName);
+
+            // Get the OpenCV image from the vector
+            cv::Mat matImg = images[i].getImageMat();
+
+            // Convert to QImage
+            QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+            // Generate a unique filename for each image
+            QString numberedFileName = QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+
+            // Save the image with the unique filename
+            qImg.save(numberedFileName);
+        }
+    }
+
+    qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
+
+
+    // qDebug("-------------------------------------------------exportImage called-------------------------------------------------");
+    // // QImage image(QSize(128, 128), QImage::Format_ARGB32);
+    // // image.fill(Qt::red); // A red rectangle.
+
+    // // // Set up the save file dialog with the specified format
+    // QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image File"), "Untitled", tr("Images (%1)").arg(format));
+    // // if (!fileName.isEmpty()) {
+
+    // //     image.save(fileName);
+    // // }
+
+    // if(!fileName.isEmpty()){
+
+    //     std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+    //     cout<<"image size : "<<images.size()<<endl;
+    //     for(int i=0; i<images.size(); i++){
+    //         qDebug("-------------------------------------------------loading img ------------------------------------------------");
+    //         cout<<"imag num : "<<i<<endl;
+    //         cv::Mat matImg =images[i].getImageMat();
+    //         QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+
+    //         // Use getPath() to get the filename for each image
+    //         std::filesystem::path imagePath = images[i].getPath();
+    //         QString imageFileName = QString::fromStdString("aloo");
+
+
+    //         // Save the image using its path
+    //         qImg.save("aloooo");
+    //     }
+    // }
+
+    //qDebug("-------------------------------------------------exportImage finished-------------------------------------------------");
+
+
+    //////////////////////
+
+    // QImage image(QSize(128, 128), QImage::Format_ARGB32);
+    // image.fill(Qt::red); // A red rectangle.
+
+    // // Define available formats and set PNG as default
+    // QStringList formats = {"PNG", "JPG", "BMP"};
+    // QString selectedFormat = "PNG"; // Default format
+
+    // // Create file type filter for each format
+    // QStringList filterList;
+    // for (const QString &format : formats) {
+    //     filterList << QString("%1 Files (*.%2)").arg(format).arg(format.toLower());
+    // }
+    // QString filter = filterList.join(";;");
+
+    // // Open the save file dialog with format options
+    // QString fileName = QFileDialog::getSaveFileName(
+    //     this,
+    //     tr("Save Image File"),
+    //     QString(),
+    //     filter,
+    //     &selectedFormat // This will store the user's selected format
+    //     );
+
+    // if (!fileName.isEmpty()) {
+    //     // Append the format to the filename if it's not already there
+    //     QString extension = "." + selectedFormat.toLower();
+    //     if (!fileName.endsWith(extension, Qt::CaseInsensitive)) {
+    //         fileName += extension;
+    //     }
+
+    //     // Save the image in the selected format
+    //     image.save(fileName, selectedFormat.toUtf8().constData());
+    // }
+
+}
+
+
 
 void MenuBarWidget::editMenu(){
     QMenu *editMenu = this->addMenu("Edit");
