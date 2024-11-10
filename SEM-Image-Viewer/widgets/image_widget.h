@@ -52,6 +52,8 @@ private slots:
 
 signals:
     void imageLoadFailed();
+    void imageUpdated(const cv::Mat &image);
+
 public slots:
     void updateImage(const cv::Mat &image);
 };

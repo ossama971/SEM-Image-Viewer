@@ -3,7 +3,7 @@
 #include <string>
 #include <regex>
 
-#define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
+#define IMAGE_FILE_REGEX "\\.(png|jpg|bmp|)$"
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {
     load_directory("/Users/salmaabdelghany/Siemens/FinalProject/newload");

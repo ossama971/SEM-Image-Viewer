@@ -15,6 +15,7 @@
 
 #include "image_widget.h"
 #include "GridView.h"
+#include "DiffViewWidget.h"
 
 class TopMiddleWidget : public QWidget
 {

@@ -41,7 +41,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    loadAndDisplayImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+    // loadAndDisplayImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     scene->installEventFilter(this);
 }
 
@@ -73,6 +73,7 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
     }
     return QWidget::eventFilter(obj, event);
 }
+
 void ImageWidget::loadAndDisplayImage(const QString &imagePath)
 {
     auto pixmap = loadAndPrepareImage(imagePath, graphicsView->size());
@@ -85,6 +86,7 @@ void ImageWidget::loadAndDisplayImage(const QString &imagePath)
     {
         emit imageLoadFailed();
     }
+    emit imageUpdated(currentImage);
 }
 
 optional<QPixmap> ImageWidget::loadAndPrepareImage(const QString &path, const QSize &targetSize)
@@ -116,7 +118,7 @@ void ImageWidget::setImage(const QPixmap &pixmap)
 void ImageWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-    loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+    // loadAndDisplayImage("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
     graphicsView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     // Reposition the zoom widget at the top-right corner
     if (zoomWidget)
@@ -217,6 +219,7 @@ void ImageWidget::updateImage(const cv::Mat &image)
     QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
     QPixmap pixmap = QPixmap::fromImage(qImage);
     setImage(pixmap);
+    emit imageUpdated(currentImage);
 }
 
 cv::Mat ImageWidget::getImage() const

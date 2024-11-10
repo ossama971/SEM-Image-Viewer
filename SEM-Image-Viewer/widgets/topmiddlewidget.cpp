@@ -1,5 +1,6 @@
 #include "topmiddlewidget.h"
 #include "controllerWidget.h"
+
 TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -8,7 +9,8 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     setMaximumWidth(mainScreenWidth*1.0);
 
     ImageWidget *image = new ImageWidget();
-    GridView *gridView = new GridView;
+    GridView *gridView = new GridView();
+    DiffViewWidget *diffView = new DiffViewWidget();
 
     QVBoxLayout *topMiddleLayout = new QVBoxLayout();
 
@@ -18,7 +20,8 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     //topMiddleContent->setStyleSheet("background-color: #627e7c;");
 
     topMiddleLayout->addWidget(topMiddleContent);
-    topMiddleLayout->addWidget(image);
+    topMiddleLayout->addWidget(diffView);
+    // topMiddleLayout->addWidget(image);
     //topMiddleLayout->addWidget(gridView);
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);

@@ -48,7 +48,7 @@ set(PROJECT_SOURCES
         widgets/LoggerWidget.cpp
         assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
 
-
+        core/image_utils.cpp core/image_utils.h
 
         core/data/ImageMetadata.cpp core/data/ImageMetadata.h
         core/data/ImageFormat.h
@@ -64,6 +64,7 @@ set(PROJECT_SOURCES
         widgets/GridView.cpp widgets/GridView.h
         widgets/zoom_widget.h widgets/zoom_widget.cpp
         widgets/image_info_bar.h widgets/image_info_bar.cpp
+        widgets/DiffViewWidget.cpp widgets/DiffViewWidget.h
         resources.qrc
         icons/zoom-in.svg icons/zoom-out.svg
 

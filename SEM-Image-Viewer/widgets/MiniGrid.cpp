@@ -5,6 +5,8 @@
 #include "../core/engines/Workspace.h"
 #include "ThumbnailDelegate.h"
 
+#include <QDebug>
+
 MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::SingleSelection); // Enable single selection
