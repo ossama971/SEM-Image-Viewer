@@ -231,7 +231,7 @@ void ImageWidget::updateImage(const cv::Mat &image)
 
 void ImageWidget::onupdateImageState(std::vector<std::unique_ptr<ImageState>> &states)
 {
-    updateImage(states.front()->Image);
+    updateImage(states.back()->Image);
 }
 
 cv::Mat ImageWidget::getImage() const
@@ -240,11 +240,12 @@ cv::Mat ImageWidget::getImage() const
 }
 void ImageWidget::reload()
 {
-    disconnect(this, SIGNAL(onImageStateUpdated()), nullptr, nullptr);
+    Image* image = imagerepo->getImage();
+    if (!image)
+        return;
 
-    // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
-    connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::onupdateImageState);
-    // check null
-    // Image image = *(imagerepo->getImage());
-    loadAndDisplayImage(*imagerepo->getImage());
+    //disconnect(this, SIGNAL(onImageStateUpdated()), nullptr, nullptr);
+    connect(image, &Image::onImageStateUpdated, this, &ImageWidget::onupdateImageState, Qt::UniqueConnection);
+
+    loadAndDisplayImage(*image);
 }

@@ -7,8 +7,7 @@
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
-
-    load_directory("B:/wallpapers");
+    load_directory("D:\\Test");
 }
 
 bool ImageRepository::load_directory(const std::string &path)
@@ -93,9 +92,5 @@ Image *ImageRepository::getImage()
 
 std::vector<Image> ImageRepository::getImages()
 {
-    for (auto image = _images.begin(); image != _images.end(); ++image)
-    {
-        printf("Image path => [%s]\n", image->getPath().c_str());
-    }
     return _images;
 }

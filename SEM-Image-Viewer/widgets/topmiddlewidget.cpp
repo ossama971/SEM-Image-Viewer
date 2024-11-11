@@ -21,8 +21,8 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     connect(gridView, &GridView::openDiffViewRequested, this, &TopMiddleWidget::openDiffView);
 
     topMiddleLayout->addWidget(topMiddleContent);
-    //topMiddleLayout->addWidget(image);
-    topMiddleLayout->addWidget(gridView);
+    topMiddleLayout->addWidget(image);
+    //topMiddleLayout->addWidget(gridView);
 
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);

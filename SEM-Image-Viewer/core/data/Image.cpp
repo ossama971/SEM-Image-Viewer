@@ -61,11 +61,11 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
 //}
 
 cv::Mat& Image::getImageMat() const {
-    return _states.front()->Image;
+    return _states.back()->Image;
 }
 
 ImageStateSource Image::getImageState() const {
-    return _states.front()->State;
+    return _states.back()->State;
 }
 
 std::filesystem::path Image::getPath() const {
