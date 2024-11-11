@@ -16,9 +16,10 @@ public:
     Image();
     Image(const std::filesystem::path path);
     Image(const Image& image);
+    Image(Image&& image);
+    Image& operator=(const Image& image);
+    Image& operator=(Image&& image);
     ~Image();
-
-    Image operator=(const Image& image);
 
     bool load(const std::filesystem::path path);
     bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
