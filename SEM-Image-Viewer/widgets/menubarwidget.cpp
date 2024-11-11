@@ -91,7 +91,7 @@ void MenuBarWidget::exportImage(QString format){
         QString filePath = fileInfo.path(); // Path where images will be saved
 
         // Access the images from the vector
-        std::vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+        std::vector<Image> images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
         cout << "image size : " << images.size() << endl;
         emit exportStarted(images.size());
         for (int i = 0; i < images.size(); i++) {

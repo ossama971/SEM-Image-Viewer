@@ -74,7 +74,7 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     setModel(imageDataModel);
     listView->setItemDelegate(new ThumbnailDelegate(this));
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MiniGrid::handleSelectionChanged);
-    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
+    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
 }
 
 void MiniGrid::setModel(ImageDataModel *model) {
@@ -116,7 +116,7 @@ void MiniGrid::handleSelectionChanged(const QItemSelection &selected, const QIte
         if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
             qDebug() << "Selected Image Row:" << selectedIndex;
             // Notify the ImageRepository about the selection change
-            Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+            Workspace::Instance()->getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
     }
 }

@@ -27,7 +27,7 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &GridView::handleSelectionChanged);
 
     // Connect to know new image selected
-    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &GridView::onImageChanged);
+    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &GridView::onImageChanged);
 
     // Connect the scrollbar to load more images when necessary
     connect(listView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GridView::onScroll);
@@ -40,8 +40,9 @@ void GridView::handleSelectionChanged(const QItemSelection &selected, const QIte
         int selectedIndex = selectedIndexes.first().row();  // Get the first selected index
         if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
             //qDebug() << "Selected Image Row:" << selectedIndex;
-            Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+            Workspace::Instance()->getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
+        qDebug() << "Selected Indexes:" << selectedIndexes.size();
 
         // Store two selected images if exactly two are selected
         if (selectedIndexes.size() == 2) {

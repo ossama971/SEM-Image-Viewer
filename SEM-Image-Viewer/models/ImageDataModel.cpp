@@ -4,11 +4,13 @@
 #include <opencv2/imgproc.hpp>
 #include "../core/engines/Workspace.h"
 
+#include <QDebug>
+
 ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     // Connect the repository's signal to the data model's slot
-    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
+    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
                      this, &ImageDataModel::updateImages);
-    Workspace::Instance().getActiveSession().loadDirectory("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets");
+    Workspace::Instance()->getActiveSession().loadDirectory("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets");
 
     // Initially load a small subset of images
     loadImages(0, 20);
@@ -71,7 +73,9 @@ void ImageDataModel::loadImages(int startIndex, int endIndex) {
 }
 
 Image ImageDataModel::getImageAt(int index) const {
-    if (index >= 0 && index < images.size()) {
+    if (0 <= index && index < images.size()) {
+        qDebug() << "ImageDataModel::getImageAt() -> " << index;
+        qDebug() << "ImageDataModel::getImageAt() -> " << images[index].getPath().string().c_str();
         return images[index];
     }
     return Image(); // Return a default/empty Image if index is out of bounds

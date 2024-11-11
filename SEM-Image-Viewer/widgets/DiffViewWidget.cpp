@@ -28,8 +28,6 @@ DiffViewWidget::DiffViewWidget(QWidget *parent)
 }
 
 void DiffViewWidget::updateDiffImage() {
-  qDebug() << "Updating diff image";
-
   cv::Mat upperImage = upperImageWidget->getImage();
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
