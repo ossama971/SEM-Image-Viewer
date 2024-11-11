@@ -12,6 +12,8 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <QMetaObject>
+#include <QThread>
 
 #include "../core/engines/Workspace.h"
 #include "../core/data/Image.h"
