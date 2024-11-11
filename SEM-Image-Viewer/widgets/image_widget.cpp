@@ -36,20 +36,13 @@ ImageWidget::ImageWidget(QWidget *parent)
     graphicsView->setMouseTracking(true); // Enable mouse tracking
     graphicsView->installEventFilter(this);
 
-
-
-
     // Connect zoomWidget signals to ImageWidget's zoom slots
     connect(zoomWidget, &ZoomWidget::zoomInRequested, this, &ImageWidget::zoomIn);
     connect(zoomWidget, &ZoomWidget::zoomOutRequested, this, &ImageWidget::zoomOut);
 
-    connect(imagerepo, &ImageRepository::onImageChanged,this, &ImageWidget::reload);
+    connect(imagerepo, &ImageRepository::onImageChanged, this, &ImageWidget::reload);
     // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
-
 }
-
-
-
 
 void ImageWidget::showEvent(QShowEvent *event)
 {
@@ -58,10 +51,9 @@ void ImageWidget::showEvent(QShowEvent *event)
     // QString image_path = QString::fromStdString(imagerepo->getImage()->getPath().string());
     // loadAndDisplayImage(image_path);
     reload();
-    scene->installEventFilter(this);
+    // loadAndDisplayImage("E:\\Siemens\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
+    // scene->installEventFilter(this);
 }
-
-
 
 bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
 {
@@ -106,7 +98,7 @@ void ImageWidget::loadAndDisplayImage(const Image &image)
 optional<QPixmap> ImageWidget::loadAndPrepareImage(const Image &selected_image, const QSize &targetSize)
 {
     Mat image = selected_image.getImageMat();
-    currentImage=image;
+    currentImage = image;
     if (image.empty())
     {
         return nullopt;
@@ -231,17 +223,16 @@ void ImageWidget::zoomOut()
 
 void ImageWidget::updateImage(const cv::Mat &image)
 {
-    currentImage=image;
+    currentImage = image;
     QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
     QPixmap pixmap = QPixmap::fromImage(qImage);
     setImage(pixmap);
 }
 
-void ImageWidget::onupdateImageState(std::vector<std::unique_ptr<ImageState>>& states)
+void ImageWidget::onupdateImageState(std::vector<std::unique_ptr<ImageState>> &states)
 {
     updateImage(states.front()->Image);
 }
-
 
 cv::Mat ImageWidget::getImage() const
 {
@@ -253,7 +244,7 @@ void ImageWidget::reload()
 
     // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
     connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::onupdateImageState);
-    //check null
-    //Image image = *(imagerepo->getImage());
+    // check null
+    // Image image = *(imagerepo->getImage());
     loadAndDisplayImage(*imagerepo->getImage());
 }

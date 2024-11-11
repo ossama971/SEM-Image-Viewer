@@ -3,15 +3,17 @@
 #include "LoggerWidget.h"
 
 #include "../core/filters/EdgeDetectionFilter.h"
-// #include "../core/filters/NoiseReductionFilter.h"
- #include "../core/filters/SharpenFilter.h"
+#include "../core/filters/NoiseReductionFilter.h"
+#include "../core/filters/SharpenFilter.h"
 
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
+#include "noisereductionwidget.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() : SessionData_(Workspace::Instance().getActiveSession()) {
-  SessionData_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
+Controller::Controller() : ImageSession(Workspace::Instance().getActiveSession())
+{
+    ImageSession.loadImage("E:\\Siemens\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
 }
 
 void Controller::setLoggerWidget(LoggerWidget *widget)
@@ -21,9 +23,10 @@ void Controller::setLoggerWidget(LoggerWidget *widget)
 void Controller::setHistoryWidget(HistoryWidget *widget)
 {
     historyWidget = widget;
-    if(historyWidget){
-        //connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
-        //connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
+    if (historyWidget)
+    {
+        // connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
+        // connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
     }
 }
 
@@ -39,8 +42,9 @@ void Controller::setImageWidget(ImageWidget *widget)
 void Controller::setContourWidget(ContourWidget *widget)
 {
     contourWidget = widget;
-    if(contourWidget){
-        connect(contourWidget,&ContourWidget::applyFilter,this, &Controller::onContourFilterApplied);
+    if (contourWidget)
+    {
+        connect(contourWidget, &ContourWidget::applyFilter, this, &Controller::onContourFilterApplied);
     }
 }
 
@@ -51,6 +55,15 @@ void Controller::setEdgeExtractionWidget(EdgeExtractionWidget *widget)
     {
         // Connect the EdgeExtractionWidget's signal to the controller's slot
         connect(edgeExtractionWidget, &EdgeExtractionWidget::applyFilter, this, &Controller::onEdgeWidgetFilterApplied);
+    }
+}
+void Controller::setNoiseReductionWidget(NoiseReductionWidget *widget)
+{
+    noiseReductionWidget = widget;
+    if (noiseReductionWidget)
+    {
+        // Connect the EdgeExtractionWidget's signal to the controller's slot
+        connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
     }
 }
 
@@ -72,6 +85,25 @@ void Controller::onEdgeWidgetFilterApplied()
     // emit imageUpdated(updatedImage);
 
     // loggerWidget->addLogMessage("Info", "filter Applied");
+}
+void Controller::onNoiseReductionFilterApplied()
+{
+    // Check the intensity or parameters being passed to the filter
+    // int intensity = 30;  // or dynamically get the value from the widget if applicable
+
+    // std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(intensity);
+
+    // Apply the filter and get the updated image
+    // auto updatedImage = ImageSession.applyFilter(std::move(filter));
+
+    // ImageSession.getImage().setMat(updatedImage);
+
+    // Emit the updated image to update the UI
+    // emit imageUpdated(updatedImage);
+
+    // Add to history and log
+    historyWidget->addAction("Denoise Filter");
+    loggerWidget->addLogMessage("Info", "Noise Reduction Filter Applied");
 }
 
 void Controller::onContourFilterApplied()

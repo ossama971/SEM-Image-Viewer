@@ -10,6 +10,7 @@ class LoggerWidget;
 class ImageWidget;
 class ContourWidget;
 class EdgeExtractionWidget;
+class NoiseReductionWidget;
 
 class Controller : public QObject
 {
@@ -26,11 +27,13 @@ public:
     void setImageWidget(ImageWidget *widget);
     void setContourWidget(ContourWidget *widget);
     void setEdgeExtractionWidget(EdgeExtractionWidget *widget);
+    void setNoiseReductionWidget(NoiseReductionWidget *widget);
     void setHistoryWidget(HistoryWidget *widget);
 
 private slots:
 
     void onEdgeWidgetFilterApplied();
+    void onNoiseReductionFilterApplied();
     void onContourFilterApplied();
 
 private:
@@ -46,6 +49,7 @@ private:
     ImageWidget *imageWidget = nullptr;
     ContourWidget *contourWidget = nullptr;
     EdgeExtractionWidget *edgeExtractionWidget = nullptr;
+    NoiseReductionWidget *noiseReductionWidget = nullptr;
 
 
 signals:

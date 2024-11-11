@@ -83,9 +83,11 @@ set(PROJECT_SOURCES
         widgets/ThumbnailDelegate.h
         core/imageeditor.h core/imageeditor.cpp
         widgets/historywidget.h widgets/historywidget.cpp
+
         core/data/ImageState.cpp core/data/ImageState.h
         core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
-
+        widgets/grayscalewidget.h widgets/grayscalewidget.cpp
+        widgets/noisereductionwidget.h widgets/noisereductionwidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -94,8 +96,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         widgets/progressbar.h
         widgets/progressbar.cpp
-
-
 
     )
 # Define target properties for Android with Qt 6 as:
