@@ -3,6 +3,7 @@
 #include "controllerWidget.h"
 #include "edge_extraction_wigdet.h"
 #include "historywidget.h"
+
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -18,8 +19,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
     ContourWidget* _contourWidget=new ContourWidget();
     EdgeExtractionWidget* _edgeExtractionWidget= new EdgeExtractionWidget();
     HistoryWidget * _historyWidget=new HistoryWidget();
+    _progressBar = new ProgressBarComponent();
     rightSidebarLayout->addWidget(_contourWidget);
     rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    rightSidebarLayout->addWidget(_progressBar);
     rightSidebarLayout->addWidget(_historyWidget);
 
 
@@ -37,4 +40,18 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent) {
 void RightSidebarWidget::setMaxMinWidth(int mn, int mx){
     setMinimumWidth(mn);
     setMaximumWidth(mx);
+}
+
+void RightSidebarWidget::initializeProgress(int maxIterations) {
+    _progressBar->setMaximum(maxIterations);
+    _progressBar->setValue(0);
+    _progressBar->show();
+}
+
+void RightSidebarWidget::updateProgress() {
+    _progressBar->setValue(_progressBar->value()+1);
+}
+
+void RightSidebarWidget::hideProgressBar() {
+    _progressBar->hide();
 }

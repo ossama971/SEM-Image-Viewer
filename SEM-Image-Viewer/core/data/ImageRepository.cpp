@@ -5,12 +5,14 @@
 
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr) {
+ImageRepository::ImageRepository() : _selectedImage(nullptr)
+{
+
     load_directory("B:/wallpapers");
-    selectImage(0);
 }
 
-bool ImageRepository::load_directory(const std::string &path) {
+bool ImageRepository::load_directory(const std::string &path)
+{
     try
     {
         const std::regex filter(IMAGE_FILE_REGEX);
@@ -40,15 +42,18 @@ bool ImageRepository::load_directory(const std::string &path) {
 
         return true;
     }
-    catch (std::filesystem::filesystem_error ex) {
+    catch (std::filesystem::filesystem_error ex)
+    {
     }
-    catch (std::regex_error ex) {
+    catch (std::regex_error ex)
+    {
     }
 
     return false;
 }
 
-bool ImageRepository::load_image(const std::string &path) {
+bool ImageRepository::load_image(const std::string &path)
+{
     if (!std::filesystem::exists(path))
         return false;
 
@@ -66,11 +71,13 @@ bool ImageRepository::load_image(const std::string &path) {
     return true;
 }
 
-bool ImageRepository::save(Image& image, const ImageFormat format, const std::string path) {
+bool ImageRepository::save(Image &image, const ImageFormat format, const std::string path)
+{
     return false;
 }
 
-void ImageRepository::selectImage(int index) {
+void ImageRepository::selectImage(int index)
+{
     if (index == -1)
         _selectedImage = nullptr;
     else if (index < _images.size())
@@ -79,10 +86,16 @@ void ImageRepository::selectImage(int index) {
     emit onImageChanged(_selectedImage);
 }
 
-Image* ImageRepository::getImage() {
+Image *ImageRepository::getImage()
+{
     return _selectedImage;
 }
 
-std::vector<Image> ImageRepository::getImages(){
+std::vector<Image> ImageRepository::getImages()
+{
+    for (auto image = _images.begin(); image != _images.end(); ++image)
+    {
+        printf("Image path => [%s]\n", image->getPath().c_str());
+    }
     return _images;
 }

@@ -192,7 +192,7 @@ void ImageWidget::wheelEvent(QWheelEvent *event)
         zoomFactor *= factor;
 
         // Limit the zoom factor to prevent excessive zooming
-        zoomFactor = qBound(0.1, zoomFactor, 10.0);
+        // zoomFactor = qBound(0.1, zoomFactor, 10.0);
         QPointF viewCenter = graphicsView->mapToScene(graphicsView->viewport()->rect().center());
         graphicsView->scale(factor, factor);
         graphicsView->centerOn(viewCenter);

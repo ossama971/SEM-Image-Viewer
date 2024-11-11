@@ -17,9 +17,13 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
     QWidget *topMiddleContent = new QWidget(parent);
     //topMiddleContent->setStyleSheet("background-color: #627e7c;");
 
+    // Connect signal to open DiffView
+    connect(gridView, &GridView::openDiffViewRequested, this, &TopMiddleWidget::openDiffView);
+
     topMiddleLayout->addWidget(topMiddleContent);
-    topMiddleLayout->addWidget(image);
-    //topMiddleLayout->addWidget(gridView);
+    //topMiddleLayout->addWidget(image);
+    topMiddleLayout->addWidget(gridView);
+
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);
 }
@@ -29,3 +33,9 @@ void TopMiddleWidget::setMaxMinHeight(int mn, int mx){
     setMaximumHeight(mx);
 }
 
+void TopMiddleWidget::openDiffView() {
+    // topMiddleLayout->removeWidget(gridView);
+    // gridView->setVisible(false);
+    // topMiddleLayout->addWidget(diffView);
+    // diffView->setVisible(true);
+}

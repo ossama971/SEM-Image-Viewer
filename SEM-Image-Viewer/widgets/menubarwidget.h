@@ -10,13 +10,17 @@
 #include <QImage>
 #include <QFileDialog>
 #include <iostream>
-
+#include <thread>
+#include <vector>
 
 #include "../core/engines/Workspace.h"
 #include "../core/data/Image.h"
 #include "../core/data/ImageFormat.h"
 
+#include<iostream>
+
 using namespace std;
+
 
 
 class MenuBarWidget : public QMenuBar
@@ -36,8 +40,12 @@ signals:
     void showRightSidebarClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void showImageClicked(bool isChecked);
+    void exportProgressUpdated();
+    void exportStarted(int maxIterations);
+    void exportFinished();
 private slots:
-    void exportImage(QString format);
+    void exportImages(QString format);
+    void exportSelectedImage(QString format);
     // void exportAll();
 
 };
