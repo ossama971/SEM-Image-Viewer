@@ -6,11 +6,13 @@
 #include "../core/data/SessionData.h"
 #include "../core/engines/Workspace.h"
 #include "historywidget.h"
+#include "grayscalewidget.h"
+#include "noisereductionwidget.h"
 class LoggerWidget;
 class ImageWidget;
 class ContourWidget;
 class EdgeExtractionWidget;
-class NoiseReductionWidget;
+
 
 class Controller : public QObject
 {
@@ -29,13 +31,14 @@ public:
     void setEdgeExtractionWidget(EdgeExtractionWidget *widget);
     void setNoiseReductionWidget(NoiseReductionWidget *widget);
     void setHistoryWidget(HistoryWidget *widget);
+    void setGraySacleWidget(GrayScaleWidget* widget);
 
 private slots:
 
     void onEdgeWidgetFilterApplied();
     void onNoiseReductionFilterApplied();
     void onContourFilterApplied();
-
+    void onGraySacleFilterApplied();
 private:
     Controller();
     Controller(const Controller &) = delete;
@@ -50,7 +53,7 @@ private:
     ContourWidget *contourWidget = nullptr;
     EdgeExtractionWidget *edgeExtractionWidget = nullptr;
     NoiseReductionWidget *noiseReductionWidget = nullptr;
-
+    GrayScaleWidget *graySacleWidget = nullptr;
 
 signals:
     void imageUpdated(const cv::Mat &newImage);

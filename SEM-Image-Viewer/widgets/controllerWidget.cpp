@@ -5,6 +5,7 @@
 #include "../core/filters/EdgeDetectionFilter.h"
 #include "../core/filters/NoiseReductionFilter.h"
 #include "../core/filters/SharpenFilter.h"
+#include "../core/filters/GrayScaleFilter.h"
 
 #include "sharpen_filter_widget.h"
 #include "edge_extraction_wigdet.h"
@@ -60,32 +61,32 @@ void Controller::setNoiseReductionWidget(NoiseReductionWidget *widget)
     if (noiseReductionWidget)
     {
         // Connect the EdgeExtractionWidget's signal to the controller's slot
-        // connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
+        connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
     }
 }
-
+void Controller::setGraySacleWidget(GrayScaleWidget* widget)
+{
+    graySacleWidget=widget;
+    if(graySacleWidget){
+        connect(graySacleWidget,&GrayScaleWidget::applyFilter,this,&Controller::onGraySacleFilterApplied);
+    }
+}
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
 {
-    // int low = edgeExtractionWidget->getLowThreshold();
-    // int high = edgeExtractionWidget->getHighThreshold();
-    //
-    // std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
-    // filter->setThresholdLow(low);
-    // filter->setTHresholdHigh(high);
-    //
-    //
-    //
-    // auto updatedImage = ImageSession_.applyFilter(std::move(filter));
-    // ImageSession_.getImage().setMat(updatedImage);
-    //
-    // emit imageUpdated(updatedImage);
+    int low = edgeExtractionWidget->getLowThreshold();
+    int high = edgeExtractionWidget->getHighThreshold();
 
-    // loggerWidget->addLogMessage("Info", "filter Applied");
+    std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
+    filter->setThresholdLow(low);
+    filter->setTHresholdHigh(high);
+    SessionData_.applyFilter(std::move(filter));
+
 }
 void Controller::onNoiseReductionFilterApplied()
 {
-    std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(13.0f);
+    int instensity=noiseReductionWidget->getIntensity();
+    std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(instensity);
 
     SessionData_.applyFilter(std::move(filter));
 }
@@ -96,6 +97,14 @@ void Controller::onContourFilterApplied()
 
     SessionData_.applyFilter(std::move(filter));
 }
+void Controller::onGraySacleFilterApplied()
+{
+    std::unique_ptr<GrayScaleFilter> filter = std::make_unique<GrayScaleFilter>();
+    //std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
+    SessionData_.applyFilter(std::move(filter));
+}
+
+
 
 void Controller::printMat(const cv::Mat &mat)
 {

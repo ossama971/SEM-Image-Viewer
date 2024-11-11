@@ -37,9 +37,9 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 
     cv::Mat detected_edges;
     detected_edges = ToGrayscale(image);
-    // detected_edges=Denoise(detected_edges);
-    detected_edges = Denoise(image);
-    // cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
+    //detected_edges=Denoise(detected_edges);
+    //detected_edges = Denoise(image);
+    cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
 
     return detected_edges;
     // cv::Vec3b tint(50, 0, 0);

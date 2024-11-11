@@ -36,6 +36,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
     controller.setContourWidget(_contourWidget);
     controller.setNoiseReductionWidget(_noiseReductionWidget);
     controller.setHistoryWidget(_historyWidget);
+    controller.setGraySacleWidget(_grayScaleWidget);
 
     this->setLayout(rightSidebarLayout);
 }

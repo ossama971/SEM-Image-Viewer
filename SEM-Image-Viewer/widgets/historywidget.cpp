@@ -64,6 +64,7 @@ void HistoryWidget::updateActionList()
     actionList->clear();
     // Display current actions in the undo stack
     QList<QString> actions = undoStack.toList();
+
     for (const QString &action : actions)
     {
         actionList->addItem(action);

@@ -224,6 +224,7 @@ void ImageWidget::zoomOut()
 void ImageWidget::updateImage(const cv::Mat &image)
 {
     currentImage = image;
+
     QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
     QPixmap pixmap = QPixmap::fromImage(qImage);
     setImage(pixmap);

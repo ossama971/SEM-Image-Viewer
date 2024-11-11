@@ -7,7 +7,7 @@
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
-    load_directory("D:\\Test");
+    load_directory("B:/wallpapers");
 }
 
 bool ImageRepository::load_directory(const std::string &path)
