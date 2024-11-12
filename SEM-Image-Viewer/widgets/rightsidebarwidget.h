@@ -26,6 +26,7 @@ public slots:
     void hideProgressBar();
 private:
     ProgressBarComponent* _progressBar;
+
 };
 
 #endif // RIGHTSIDEBARWIDGET_H

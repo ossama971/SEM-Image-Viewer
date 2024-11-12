@@ -13,9 +13,9 @@ Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _
     for (const std::unique_ptr<ImageState>& it : image._states)
         _states.push_back(std::make_unique<ImageState>(*it));
 
-    _undo.reserve(image._undo.size());
-    for (const std::unique_ptr<ImageState>& it : image._undo)
-        _undo.push_back(std::make_unique<ImageState>(*it));
+    _redo.reserve(image._redo.size());
+    for (const std::unique_ptr<ImageState>& it : image._redo)
+        _redo.push_back(std::make_unique<ImageState>(*it));
 }
 
 Image::~Image() {
@@ -41,10 +41,10 @@ bool Image::load(const std::filesystem::path path) {
 }
 
 bool Image::setImage(cv::Mat image, ImageStateSource newState) {
-    if (!_loaded){
+    // if (!_loaded){
 
-        return false;
-    }
+    //     return false;
+    // }
     if (image.empty()){
 
         return false;
@@ -60,12 +60,84 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
 //    return Image(*this);
 //}
 
+bool  Image::undo(){
+    if (!_loaded){
+        //logger
+        return false;
+    }
+    if(_states.size()<2){
+        //logger
+        return false;
+    }
+
+    _redo.push_back(std::move(_states.back()));
+
+    _states.pop_back();
+
+    emit onImageStateUpdated(_states);
+    return true;
+}
+
+bool  Image::redo(){
+    if (!_loaded){
+        //logger
+        return false;
+    }
+    if(_redo.empty()){
+        //logger
+        return false;
+    }
+
+    _states.push_back(std::move(_redo.back()));
+
+    _redo.pop_back();
+
+    emit onImageStateUpdated(_states);
+    return true;
+}
+
+QList<QString> Image::getHistory(){
+    QList<QString> actionsList;
+
+    for(int i=0;i<_states.size();i++){
+        if(_states[i]->State==ImageStateSource::GrayScaleFilter){
+            actionsList.append("Gray Scale Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::NoiseReductionFilter){
+            actionsList.append("Noise Reduction Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::SharpenFilter){
+            actionsList.append("Sharpen Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::EdgeDetectionFilter){
+            actionsList.append("Edge Detection Filter");
+        }
+    }
+    return actionsList;
+}
+
 cv::Mat& Image::getImageMat() const {
     return _states.back()->Image;
 }
 
 ImageStateSource Image::getImageState() const {
     return _states.back()->State;
+}
+
+QString Image::GetCurrentAction() const {
+    if(_states.back()->State==ImageStateSource::GrayScaleFilter){
+        return "Gray Scale Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::NoiseReductionFilter){
+         return  "Noise Reduction Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::SharpenFilter){
+        return "Sharpen Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::EdgeDetectionFilter){
+        return "Edge Detection Filter";
+    }
+    return "";
 }
 
 std::filesystem::path Image::getPath() const {

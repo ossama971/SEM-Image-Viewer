@@ -1,34 +1,68 @@
 #include "historywidget.h"
-
+#include <QToolButton>
 HistoryWidget::HistoryWidget(QWidget *parent)
     : QWidget(parent)
 {
     // Create main vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(10, 10, 10, 10);
+    mainLayout->setSpacing(0);
 
     // Create a horizontal layout for the header and buttons
     QHBoxLayout *headerLayout = new QHBoxLayout();
+    headerLayout->setSpacing(5);
 
+    // Create toggle button
+    toggleButton = new QToolButton(this);
+    toggleButton->setArrowType(Qt::DownArrow);
+    toggleButton->setStyleSheet(
+        "QToolButton { "
+        "   border: none; "
+        "   background-color: transparent; "
+        "}"
+        );
+    headerLayout->addWidget(toggleButton);
     // Create header label
+
     headerLabel = new QLabel("History", this);
     headerLabel->setStyleSheet("font-size: 16px; font-weight: bold;");
     headerLayout->addWidget(headerLabel);
 
     // Add a spacer to push buttons to the right
-    headerLayout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    // Add a spacer to push buttons to the right
+    headerLayout->addStretch();
 
     // Create Undo button with icon
-    undoButton = new QPushButton("▲",this);
-    // undoButton->setIcon(QIcon(":/icons/undo_icon.png")); // Set your undo icon path here
-    // undoButton->setIconSize(QSize(12, 12));
-    /*undoButton->setStyleSheet("background: none; border: none;");*/ // Remove background and border
+    undoButton = new QPushButton(this);
+    undoButton->setIcon(QIcon(":/icons/undo-icon.svg"));
+    undoButton->setIconSize(QSize(16, 16));
+    undoButton->setStyleSheet(
+        "QPushButton { "
+        "   border: none; "
+        "   background-color: transparent; "
+        "   padding: 2px;"
+        "}"
+        "QPushButton:hover { "
+        "   background-color: rgba(0, 122, 255, 0.2); "
+        "}"
+        );
     headerLayout->addWidget(undoButton);
 
     // Create Redo button with icon
-    redoButton = new QPushButton("▼",this);
-    // redoButton->setIcon(QIcon(":/icons/redo_icon.png")); // Set your redo icon path here
-    // redoButton->setIconSize(QSize(12, 12));
-   // redoButton->setStyleSheet("background: none; border: none;"); // Remove background and border
+    // Create Redo button with icon
+    redoButton = new QPushButton(this);
+    redoButton->setIcon(QIcon(":/icons/redo-icon.svg"));
+    redoButton->setIconSize(QSize(16, 16));
+    redoButton->setStyleSheet(
+        "QPushButton { "
+        "   border: none; "
+        "   background-color: transparent; "
+        "   padding: 2px;"
+        "}"
+        "QPushButton:hover { "
+        "   background-color: rgba(0, 122, 255, 0.2); "
+        "}"
+        );
     headerLayout->addWidget(redoButton);
 
     // Add header layout to main layout
@@ -36,43 +70,89 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
 
     // Create action list
+    // Create container for action list with vertical line
+    listContainer = new QWidget(this);
+    QHBoxLayout* listContainerLayout = new QHBoxLayout(listContainer);
+    listContainerLayout->setContentsMargins(0, 5, 0, 0);
+    listContainerLayout->setSpacing(0);
+
+    // Add vertical line
+    QFrame* line = new QFrame(listContainer);
+    line->setFrameShape(QFrame::VLine);
+    line->setFrameShadow(QFrame::Plain);
+    line->setStyleSheet("color: #404040;"); // Dark gray line
+    listContainerLayout->addWidget(line);
+
+    // Create container for list
+    QWidget* listContentContainer = new QWidget(listContainer);
+    QVBoxLayout* listContentLayout = new QVBoxLayout(listContentContainer);
+    listContentLayout->setContentsMargins(10, 0, 0, 0);
+    listContentLayout->setSpacing(0);
+
+    // Create action list
     actionList = new QListWidget(this);
-    mainLayout->addWidget(actionList);
+    actionList->setStyleSheet(
+        "QListWidget {"
+        "   background-color: transparent;"
+        "   border: none;"
+        "}"
+        "QListWidget::item {"
+        "   color: black;"
+        "   padding: 2px;"
+        "}"
+        );
+    listContentLayout->addWidget(actionList);
+
+    listContainerLayout->addWidget(listContentContainer);
+    mainLayout->addWidget(listContainer);
 
 
 
     // Connect buttons to slots
     connect(undoButton, &QPushButton::clicked, this, &HistoryWidget::undoAction);
     connect(redoButton, &QPushButton::clicked, this, &HistoryWidget::redoAction);
-
+    connect(toggleButton,&QToolButton::clicked,this,&HistoryWidget::showAndHideList);
     // Set the main layout
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
 
-void HistoryWidget::addAction(const QString &action)
+
+
+
+void HistoryWidget::updateActionList(QString action)
 {
-    // Add action to the undo stack and clear the redo stack
-    undoStack.push(action);
-    redoStack.clear();
-    updateActionList();
+        actionList->addItem(action);
 }
 
+void HistoryWidget::loadActionList(QList<QString> actions){
 
-void HistoryWidget::updateActionList()
-{
     actionList->clear();
-    // Display current actions in the undo stack
-    QList<QString> actions = undoStack.toList();
+
+
+
     for (const QString &action : actions)
     {
         actionList->addItem(action);
     }
 }
-
+void HistoryWidget::popAction() {
+    if (actionList->count() > 0) {
+        delete actionList->takeItem(actionList->count() - 1);  // Remove the last item
+    }
+}
 void HistoryWidget::undoAction(){
     emit undo();
 }
 void HistoryWidget::redoAction(){
     emit redo();
+}
+void HistoryWidget::showAndHideList(){
+    if (toggleButton->arrowType() == Qt::DownArrow) {
+        toggleButton->setArrowType(Qt::RightArrow);
+        listContainer->hide();
+    } else {
+        toggleButton->setArrowType(Qt::DownArrow);
+        listContainer->show();
+    }
 }
