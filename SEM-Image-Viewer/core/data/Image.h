@@ -30,6 +30,11 @@ public:
     std::filesystem::path getPath() const;
     ImageMetadata getMetadata() const;
 
+    QString GetCurrentAction() const;
+    bool undo();
+    bool redo();
+    QList<QString> getHistory();
+
 signals:
     void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);
 

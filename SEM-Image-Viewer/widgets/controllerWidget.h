@@ -39,6 +39,8 @@ private slots:
     void onNoiseReductionFilterApplied();
     void onContourFilterApplied();
     void onGraySacleFilterApplied();
+    void redoAction();
+    void undoAction();
 private:
     Controller();
     Controller(const Controller &) = delete;

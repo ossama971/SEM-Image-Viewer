@@ -7,13 +7,13 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QStack>
-
+#include <QToolButton>
 class HistoryWidget : public QWidget {
     Q_OBJECT
 
 public:
     explicit HistoryWidget(QWidget *parent = nullptr);
-    void addAction(const QString &action);
+
 signals:
     void undo();
     void redo();
@@ -22,14 +22,16 @@ private:
     QPushButton *undoButton;
     QPushButton *redoButton;
     QListWidget *actionList;
-    QStack<QString> undoStack;
-    QStack<QString> redoStack;
-
-    void updateActionList();
-
+    QToolButton* toggleButton;
+    QWidget* listContainer;
+public slots:
+    void loadActionList(QList<QString> actions);
+    void updateActionList(QString action);
+    void popAction();
 private slots:
     void undoAction();
     void redoAction();
+    void showAndHideList();
 
 };
 

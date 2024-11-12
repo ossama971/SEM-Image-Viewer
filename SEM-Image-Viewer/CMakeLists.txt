@@ -65,7 +65,9 @@ set(PROJECT_SOURCES
         widgets/zoom_widget.h widgets/zoom_widget.cpp
         widgets/image_info_bar.h widgets/image_info_bar.cpp
         resources.qrc
+
         icons/zoom-in.svg icons/zoom-out.svg
+        icons/redo-icon.svg icons/undo-icon.svg
 
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
@@ -88,6 +90,8 @@ set(PROJECT_SOURCES
         core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
         widgets/grayscalewidget.h widgets/grayscalewidget.cpp
         widgets/noisereductionwidget.h widgets/noisereductionwidget.cpp
+        widgets/actionListWidget.cpp
+        widgets/actionlistwidget.h
 
 )
 
@@ -97,6 +101,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         widgets/progressbar.h
         widgets/progressbar.cpp
+        icons/play-icon.svg
+
+
+
+
+
 
 
 

@@ -23,8 +23,11 @@ void Controller::setHistoryWidget(HistoryWidget *widget)
 {
     historyWidget = widget;
     if(historyWidget){
-        //connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
-        //connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
+        connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
+        connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
+        connect(&SessionData_, &SessionData::loadActionList,historyWidget, &HistoryWidget::loadActionList);
+        connect(&SessionData_, &SessionData::updateActionList,historyWidget, &HistoryWidget::updateActionList);
+        connect(&SessionData_, &SessionData::popActionList,historyWidget, &HistoryWidget::popAction);
     }
 }
 
@@ -100,40 +103,18 @@ void Controller::onContourFilterApplied()
 void Controller::onGraySacleFilterApplied()
 {
     std::unique_ptr<GrayScaleFilter> filter = std::make_unique<GrayScaleFilter>();
-    //std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
     SessionData_.applyFilter(std::move(filter));
 }
 
+void Controller::undoAction(){
 
+    if(SessionData_.undo()){
 
-void Controller::printMat(const cv::Mat &mat)
-{
-    std::cout << "Matrix Size: " << mat.rows << " x " << mat.cols << std::endl;
-
-    // Check if the matrix is empty
-    if (mat.empty())
-    {
-        std::cout << "Matrix is empty!" << std::endl;
-        return;
-    }
-
-    std::cout << "Matrix Data: ";
-    for (int i = 0; i < std::min(mat.rows, 5); ++i)
-    { // Print first 5 rows
-        for (int j = 0; j < std::min(mat.cols, 5); ++j)
-        { // Print first 5 columns
-            if (mat.channels() == 1)
-            {
-                std::cout << static_cast<int>(mat.at<uchar>(i, j)) << " ";
-            }
-            else if (mat.channels() == 3)
-            {
-                cv::Vec3b pixel = mat.at<cv::Vec3b>(i, j);
-                std::cout << "(" << static_cast<int>(pixel[0]) << ", "
-                          << static_cast<int>(pixel[1]) << ", "
-                          << static_cast<int>(pixel[2]) << ") ";
-            }
-        }
-        std::cout << std::endl; // New line for each row
     }
 }
+
+void Controller::redoAction(){
+    SessionData_.redo();
+}
+
+

@@ -5,7 +5,7 @@
 #include "grayscalewidget.h"
 #include "noisereductionwidget.h"
 #include "historywidget.h"
-
+#include "actionlistwidget.h"
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
@@ -25,11 +25,18 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
     HistoryWidget *_historyWidget = new HistoryWidget();
     _progressBar = new ProgressBarComponent();
 
-    rightSidebarLayout->addWidget(_contourWidget);
-    rightSidebarLayout->addWidget(_grayScaleWidget);
-    rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    ActionListWidget *list=new ActionListWidget();
+    list->addWidget(_contourWidget);
+    list->addWidget(_grayScaleWidget);
+    list->addWidget(_edgeExtractionWidget);
+    list->addWidget(_noiseReductionWidget);
+    // rightSidebarLayout->addWidget(_contourWidget);
+    // rightSidebarLayout->addWidget(_grayScaleWidget);
+    // rightSidebarLayout->addWidget(_edgeExtractionWidget);
+    // rightSidebarLayout->addWidget(_noiseReductionWidget);
+    rightSidebarLayout->addWidget(list);
     rightSidebarLayout->addWidget(_progressBar);
-    rightSidebarLayout->addWidget(_noiseReductionWidget);
+
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
