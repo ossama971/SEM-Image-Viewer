@@ -103,8 +103,14 @@ optional<QPixmap> ImageWidget::loadAndPrepareImage(const Image &selected_image, 
     {
         return nullopt;
     }
-
-    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    QImage qImage;
+    if (image.channels() == 1) {
+        // Grayscale image: Use QImage::Format_Grayscale8
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_Grayscale8);
+    } else if (image.channels() == 3) {
+        // RGB image: Use QImage::Format_RGB888 and swap if necessary
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    }
     // QPixmap pixmap = QPixmap::fromImage(qImage.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     QPixmap pixmap = QPixmap::fromImage(qImage);
     return pixmap;
@@ -225,7 +231,14 @@ void ImageWidget::updateImage(const cv::Mat &image)
 {
     currentImage = image;
 
-    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    QImage qImage;
+    if (image.channels() == 1) {
+        // Grayscale image: Use QImage::Format_Grayscale8
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_Grayscale8);
+    } else if (image.channels() == 3) {
+        // RGB image: Use QImage::Format_RGB888 and swap if necessary
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    }
     QPixmap pixmap = QPixmap::fromImage(qImage);
     setImage(pixmap);
 }
