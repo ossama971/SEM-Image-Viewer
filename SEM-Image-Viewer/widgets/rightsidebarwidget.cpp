@@ -18,7 +18,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
 
     // QWidget *rightContent = new QWidget(parent);
     // rightContent->setStyleSheet("background-color: #627e7c;");
-    ContourWidget *_contourWidget = new ContourWidget();
+    SharpenWidget *_sharpenWidget = new SharpenWidget();
     EdgeExtractionWidget *_edgeExtractionWidget = new EdgeExtractionWidget();
     GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
     NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
@@ -26,7 +26,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
     _progressBar = new ProgressBarComponent();
 
     ActionListWidget *list=new ActionListWidget();
-    list->addWidget(_contourWidget);
+    list->addWidget(_sharpenWidget);
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
@@ -40,7 +40,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
-    controller.setContourWidget(_contourWidget);
+    controller.setSharpenWidget(_sharpenWidget);
     controller.setNoiseReductionWidget(_noiseReductionWidget);
     controller.setHistoryWidget(_historyWidget);
     controller.setGraySacleWidget(_grayScaleWidget);

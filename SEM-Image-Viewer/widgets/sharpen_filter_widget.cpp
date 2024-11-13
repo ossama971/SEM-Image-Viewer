@@ -5,7 +5,7 @@
 #include <QMenu>
 #include <QIcon>
 
-ContourWidget::ContourWidget(QWidget *parent)
+SharpenWidget::SharpenWidget(QWidget *parent)
     : QWidget(parent),
     label(new QLabel(this))
 {
@@ -39,12 +39,12 @@ ContourWidget::ContourWidget(QWidget *parent)
 
     setLayout(mainLayout);
 
-    connect(applyButton,&QPushButton::clicked,this, &ContourWidget::handleApplyFilter);
+    connect(applyButton,&QPushButton::clicked,this, &SharpenWidget::handleApplyFilter);
 
 }
 
 
-void ContourWidget::handleApplyFilter()
+void SharpenWidget::handleApplyFilter()
 {
     emit applyFilter();
 }
