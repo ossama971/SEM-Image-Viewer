@@ -7,6 +7,19 @@ ImageState::ImageState(ImageStateSource state, cv::Mat image)
 
 void ImageState::accept(Visitor &v) const { v.visit(*this); }
 
+// TODO: I think images states should be stored as files in the file system
+// after being compressed into jpeg, since jpeg is already less space than
+// base64. This way saving & loading the states should be more efficient
+std::string ImageState::getImageBase64() const {
+  std::vector<uchar> buf;
+  cv::imencode(".jpeg", Image, buf);
+  std::string base64_string;
+  using namespace boost::archive::iterators;
+  typedef base64_from_binary<transform_width<uchar*, 6, 8>> base64_enc;
+  base64_string = std::string(base64_enc(buf.data()), base64_enc(buf.data() + buf.size()));
+  return base64_string;
+}
+
 std::string imageStateSourceToString(ImageStateSource state) {
   switch (state) {
   case ImageStateSource::Origin:

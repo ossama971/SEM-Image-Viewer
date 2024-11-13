@@ -6,6 +6,8 @@
 
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
 #include <opencv2/opencv.hpp>
 
 enum class ImageStateSource {
@@ -25,6 +27,8 @@ struct ImageState : public Visitable {
 
   ImageState();
   ImageState(ImageStateSource state, cv::Mat image);
+  std::string getImageBase64() const;
+  // void setImageBase64(const std::string &base64);
 
   void accept(Visitor &v) const override;
 };

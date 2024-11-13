@@ -17,7 +17,7 @@ void JsonVisitor::visit(const ImageMetadata &metadata) {
 void JsonVisitor::visit(const ImageState &state) {
   boost::property_tree::ptree state_tree;
   state_tree.put("state", imageStateSourceToString(state.State));
-  // TODO: add image Mat itself 
+  state_tree.put("image", state.getImageBase64());
   json_tree.add_child("state", state_tree);
 }
 
@@ -45,19 +45,20 @@ void JsonVisitor::visit(const Image &image) {
     undo_tree.push_back(std::make_pair("", undoVisitor.json_tree.get_child("state")));
   }
   image_tree.add_child("undo", undo_tree);
-
   json_tree.add_child("Image", image_tree);
 }
 
 void JsonVisitor::visit(const ImageRepository &repo) {
   boost::property_tree::ptree repo_tree;
   repo_tree.put("_folderPath", repo.getFolderPath());
+
+  boost::property_tree::ptree images_tree;
   for (const auto &image : repo.getImages()) {
     JsonVisitor imageVisitor;
     image.accept(imageVisitor);
-    repo_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
+    images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
   }
-  //TODO: add _selectedImage (Image*) to repo_tree
+  repo_tree.add_child("Images", images_tree);
   json_tree.add_child("ImageRepository", repo_tree);
 }
 
@@ -69,7 +70,7 @@ void JsonVisitor::visit(const SessionData &session) {
   /// observable state of `SessionData`, and we ensure that no changes are made 
   /// to `session` within `visit()`.
   const_cast<SessionData&>(session).getImageRepo().accept(repoVisitor);
-  session_tree.add_child("ImageRepository", repoVisitor.json_tree);
+  session_tree.add_child("ImageRepository", repoVisitor.json_tree.get_child("ImageRepository"));
   json_tree.add_child("SessionData", session_tree);
 }
 
