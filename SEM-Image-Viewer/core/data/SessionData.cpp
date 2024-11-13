@@ -70,3 +70,7 @@ ImageRepository& SessionData::getImageRepo() {
 Image* SessionData::getSelectedImage(void) {
     return _imageRepo.getImage();
 }
+
+void SessionData::accept(Visitor &v) const {
+    v.visit(*this);
+}

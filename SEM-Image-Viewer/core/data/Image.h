@@ -3,13 +3,16 @@
 
 #include "ImageState.h"
 #include "ImageMetadata.h"
+#include "Visitor.h"
+#include "Visitable.h"
+
 #include <memory>
 #include <vector>
 #include <filesystem>
 #include <QObject>
 #include <opencv2/opencv.hpp>
 
-class Image : public QObject {
+class Image : public QObject, public Visitable {
     Q_OBJECT
 
 public:
@@ -24,12 +27,16 @@ public:
     bool load(const std::filesystem::path path);
     bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
 
-    //Image clone();
-
+    bool isLoaded() const;
     cv::Mat& getImageMat() const;
     ImageStateSource getImageState() const;
     std::filesystem::path getPath() const;
     ImageMetadata getMetadata() const;
+
+    std::vector<std::unique_ptr<ImageState>>const & getStates() const;
+    std::vector<std::unique_ptr<ImageState>>const & getUndo() const;
+
+    void accept(Visitor &v) const override;
 
 signals:
     void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);

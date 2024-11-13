@@ -3,11 +3,14 @@
 
 #include "Image.h"
 #include "ImageFormat.h"
+#include "Visitor.h"
+#include "Visitable.h"
+
 #include <QObject>
 #include <string>
 #include <vector>
 
-class ImageRepository : public QObject {
+class ImageRepository : public QObject, public Visitable {
     Q_OBJECT
 
 public:
@@ -17,11 +20,13 @@ public:
     bool load_image(const std::string &path);
     bool save(Image& image, const ImageFormat format, const std::string path);
 
-
     void selectImage(int index);
 
     Image* getImage();
-    std::vector<Image> getImages();
+    std::vector<Image> getImages() const;
+    std::string getFolderPath() const;
+
+    void accept(Visitor &v) const override;
 
 signals:
     void onDirectoryChanged(std::vector<Image>& newImages);

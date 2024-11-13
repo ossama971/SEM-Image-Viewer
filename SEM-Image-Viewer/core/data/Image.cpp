@@ -3,10 +3,7 @@
 
 Image::Image() : _loaded(false) {}
 
-Image::Image(std::filesystem::path path) {
-  // Image();
-  load(path);
-}
+Image::Image(std::filesystem::path path) { load(path); }
 
 Image::Image(const Image &image)
     : _loaded(image._loaded), _path(image._path), _metadata(image._metadata) {
@@ -34,7 +31,6 @@ Image &Image::operator=(const Image &image) {
   _path = image._path;
   _metadata = image._metadata;
 
-  // Deep copy for states and undo lists
   _states.clear();
   for (const auto &state : image._states) {
     _states.push_back(std::make_unique<ImageState>(*state));
@@ -93,17 +89,22 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
   return true;
 }
 
-// Image Image::clone() {
-//     return Image(*this);
-// }
+bool Image::isLoaded() const { return _loaded; }
 
-cv::Mat &Image::getImageMat() const {
-  // qDebug() << "Image::getImageMat().size() -> " << _states.size();
-  return _states.front()->Image;
-}
+cv::Mat &Image::getImageMat() const { return _states.front()->Image; }
 
 ImageStateSource Image::getImageState() const { return _states.front()->State; }
 
 std::filesystem::path Image::getPath() const { return _path; }
 
+std::vector<std::unique_ptr<ImageState>> const &Image::getStates() const {
+  return _states;
+}
+
+std::vector<std::unique_ptr<ImageState>> const &Image::getUndo() const {
+  return _undo;
+}
+
 ImageMetadata Image::getMetadata() const { return _metadata; }
+
+void Image::accept(Visitor &v) const { v.visit(*this); }

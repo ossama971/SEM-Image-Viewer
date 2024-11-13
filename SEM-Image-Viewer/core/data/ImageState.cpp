@@ -5,6 +5,8 @@ ImageState::ImageState() {}
 ImageState::ImageState(ImageStateSource state, cv::Mat image)
     : State(state), Image(image) {}
 
+void ImageState::accept(Visitor &v) const { v.visit(*this); }
+
 std::string imageStateSourceToString(ImageStateSource state) {
   switch (state) {
   case ImageStateSource::Origin:

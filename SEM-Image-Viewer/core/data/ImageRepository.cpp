@@ -82,6 +82,14 @@ Image* ImageRepository::getImage() {
     return _selectedImage;
 }
 
-std::vector<Image> ImageRepository::getImages(){
+std::vector<Image> ImageRepository::getImages() const {
     return _images;
+}
+
+std::string ImageRepository::getFolderPath() const {
+    return _folderPath;
+}
+
+void ImageRepository::accept(Visitor &v) const {
+    v.visit(*this);
 }
