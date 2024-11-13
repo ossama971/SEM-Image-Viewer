@@ -57,6 +57,8 @@ set(PROJECT_SOURCES
     core/data/SessionData.h
     core/data/WarningMessage.cpp
     core/data/WarningMessage.h
+    core/engines/JsonVisitor.cpp
+    core/engines/JsonVisitor.h
     core/engines/Logger.cpp
     core/engines/Logger.h
     core/engines/Workspace.cpp
@@ -67,7 +69,9 @@ set(PROJECT_SOURCES
     core/imageeditor.cpp
     core/image_utils.cpp
     core/image_utils.h
+    core/data/ImageFormat.cpp
     core/data/ImageFormat.h
+    core/data/ImageColorSpace.cpp
     core/data/ImageColorSpace.h
     # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
     widgets/bottommiddlewidget.cpp

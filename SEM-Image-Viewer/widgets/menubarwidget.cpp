@@ -1,4 +1,5 @@
 #include "menubarwidget.h"
+#include "../core/engines/JsonVisitor.h"
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
@@ -21,6 +22,9 @@ void MenuBarWidget::fileMenu(){
     QAction *PNGAction = new QAction("PNG", this);
     QAction *BMPAction = new QAction("BMP", this);
 
+    QAction *saveSessionAction = new QAction("Save Session", this);
+    QAction *loadSessionAction  = new QAction("Load Session", this);
+
     exportMenu->addAction(JPGAction);
     exportMenu->addAction(PNGAction);
     exportMenu->addAction(BMPAction);
@@ -29,10 +33,19 @@ void MenuBarWidget::fileMenu(){
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addMenu(exportMenu);
+    fileMenu->addSeparator();
+    fileMenu->addAction(saveSessionAction);
+    fileMenu->addAction(loadSessionAction);
 
     connect(JPGAction, &QAction::triggered, this, [=]() { exportImage("*.jpg"); });
     connect(PNGAction, &QAction::triggered, this, [=]() { exportImage("*.png"); });
     connect(BMPAction, &QAction::triggered, this, [=]() { exportImage("*.bmp"); });
+
+    connect(saveSessionAction, &QAction::triggered, this, [=]() {
+        JsonVisitor visitor;
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json("session.json");
+    });
 }
 
 
