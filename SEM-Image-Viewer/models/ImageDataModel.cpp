@@ -8,7 +8,7 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     // Connect the repository's signal to the data model's slot
     QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
                      this, &ImageDataModel::updateImages);
-    Workspace::Instance().getActiveSession().loadDirectory("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets");
+    Workspace::Instance().getActiveSession().loadDirectory("");
 
     // Initially load a small subset of images
     loadImages(0, 20);
