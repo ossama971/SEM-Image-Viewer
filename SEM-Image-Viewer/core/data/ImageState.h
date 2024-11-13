@@ -1,23 +1,22 @@
 #ifndef IMAGE_STATE_H
 #define IMAGE_STATE_H
 
+
+#include <string>
+#include <boost/algorithm/string.hpp>
 #include <opencv2/opencv.hpp>
 
-enum class ImageStateSource
-{
-    Origin,
-    GrayScaleFilter,
-    NoiseReductionFilter,
-    SharpenFilter,
-    EdgeDetectionFilter
+enum class ImageStateSource {
+  Origin,
+  GrayScaleFilter,
+  NoiseReductionFilter,
+  SharpenFilter,
+  EdgeDetectionFilter
 };
 
-struct ImageState {
-    ImageStateSource State;
-    cv::Mat Image;
+std::string imageStateSourceToString(ImageStateSource state);
+ImageStateSource imageStateSourceFromString(const std::string &state);
 
-    ImageState();
-    ImageState(ImageStateSource state, cv::Mat image);
 };
 
 #endif // IMAGE_STATE_H
