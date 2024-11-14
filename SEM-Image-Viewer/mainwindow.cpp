@@ -40,6 +40,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
+    viewController = new WidgetViewController(leftSidebarWidget, rightSidebarWidget, topMiddleWidget, bottomMiddleWidget, this);
+
+    leftSidebarWidget->setViewController(viewController);
+    rightSidebarWidget->setViewController(viewController);
+    topMiddleWidget->setViewController(viewController);
+    bottomMiddleWidget->setViewController(viewController);
+
     // Create the MiniGrid instance
     MiniGrid *miniGrid = new MiniGrid(this);
 
@@ -65,14 +72,13 @@ MainWindow::MainWindow(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
+    menuBarWidget = new MenuBarWidget(viewController, this);
 
-    menuBarWidget = new MenuBarWidget(this);
 
-
-    connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
-    connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
-    connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
-    connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
     connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);

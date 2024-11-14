@@ -5,8 +5,8 @@
 #include "grayscalewidget.h"
 #include "noisereductionwidget.h"
 #include "historywidget.h"
-#include "actionlistwidget.h"
-RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
+
+RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr)
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -46,6 +46,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent)
     controller.setGraySacleWidget(_grayScaleWidget);
 
     this->setLayout(rightSidebarLayout);
+}
+
+void RightSidebarWidget::setViewController(WidgetViewController* widgetViewController) {
+    viewController = widgetViewController;
 }
 
 void RightSidebarWidget::setMaxMinWidth(int mn, int mx)

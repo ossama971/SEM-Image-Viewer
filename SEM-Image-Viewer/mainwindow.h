@@ -11,6 +11,7 @@
 #include "widgets/menubarwidget.h"
 #include "widgets/savedialogwidget.h"
 // #include "core/engines/JsonVisitor.h"
+#include "widgets/WidgetViewController.h"
 
 #include <QApplication>
 #include <QMainWindow>
@@ -52,6 +53,7 @@ private:
     Ui::MainWindow *ui;
     ImageWidget *imageWidget;  // Member variable for the custom widget
 
+    WidgetViewController *viewController;
     LeftSidebarWidget *leftSidebarWidget;
     RightSidebarWidget *rightSidebarWidget;
     TopMiddleWidget *topMiddleWidget;
