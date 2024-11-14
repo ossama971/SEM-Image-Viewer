@@ -5,5 +5,10 @@
         <file>icons/redo-icon.svg</file>
         <file>icons/undo-icon.svg</file>
         <file>icons/play-icon.svg</file>
+	<file>icons/undo-icon-dark-mode.svg</file>
+	<file>icons/redo-icon-dark-mode.svg</file>
+	<file>icons/play-icon-dark-mode.svg</file>
+	<file>icons/zoom-in-dark-mode.svg</file>
+	<file>icons/zoom-out-dark-mode.svg</file>
     </qresource>
 </RCC>

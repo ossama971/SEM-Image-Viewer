@@ -14,8 +14,8 @@ void ZoomWidget::setupLayout()
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     // Set icons for zoom buttons
-    QIcon zoomInIcon(":/icons/zoom-in.svg");
-    QIcon zoomOutIcon(":/icons/zoom-out.svg");
+    QIcon zoomInIcon(":/icons/zoom-in-dark-mode.svg");
+    QIcon zoomOutIcon(":/icons/zoom-out-dark-mode.svg");
 
     zoomInButton->setIcon(zoomInIcon);
     zoomOutButton->setIcon(zoomOutIcon);

@@ -45,10 +45,10 @@ QToolButton:checked {
 
 /* Styling for QSplitter */
 QSplitter {
-    background-color: #2B2B2B;
+    background-color: #2C2C2C;
 }
 QSplitter::handle {
-    background-color: #444444; /* Color for the splitter handle */
+    background-color: #1E1E1E; /* Color for the splitter handle */
 }
 
 /* Styling for QTreeView and QListView */
@@ -78,10 +78,10 @@ QLineEdit, QComboBox {
 
 /* Styling for QPushButton */
 QPushButton {
-    background-color: #3A3A3A;
     color: #D3D3D3;
-    border: 1px solid #555555;
     padding: 4px;
+    border: none;
+    background-color: transparent;
 }
 QPushButton:hover {
     background-color: #444444;
@@ -126,17 +126,33 @@ QListWidget::item {
 QListWidget::item:selected {
     background-color: #555555;
 }
+  QMenu {
+        background-color: #2b2b2b;
+        color: #d3d3d3;
+        border: 1px solid #3e3e3e;
+    }
 
-/* Log messages styles (Info, Warnings, Errors) */
-QLabel#infoLabel {
-    color: #66BB6A; /* Green for info */
-}
-QLabel#warningLabel {
-    color: #FFA726; /* Orange for warnings */
-}
-QLabel#errorLabel {
-    color: #EF5350; /* Red for errors */
-})");
+    QMenu::item {
+        background-color: transparent;
+        color: #d3d3d3;
+        padding: 5px 20px;
+        margin: 2px;
+    }
+
+    QMenu::item:selected {
+        background-color: #3e3e3e;
+    }
+
+    QMenu::separator {
+        height: 1px;
+        background: #444444;
+        margin: 5px 0;
+    }
+ QAction {
+        color: #d3d3d3;
+    }
+
+)");
     MainWindow w;
     w.show();
     return a.exec();

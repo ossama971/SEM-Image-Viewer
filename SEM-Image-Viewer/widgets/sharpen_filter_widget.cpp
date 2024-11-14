@@ -14,18 +14,16 @@ SharpenWidget::SharpenWidget(QWidget *parent)
     label->setText("Sharpen");
 
     QPushButton *applyButton = new QPushButton(this);
-    QIcon Icon(":/icons/play-icon.svg");
+    QIcon Icon(":/icons/play-icon-dark-mode.svg");
     applyButton->setIcon(Icon);
     applyButton->setStyleSheet(
         "QPushButton { "
-        "   border: none; "
-        "   background-color: transparent; "
         "padding:2px"
         "}"
-        "QPushButton:hover { "
-        "   background-color: rgba(0, 122, 255, 0.2); " // Light blue highlight on hover
-        "}"
         );
+    // "QPushButton:hover { "
+    // "   background-color: rgba(0, 122, 255, 0.2); " // Light blue highlight on hover
+    // "}"
     compactLayout->addWidget(label);
     compactLayout->addWidget(applyButton);
     compactLayout->addStretch();

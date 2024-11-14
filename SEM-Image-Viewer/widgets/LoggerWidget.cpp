@@ -29,9 +29,6 @@ void LoggerWidget::createButtons()
                            "padding-right: 20px;"
                            "font:  14px;"
                            "text-align: center;"
-                           "}"
-                           "QPushButton:hover {"
-                           "background-color: #d3d3d3;"
                            "}";
 
     // Buttons for filtering logs by type
@@ -68,7 +65,7 @@ void LoggerWidget::createButtons()
     //searchLineEdit->setFixedWidth(300);
 
     // Set the style sheet for rounded borders and other properties
-    searchLineEdit->setStyleSheet(
+    searchLineEdit->setStyleSheet(""
         "QLineEdit {"
         "border: 2px solid #aaaaaa;"
         "border-radius: 10px;"
@@ -106,9 +103,10 @@ void LoggerWidget::createLayouts()
     line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QHBoxLayout *topLayoutCompact = new QHBoxLayout;
-
     topLayoutCompact->addWidget(new QLabel("Error : 1 Warnings : 2 Info : 3", this));
+    topLayoutCompact->addStretch(9);
     topLayoutCompact->addWidget(switchLayoutButtonCompact);
+    topLayoutCompact->addStretch(1);
 
     QHBoxLayout *topLayoutFull = new QHBoxLayout;
     topLayoutFull->addWidget(allShowButton);

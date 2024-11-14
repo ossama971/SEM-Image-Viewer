@@ -68,7 +68,11 @@ set(PROJECT_SOURCES
 
         icons/zoom-in.svg icons/zoom-out.svg
         icons/redo-icon.svg icons/undo-icon.svg
-
+        icons/undo-icon-dark-mode.svg
+        icons/redo-icon-dark-mode.svg
+        icons/play-icon-dark-mode.svg
+        icons/zoom-in-dark-mode.svg
+        icons/zoom-out-dark-mode.svg
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp

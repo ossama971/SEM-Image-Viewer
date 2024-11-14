@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ui->setupUi(this);
 
-    resize(1000, 600);  // Adjust this size as needed
+    resize(1000, 800);  // Adjust this size as needed
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     leftSidebarWidget = new LeftSidebarWidget(this);
 
     rightSidebarWidget = new RightSidebarWidget(this);
+    rightSidebarWidget->setMinimumWidth(190);
 
     topMiddleWidget = new TopMiddleWidget(this);
 
