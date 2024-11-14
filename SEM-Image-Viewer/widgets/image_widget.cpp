@@ -76,26 +76,31 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
             // Update info bar with real-time mouse position
             infoBar->setMousePosition(static_cast<int>(scenePos.x()), static_cast<int>(scenePos.y()));
             // qDebug() << "Real-time position in scene:" << scenePos; // Debug message
-            Mat img = Workspace::Instance().getActiveSession().getImageRepo().getImage()->getImageMat();
-            int x = scenePos.x();
-            int y = scenePos.y();
-            if (img.type() == CV_8UC3) {
-                cv::Vec3b intensity = img.at<cv::Vec3b>(y, x);
-                uchar blue = intensity[0];
-                uchar green = intensity[1];
-                uchar red = intensity[2];
 
-                // Use qDebug to print BGR intensity values with proper formatting
-                qDebug() << "BGR intensity at (" << x << "," << y << "): "
-                         << "B=" << blue << "G=" << green << "R=" << red;
-            }
-            else if (img.type() == CV_8UC1) {
-                // Grayscale image (8-bit single channel)
-                uchar intensity = img.at<uchar>(y, x);
-                qDebug()<< "Grayscale intensity (float) at (" << x << ", " << y << "): " << intensity ;
-            }
+            Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+            if (image)
+            {
+                Mat img = image->getImageMat();
+                int x = scenePos.x();
+                int y = scenePos.y();
+                if (img.type() == CV_8UC3) {
+                    cv::Vec3b intensity = img.at<cv::Vec3b>(y, x);
+                    uchar blue = intensity[0];
+                    uchar green = intensity[1];
+                    uchar red = intensity[2];
 
-            return true;
+                    // Use qDebug to print BGR intensity values with proper formatting
+                    qDebug() << "BGR intensity at (" << x << "," << y << "): "
+                             << "B=" << blue << "G=" << green << "R=" << red;
+                }
+                else if (img.type() == CV_8UC1) {
+                    // Grayscale image (8-bit single channel)
+                    uchar intensity = img.at<uchar>(y, x);
+                    qDebug()<< "Grayscale intensity (float) at (" << x << ", " << y << "): " << intensity ;
+                }
+
+                return true;
+            }
         }
     }
     return QWidget::eventFilter(obj, event);
