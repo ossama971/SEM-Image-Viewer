@@ -18,6 +18,7 @@
 #include "../core/engines/Workspace.h"
 #include "../core/data/Image.h"
 #include "../core/data/ImageFormat.h"
+#include "WidgetViewController.h"
 
 #include<iostream>
 
@@ -29,7 +30,7 @@ class MenuBarWidget : public QMenuBar
 {
     Q_OBJECT
 public:
-    explicit MenuBarWidget(QWidget *parent = nullptr);
+    explicit MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent = nullptr);
 
 private:
     void fileMenu();
@@ -38,18 +39,33 @@ private:
     void optionsMenu();
 
 signals:
-    void showLeftSidebarClicked(bool isChecked);
-    void showRightSidebarClicked(bool isChecked);
-    void showLoggerClicked(bool isChecked);
-    void showImageClicked(bool isChecked);
     void exportProgressUpdated();
     void exportStarted(int maxIterations);
     void exportFinished();
 private slots:
+    void showLeftSidebarClicked(bool isChecked);
+    void showRightSidebarClicked(bool isChecked);
+    void showImageClicked(bool isChecked);
+    void showLoggerClicked(bool isChecked);
     void exportImages(QString format);
     void exportSelectedImage(QString format);
+
+    void onLeftSidebarViewChanged(bool state);
+    void onRightSidebarViewChanged(bool state);
+    void onImageViewChanged(bool state);
+    void onLoggerViewChanged(bool state);
     // void exportAll();
 
+private:
+    QAction *explorerAction;
+    QAction *heatMapAction;
+    QAction *intensityPlotAction;
+    QAction *showLeftSidebarAction;
+    QAction *showRightSidebarAction;
+    QAction *showLoggerAction;
+    QAction *showImageAction;
+
+    WidgetViewController* viewController;
 };
 
 #endif // MENUBARWIDGET_H
