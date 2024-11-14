@@ -1,6 +1,8 @@
 #include "menubarwidget.h"
+#include "ImageDialog.h"
+#include "../core/engines/Workspace.h"
 
-MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
+MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent) : QMenuBar(parent), viewController(widgetViewController) {
 
     fileMenu();
     editMenu();
@@ -16,7 +18,7 @@ void MenuBarWidget::fileMenu(){
     QMenu *exportMenu = new QMenu("Export", fileMenu);//selected image
 
     QAction *openImageAction = new QAction("Open Image", this);
-    QAction *openFolderAction = new QAction("Open Forlder", this);
+    QAction *openFolderAction = new QAction("Open Folder", this);
 
     //selected image
     QAction *JPGAction = new QAction("JPG", this);
@@ -41,6 +43,9 @@ void MenuBarWidget::fileMenu(){
     fileMenu->addSeparator();
     fileMenu->addMenu(exportMenu);
     fileMenu->addMenu(exportAllMenu);
+
+    connect(openImageAction, &QAction::triggered, this, [=]() { ImageDialog::openFile(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
+    connect(openFolderAction, &QAction::triggered, this, [=]() { ImageDialog::openFolder(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
 
     connect(JPGAllAction, &QAction::triggered, this, [=]() { exportImages("*.jpg"); });
     connect(PNGAllAction, &QAction::triggered, this, [=]() { exportImages("*.png"); });
@@ -179,8 +184,6 @@ void MenuBarWidget::exportImages(QString format){
     }
 }
 
-
-
 void MenuBarWidget::editMenu(){
     QMenu *editMenu = this->addMenu("Edit");
 
@@ -199,25 +202,34 @@ void MenuBarWidget::editMenu(){
 void MenuBarWidget::viewMenu(){
     QMenu *viewMenu = this->addMenu("View");
 
-    QAction *explorerAction = new QAction("Explorer", this);
-    QAction *heatMapAction = new QAction("HeatMap", this);
-    QAction *intensityPlotAction = new QAction("Intensity Plot", this);
-    QAction *showLeftSidebarAction = new QAction("Show Left Sidebar", this);
-    QAction *showRightSidebarAction = new QAction("Show Right Sidebar", this);
-    QAction *showLoggerAction = new QAction("Show Logger Sidebar", this);
-    QAction *showImageAction = new QAction("Show Image Sidebar", this);
+    explorerAction = new QAction("Explorer", this);
+    heatMapAction = new QAction("HeatMap", this);
+    intensityPlotAction = new QAction("Intensity Plot", this);
+    showLeftSidebarAction = new QAction("Show Left Sidebar", this);
+    showRightSidebarAction = new QAction("Show Right Sidebar", this);
+    showLoggerAction = new QAction("Show Logger Sidebar", this);
+    showImageAction = new QAction("Show Image Sidebar", this);
 
     showLeftSidebarAction->setCheckable(true);
     showRightSidebarAction->setCheckable(true);
     showLoggerAction->setCheckable(true);
     showImageAction->setCheckable(true);
 
+    showLeftSidebarAction->setChecked(true);
+    showRightSidebarAction->setChecked(true);
+    showLoggerAction->setChecked(true);
+    showImageAction->setChecked(true);
 
     // showLeftSidebarAction->setChecked(false);
     connect(showLeftSidebarAction, &QAction::triggered, this, &MenuBarWidget::showLeftSidebarClicked);
     connect(showRightSidebarAction, &QAction::triggered, this, &MenuBarWidget::showRightSidebarClicked);
-    connect(showLoggerAction, &QAction::triggered, this, &MenuBarWidget::showLoggerClicked);
     connect(showImageAction, &QAction::triggered, this, &MenuBarWidget::showImageClicked);
+    connect(showLoggerAction, &QAction::triggered, this, &MenuBarWidget::showLoggerClicked);
+
+    connect(viewController, &WidgetViewController::onLeftBarViewChanged, this, &MenuBarWidget::onLeftSidebarViewChanged);
+    connect(viewController, &WidgetViewController::onRightBarViewChanged, this, &MenuBarWidget::onRightSidebarViewChanged);
+    connect(viewController, &WidgetViewController::onTopMiddleViewChanged, this, &MenuBarWidget::onImageViewChanged);
+    connect(viewController, &WidgetViewController::onBottomMiddleViewChanged, this, &MenuBarWidget::onLoggerViewChanged);
 
     viewMenu->addAction(showLeftSidebarAction);
     viewMenu->addAction(showRightSidebarAction);
@@ -238,4 +250,36 @@ void MenuBarWidget::optionsMenu(){
 
     optionsMenu->addAction(darkModeAction);
     optionsMenu->addMenu(fontMenu);
+}
+
+void MenuBarWidget::showLeftSidebarClicked(bool isChecked) {
+    viewController->showLeftBar(isChecked, true);
+}
+
+void MenuBarWidget::showRightSidebarClicked(bool isChecked) {
+    viewController->showRightBar(isChecked, true);
+}
+
+void MenuBarWidget::showImageClicked(bool isChecked) {
+    viewController->showTopMiddleBar(isChecked, true);
+}
+
+void MenuBarWidget::showLoggerClicked(bool isChecked) {
+    viewController->showBottomMiddleBar(isChecked, true);
+}
+
+void MenuBarWidget::onLeftSidebarViewChanged(bool state) {
+    showLeftSidebarAction->setChecked(state);
+}
+
+void MenuBarWidget::onRightSidebarViewChanged(bool state) {
+    showRightSidebarAction->setChecked(state);
+}
+
+void MenuBarWidget::onImageViewChanged(bool state) {
+    showImageAction->setChecked(state);
+}
+
+void MenuBarWidget::onLoggerViewChanged(bool state) {
+    showLoggerAction->setChecked(state);
 }

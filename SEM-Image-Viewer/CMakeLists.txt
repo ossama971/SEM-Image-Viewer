@@ -97,6 +97,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         widgets/progressbar.h
         widgets/progressbar.cpp
+        widgets/FileBrowserWidget.cpp widgets/FileBrowserWidget.h widgets/FileIconHider.cpp widgets/FileIconHider.h widgets/ImageFilterProxyModel.cpp widgets/ImageFilterProxyModel.h
+        widgets/ImageDialog.cpp widgets/ImageDialog.h
+        widgets/WidgetViewController.cpp widgets/WidgetViewController.h
 
 
 

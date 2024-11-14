@@ -9,6 +9,7 @@
 #include "widgets/rightsidebarwidget.h"
 #include "widgets/topmiddlewidget.h"
 #include "widgets/menubarwidget.h"
+#include "widgets/WidgetViewController.h"
 
 #include <QApplication>
 #include <QMainWindow>
@@ -44,6 +45,7 @@ private:
     Ui::MainWindow *ui;
     ImageWidget *imageWidget;  // Member variable for the custom widget
 
+    WidgetViewController *viewController;
     LeftSidebarWidget *leftSidebarWidget;
     RightSidebarWidget *rightSidebarWidget;
     TopMiddleWidget *topMiddleWidget;

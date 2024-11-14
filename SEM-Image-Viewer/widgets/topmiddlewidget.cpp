@@ -1,6 +1,6 @@
 #include "topmiddlewidget.h"
 #include "controllerWidget.h"
-TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
+TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     //setStyleSheet("background-color: #00ee00;");
@@ -26,6 +26,10 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent) {
 
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);
+}
+
+void TopMiddleWidget::setViewController(WidgetViewController* widgetViewController) {
+    viewController = widgetViewController;
 }
 
 void TopMiddleWidget::setMaxMinHeight(int mn, int mx){
