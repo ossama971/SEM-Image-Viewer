@@ -113,6 +113,26 @@ void MainWindow::onShowImageClicked(bool isChecked) {
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    SaveDialogWidget saveDialog(this);
+
+    connect(&saveDialog, &SaveDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
+    connect(&saveDialog, &SaveDialogWidget::dontSaveRequested, this, &QApplication::quit);
+
+    if (saveDialog.exec() == QDialog::Rejected) {
+        event->ignore();  // Keep the application open if the user clicked "Cancel"
+    } else {
+        event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
+    }
+}
+
+void MainWindow::onSaveChangesClicked() {
+    // Your code to save changes here
+
+    QMessageBox::information(this, "Save", "Changes have been saved.");
+    QApplication::quit();  // Exit after saving
+}
+
 
 MainWindow::~MainWindow()
 {

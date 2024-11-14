@@ -7,7 +7,7 @@
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
-    load_directory("/Users/osama/Developer/SiemensFinalProj/SEM-Image-Viewer/assets");
+    load_directory("/Users/salmaabdelghany/Siemens/FinalProject/load");
 }
 
 bool ImageRepository::load_directory(const std::string &path)
