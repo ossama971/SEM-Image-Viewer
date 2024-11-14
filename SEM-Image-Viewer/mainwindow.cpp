@@ -129,6 +129,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::onSaveChangesClicked() {
     // Your code to save changes here
 
+    // JsonVisitor visitor;
+    // Workspace::Instance()->getActiveSession().accept(visitor);
+    // visitor.write_json("session.json");
+
     QMessageBox::information(this, "Save", "Changes have been saved.");
     QApplication::quit();  // Exit after saving
 }
