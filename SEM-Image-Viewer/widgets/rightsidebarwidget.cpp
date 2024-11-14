@@ -5,6 +5,7 @@
 #include "grayscalewidget.h"
 #include "noisereductionwidget.h"
 #include "historywidget.h"
+#include "actionlistwidget.h"
 
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr)
 {
