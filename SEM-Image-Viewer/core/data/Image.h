@@ -38,6 +38,11 @@ public:
 
     void accept(Visitor &v) const override;
 
+    QString GetCurrentAction() const;
+    bool undo();
+    bool redo();
+    QList<QString> getHistory();
+
 signals:
     void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);
 
@@ -46,7 +51,7 @@ private:
     std::filesystem::path _path;
     ImageMetadata _metadata;
     std::vector<std::unique_ptr<ImageState>> _states;
-    std::vector<std::unique_ptr<ImageState>> _undo;
+    std::vector<std::unique_ptr<ImageState>> _redo;
 };
 
 #endif // IMAGE_H

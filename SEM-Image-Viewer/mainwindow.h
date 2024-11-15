@@ -9,6 +9,9 @@
 #include "widgets/rightsidebarwidget.h"
 #include "widgets/topmiddlewidget.h"
 #include "widgets/menubarwidget.h"
+#include "widgets/savedialogwidget.h"
+// #include "core/engines/JsonVisitor.h"
+#include "widgets/WidgetViewController.h"
 
 #include <QApplication>
 #include <QMainWindow>
@@ -17,6 +20,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QIcon>
+#include <QCloseEvent>
+#include <QMessageBox>
 
 #include "widgets/image_widget.h"
 
@@ -37,13 +42,18 @@ public slots:
     void onShowRightSidebarClicked(bool isChecked);
     void onShowLoggerClicked(bool isChecked);
     void onShowImageClicked(bool isChecked);
+    void onSaveChangesClicked();
 
 private slots:
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
     ImageWidget *imageWidget;  // Member variable for the custom widget
 
+    WidgetViewController *viewController;
     LeftSidebarWidget *leftSidebarWidget;
     RightSidebarWidget *rightSidebarWidget;
     TopMiddleWidget *topMiddleWidget;
@@ -56,5 +66,6 @@ private:
 
 
 };
+
 
 #endif // MAINWINDOW_H

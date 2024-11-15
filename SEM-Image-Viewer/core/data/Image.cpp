@@ -1,25 +1,25 @@
 #include "Image.h"
 #include <QDebug>
 
-Image::Image() : _loaded(false) {}
+Image::Image() : _loaded(false) {
+}
 
 Image::Image(std::filesystem::path path) { load(path); }
 
-Image::Image(const Image &image)
-    : _loaded(image._loaded), _path(image._path), _metadata(image._metadata) {
-  _states.reserve(image._states.size());
-  for (const std::unique_ptr<ImageState> &it : image._states)
-    _states.push_back(std::make_unique<ImageState>(*it));
+Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _metadata(image._metadata) {
+    _states.reserve(image._states.size());
+    for (const std::unique_ptr<ImageState>& it : image._states)
+        _states.push_back(std::make_unique<ImageState>(*it));
 
-  _undo.reserve(image._undo.size());
-  for (const std::unique_ptr<ImageState> &it : image._undo)
-    _undo.push_back(std::make_unique<ImageState>(*it));
+    _redo.reserve(image._redo.size());
+    for (const std::unique_ptr<ImageState>& it : image._redo)
+        _redo.push_back(std::make_unique<ImageState>(*it));
 }
 
 Image::Image(Image &&image)
     : _loaded(image._loaded), _path(std::move(image._path)),
       _metadata(std::move(image._metadata)), _states(std::move(image._states)),
-      _undo(std::move(image._undo)) {
+      _redo(std::move(image._redo)) {
   image._loaded = false;
 }
 
@@ -36,9 +36,9 @@ Image &Image::operator=(const Image &image) {
     _states.push_back(std::make_unique<ImageState>(*state));
   }
 
-  _undo.clear();
-  for (const auto &undoState : image._undo) {
-    _undo.push_back(std::make_unique<ImageState>(*undoState));
+  _redo.clear();
+  for (const auto &undoState : image._redo) {
+    _redo.push_back(std::make_unique<ImageState>(*undoState));
   }
 
   return *this;
@@ -52,7 +52,7 @@ Image &Image::operator=(Image &&image) {
   _path = std::move(image._path);
   _metadata = std::move(image._metadata);
   _states = std::move(image._states);
-  _undo = std::move(image._undo);
+  _redo = std::move(image._redo);
 
   image._loaded = false;
 
@@ -78,22 +78,95 @@ bool Image::load(const std::filesystem::path path) {
 }
 
 bool Image::setImage(cv::Mat image, ImageStateSource newState) {
-  if (!_loaded)
-    return false;
-  if (image.empty())
-    return false;
-
+    if (image.empty()){
+        return false;
+    }
   _states.push_back(std::make_unique<ImageState>(newState, std::move(image)));
-
   emit onImageStateUpdated(_states);
   return true;
 }
 
 bool Image::isLoaded() const { return _loaded; }
 
-cv::Mat &Image::getImageMat() const { return _states.front()->Image; }
+bool  Image::undo(){
+    if (!_loaded){
+        //logger
+        return false;
+    }
+    if(_states.size()<2){
+        //logger
+        return false;
+    }
 
-ImageStateSource Image::getImageState() const { return _states.front()->State; }
+    _redo.push_back(std::move(_states.back()));
+
+    _states.pop_back();
+
+    emit onImageStateUpdated(_states);
+    return true;
+}
+
+bool  Image::redo(){
+    if (!_loaded){
+        //logger
+        return false;
+    }
+    if(_redo.empty()){
+        //logger
+        return false;
+    }
+
+    _states.push_back(std::move(_redo.back()));
+
+    _redo.pop_back();
+
+    emit onImageStateUpdated(_states);
+    return true;
+}
+
+QList<QString> Image::getHistory(){
+    QList<QString> actionsList;
+
+    for(int i=0;i<_states.size();i++){
+        if(_states[i]->State==ImageStateSource::GrayScaleFilter){
+            actionsList.append("Gray Scale Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::NoiseReductionFilter){
+            actionsList.append("Noise Reduction Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::SharpenFilter){
+            actionsList.append("Sharpen Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::EdgeDetectionFilter){
+            actionsList.append("Edge Detection Filter");
+        }
+    }
+    return actionsList;
+}
+
+cv::Mat& Image::getImageMat() const {
+    return _states.back()->Image;
+}
+
+ImageStateSource Image::getImageState() const {
+    return _states.back()->State;
+}
+
+QString Image::GetCurrentAction() const {
+    if(_states.back()->State==ImageStateSource::GrayScaleFilter){
+        return "Gray Scale Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::NoiseReductionFilter){
+         return  "Noise Reduction Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::SharpenFilter){
+        return "Sharpen Filter";
+    }
+    else if(_states.back()->State==ImageStateSource::EdgeDetectionFilter){
+        return "Edge Detection Filter";
+    }
+    return "";
+}
 
 std::filesystem::path Image::getPath() const { return _path; }
 
@@ -102,7 +175,7 @@ std::vector<std::unique_ptr<ImageState>> const &Image::getStates() const {
 }
 
 std::vector<std::unique_ptr<ImageState>> const &Image::getUndo() const {
-  return _undo;
+  return _redo;
 }
 
 ImageMetadata Image::getMetadata() const { return _metadata; }

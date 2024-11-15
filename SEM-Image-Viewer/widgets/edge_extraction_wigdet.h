@@ -23,6 +23,8 @@ private:
     QSlider *lowThresholdSlider;
     QSlider *highThresholdSlider;
     QWidget *slidersWidget;
+    QLabel *low;
+    QLabel *high;
 signals:
     void thresholdLowChanged(int value);
     void thresholdHighChanged(int value);

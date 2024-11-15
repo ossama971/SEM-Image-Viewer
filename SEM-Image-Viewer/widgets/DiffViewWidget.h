@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "image_widget.h"
+#include "ImageWidgetCore.h"
 
 class DiffViewWidget : public QWidget {
   Q_OBJECT
@@ -20,9 +20,9 @@ public slots:
   void setImages(const Image &upperImage, const Image &lowerImage);
 
 private:
-  ImageWidget *upperImageWidget;
-  ImageWidget *lowerImageWidget;
-  ImageWidget *diffImageWidget;
+  ImageWidgetCore *upperImageWidget;
+  ImageWidgetCore *lowerImageWidget;
+  ImageWidgetCore *diffImageWidget;
 
   int threshold = 30;
 

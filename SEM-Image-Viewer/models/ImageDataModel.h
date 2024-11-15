@@ -16,10 +16,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void loadImages(int startIndex, int endIndex);  // New function to load images in chunks
-    void evictOldThumbnails();  // New function to evict old cached thumbnails
 
 public slots:
-    void updateImages(const std::vector<Image> &images);  // Slot to receive images from ImageRepository
+    void updateImages(const std::string newDir, std::vector<Image>* newImages, bool image_load);  // Slot to receive images from ImageRepository
 
 private:
     QList<Image> images;

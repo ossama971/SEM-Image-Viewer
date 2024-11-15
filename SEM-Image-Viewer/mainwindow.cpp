@@ -40,6 +40,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
+    viewController = new WidgetViewController(leftSidebarWidget, rightSidebarWidget, topMiddleWidget, bottomMiddleWidget, this);
+
+    leftSidebarWidget->setViewController(viewController);
+    rightSidebarWidget->setViewController(viewController);
+    topMiddleWidget->setViewController(viewController);
+    bottomMiddleWidget->setViewController(viewController);
+
     // Create the MiniGrid instance
     MiniGrid *miniGrid = new MiniGrid(this);
 
@@ -59,20 +66,18 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
+    menuBarWidget = new MenuBarWidget(viewController, this);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(menuBarWidget);
     layout->addWidget(mainSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
-
-    menuBarWidget = new MenuBarWidget(this);
-
-
-    connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
-    connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
-    connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
-    connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+    //connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
     connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
@@ -111,6 +116,30 @@ void MainWindow::onShowImageClicked(bool isChecked) {
     } else {
         topMiddleWidget->hide();
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    SaveDialogWidget saveDialog(this);
+
+    connect(&saveDialog, &SaveDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
+    connect(&saveDialog, &SaveDialogWidget::dontSaveRequested, this, &QApplication::quit);
+
+    if (saveDialog.exec() == QDialog::Rejected) {
+        event->ignore();  // Keep the application open if the user clicked "Cancel"
+    } else {
+        event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
+    }
+}
+
+void MainWindow::onSaveChangesClicked() {
+    // Your code to save changes here
+
+    // JsonVisitor visitor;
+    // Workspace::Instance()->getActiveSession().accept(visitor);
+    // visitor.write_json("session.json");
+
+    QMessageBox::information(this, "Save", "Changes have been saved.");
+    QApplication::quit();  // Exit after saving
 }
 
 
