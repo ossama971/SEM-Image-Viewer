@@ -20,12 +20,13 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
     
     connect(toolbar->button1, &QToolButton::clicked, this, &TopMiddleWidget::onButton1Clicked);
+    connect(toolbar->button2, &QToolButton::clicked, this, &TopMiddleWidget::onButton2Clicked);
     connect(toolbar->button3, &QToolButton::clicked, this, &TopMiddleWidget::onButton3Clicked);
 
     topMiddleLayout->addWidget(toolbar, 0, Qt::AlignTop);
     topMiddleLayout->addWidget(topMiddleContent);
-    // topMiddleLayout->addWidget(image);
-    topMiddleLayout->addWidget(gridView);
+    topMiddleLayout->addWidget(image);
+    //topMiddleLayout->addWidget(gridView);
 
     Controller::instance().setImageWidget(image);
     this->setLayout(topMiddleLayout);
@@ -50,18 +51,28 @@ void TopMiddleWidget::openDiffView() {
 void TopMiddleWidget::onButton1Clicked(){
     layout()->removeWidget(gridView);
     gridView->setVisible(false);
+    topMiddleLayout->removeWidget(diffView);
+    diffView->setVisible(false);
 
     layout()->addWidget(image);
     image->setVisible(true);
 }
 
 void TopMiddleWidget::onButton2Clicked(){
-    // Handle button 2 click
+    topMiddleLayout->removeWidget(gridView);
+    gridView->setVisible(false);
+    layout()->removeWidget(image);
+    image->setVisible(false);
+
+    topMiddleLayout->addWidget(diffView);
+    diffView->setVisible(true);
 }
 
 void TopMiddleWidget::onButton3Clicked() {
     layout()->removeWidget(image);
     image->setVisible(false);
+    topMiddleLayout->removeWidget(diffView);
+    diffView->setVisible(false);
 
     layout()->addWidget(gridView);
     gridView->setVisible(true);
