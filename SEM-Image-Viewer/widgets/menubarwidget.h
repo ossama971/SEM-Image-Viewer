@@ -39,10 +39,13 @@ private:
     void viewMenu();
     void optionsMenu();
 
+    void saveSession();
+
 signals:
     void exportProgressUpdated();
     void exportStarted(int maxIterations);
     void exportFinished();
+
 private slots:
     void showLeftSidebarClicked(bool isChecked);
     void showRightSidebarClicked(bool isChecked);

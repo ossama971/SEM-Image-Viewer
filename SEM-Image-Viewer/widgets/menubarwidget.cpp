@@ -68,11 +68,7 @@ void MenuBarWidget::fileMenu(){
     connect(PNGAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.png"); });
     connect(BMPAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.bmp"); });
 
-    connect(saveSessionAction, &QAction::triggered, this, [=]() {
-        JsonVisitor visitor;
-        Workspace::Instance()->getActiveSession().accept(visitor);
-        visitor.write_json("session.json");
-    });
+    connect(saveSessionAction, &QAction::triggered, this, [=]() { saveSession(); });
 }
 
 void MenuBarWidget::exportSelectedImage(QString format){
@@ -279,4 +275,25 @@ void MenuBarWidget::onImageViewChanged(bool state) {
 
 void MenuBarWidget::onLoggerViewChanged(bool state) {
     showLoggerAction->setChecked(state);
+}
+
+void MenuBarWidget::saveSession() {
+    QThread* saveThread = new QThread;
+
+    QObject* worker = new QObject();
+    worker->moveToThread(saveThread);
+
+    connect(saveThread, &QThread::started, [worker]() {
+        JsonVisitor visitor;
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json("session.json");
+
+        emit worker->destroyed();
+    });
+
+    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+    saveThread->start();
 }
