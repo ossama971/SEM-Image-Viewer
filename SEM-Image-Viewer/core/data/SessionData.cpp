@@ -77,17 +77,14 @@ cv::Mat SessionData::diffTwoImages(const cv::Mat &image2,
 bool SessionData::undo(){
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage){
-
         return true;
     }
-
 
     if (selectedImage->undo()){
         emit popActionList();
     }
+    return true; // TODO: return true or false?
 }
-
-
 
 bool SessionData::redo(){
     Image* selectedImage = _imageRepo.getImage();

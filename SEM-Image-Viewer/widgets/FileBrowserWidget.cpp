@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 
 FileBrowserWidget::FileBrowserWidget(QWidget *parent)
-    : QWidget{parent}, _rootDir(""), _imageRepo(&Workspace::Instance().getActiveSession().getImageRepo()), viewController(nullptr)
+    : QWidget{parent}, _rootDir(""), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo()), viewController(nullptr)
 {
     imageDialog = new ImageDialog(this);
 

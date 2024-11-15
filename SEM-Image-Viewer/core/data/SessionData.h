@@ -3,7 +3,6 @@
 
 #include "ImageRepository.h"
 #include "../filters/ImageFilter.h"
-#include <QObject.h>
 
 class SessionData : public QObject {
      Q_OBJECT

@@ -12,6 +12,8 @@
 
 #include "image_widget.h"
 #include "GridView.h"
+#include "DiffViewWidget.h"
+#include "toolbar_widget.h"
 
 class TopMiddleWidget : public QWidget
 {
@@ -31,12 +33,14 @@ private slots:
     void onButton3Clicked();
 
 private:
-    QWidget *toolbar;
+    ToolbarWidget *toolbar;
     QPushButton *button1;
     QPushButton *button2;
     QPushButton *button3;
     ImageWidget *image;
     GridView *gridView;
+    DiffViewWidget *diffView;
+    QVBoxLayout *topMiddleLayout;
 
 private:
     WidgetViewController* viewController;

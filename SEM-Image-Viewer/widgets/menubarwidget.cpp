@@ -11,6 +11,9 @@ MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget
     viewMenu();
     optionsMenu();
 
+    // make the menu bar expanded by default
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
 }
 
 void MenuBarWidget::fileMenu(){
@@ -46,8 +49,8 @@ void MenuBarWidget::fileMenu(){
     fileMenu->addMenu(exportMenu);
     fileMenu->addMenu(exportAllMenu);
 
-    connect(openImageAction, &QAction::triggered, this, [=]() { imageDialog->openFile(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
-    connect(openFolderAction, &QAction::triggered, this, [=]() { imageDialog->openFolder(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
+    connect(openImageAction, &QAction::triggered, this, [=]() { imageDialog->openFile(&Workspace::Instance()->getActiveSession().getImageRepo(), this); });
+    connect(openFolderAction, &QAction::triggered, this, [=]() { imageDialog->openFolder(&Workspace::Instance()->getActiveSession().getImageRepo(), this); });
 
     connect(JPGAllAction, &QAction::triggered, this, [=]() { exportImages("*.jpg"); });
     connect(PNGAllAction, &QAction::triggered, this, [=]() { exportImages("*.png"); });
@@ -61,7 +64,7 @@ void MenuBarWidget::fileMenu(){
 
 void MenuBarWidget::exportSelectedImage(QString format){
     qDebug("-------------------------------------------------exportSelctedImage called-------------------------------------------------");
-    Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+    Image* image = Workspace::Instance()->getActiveSession().getImageRepo().getImage();
 
     string fileName = image->getPath().filename().string();
     size_t lastDot = fileName.find_last_of('.');
@@ -94,7 +97,7 @@ void MenuBarWidget::exportImages(QString format) {
     qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
 
     // Collect necessary data
-    vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+    vector<Image> images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
 
     QString directoryPath = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Images"));
 

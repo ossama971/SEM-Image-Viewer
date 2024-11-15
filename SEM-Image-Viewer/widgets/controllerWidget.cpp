@@ -11,7 +11,7 @@
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() : SessionData_(Workspace::Instance().getActiveSession()) {
+Controller::Controller() : SessionData_(Workspace::Instance()->getActiveSession()) {
     SessionData_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
 }
 
@@ -63,7 +63,6 @@ void Controller::setNoiseReductionWidget(NoiseReductionWidget *widget)
     noiseReductionWidget = widget;
     if (noiseReductionWidget)
     {
-        // Connect the EdgeExtractionWidget's signal to the controller's slot
         connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
     }
 }

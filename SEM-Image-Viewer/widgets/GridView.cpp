@@ -8,6 +8,8 @@
 #include <QCheckBox>
 #include <QStyle>
 
+#include <QDebug>
+
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -37,7 +39,7 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &GridView::handleSelectionChanged);
 
     // Connect to know new image selected
-    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &GridView::onImageChanged);
+    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &GridView::onImageChanged);
 
     // Connect the scrollbar to load more images when necessary
     connect(listView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GridView::onScroll);
@@ -48,8 +50,9 @@ void GridView::handleSelectionChanged(const QItemSelection &selected, const QIte
     if (!selectedIndexes.isEmpty()) {
         if (selectedIndexes.size()==1){
             int selectedIndex = selectedIndexes.first().row();  // Get the selected index
-            Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+            Workspace::Instance()->getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
+        qDebug() << "Selected Indexes:" << selectedIndexes.size();
 
         // Store two selected images if exactly two are selected
         if (selectedIndexes.size() == 2) {

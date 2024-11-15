@@ -8,7 +8,7 @@
 #include "actionlistwidget.h"
 #include "../core/engines/Workspace.h"
 
-RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr), _imageRepo(&Workspace::Instance().getActiveSession().getImageRepo())
+RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
