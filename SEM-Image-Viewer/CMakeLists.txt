@@ -66,7 +66,7 @@ set(PROJECT_SOURCES
         widgets/image_info_bar.h widgets/image_info_bar.cpp
         resources.qrc
         icons/zoom-in.svg icons/zoom-out.svg
-
+        icons/edit-view.png
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
@@ -87,7 +87,7 @@ set(PROJECT_SOURCES
         core/data/ImageState.cpp core/data/ImageState.h
         core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
         widgets/grayscalewidget.h widgets/grayscalewidget.cpp
-        widgets/noisereductionwidget.h widgets/noisereductionwidget.cpp
+        widgets/noisereductionwidget.h widgets/noisereductionwidget.cpp widgets/toolbar_widget.cpp widgets/toolbar_widget.h
 
 )
 

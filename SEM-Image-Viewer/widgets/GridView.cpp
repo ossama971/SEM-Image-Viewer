@@ -1,17 +1,29 @@
 #include "GridView.h"
+#include "../core/engines/Workspace.h"
+#include "ThumbnailDelegate.h"
+
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QMenu>
-#include "../core/engines/Workspace.h"
-#include "ThumbnailDelegate.h"
+#include <QCheckBox>
+#include <QStyle>
 
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(listView);
-    setLayout(layout);
+    // Initialize main layout as a grid layout
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QCheckBox *selectToggleCheckbox = new QCheckBox("Select All", this);
+
+    mainLayout->addWidget(selectToggleCheckbox);
+    mainLayout->addWidget(listView);
+
+    // Set the layout for this widget
+    setLayout(mainLayout);
+    connect(selectToggleCheckbox, &QCheckBox::clicked, this, [=](bool checked) {
+        toggleSelectAll(selectToggleCheckbox, checked);
+    });
 
     // To show menu bar
     listView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -31,13 +43,12 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     connect(listView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GridView::onScroll);
 }
 
-
 void GridView::handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
     if (!selectedIndexes.isEmpty()) {
-        int selectedIndex = selectedIndexes.first().row();  // Get the first selected index
-        if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
-            //qDebug() << "Selected Image Row:" << selectedIndex;
+        //if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
+        if (selectedIndexes.size()==1){
+            int selectedIndex = selectedIndexes.first().row();  // Get the selected index
             Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
 
@@ -45,6 +56,10 @@ void GridView::handleSelectionChanged(const QItemSelection &selected, const QIte
         if (selectedIndexes.size() == 2) {
             firstImage = imageDataModel->getImageAt(selectedIndexes[0].row());
             secondImage = imageDataModel->getImageAt(selectedIndexes[1].row());
+        }
+
+        if(selectedIndexes.size() >2){
+            //send batch images to image repository
         }
     }
 }
@@ -56,10 +71,7 @@ void GridView::setModel(ImageDataModel *model) {
 }
 
 void GridView::initializeGrid() {
-    listView->setContentsMargins(20, 20, 20, 20);
-
-    //listView->setGridSize(QSize(120 + 2 * 20, 120 + 2 * 20));  // Make sure the grid size includes padding
-
+    listView->setContentsMargins(2, 2, 2, 2);
     listView->setViewMode(QListView::IconMode);
     listView->setSpacing(50);
     listView->setResizeMode(QListView::Adjust);
@@ -88,7 +100,7 @@ void GridView::onScroll(int value) {
     if (value == maxScroll) {
         // Load the next 20 images
         int startIndex = imageDataModel->rowCount();
-        int endIndex = startIndex + 20; // Load the next 20 images (example)
+        int endIndex = startIndex + 20; // Load the next 20 images
         imageDataModel->loadImages(startIndex, endIndex);
     }
 }
@@ -107,4 +119,16 @@ void GridView::showContextMenu(const QPoint &pos) {
 void GridView::openInDiffView() {
     emit openDiffView();
     emit openDiffViewRequested(firstImage, secondImage);
+}
+
+void GridView::toggleSelectAll(QCheckBox *checkbox, bool checked) {
+    if (checked) {
+        // Select all
+        listView->selectAll();
+        checkbox->setText("Unselect All");
+    } else {
+        // Deselect all
+        listView->clearSelection();
+        checkbox->setText("Select All");
+    }
 }

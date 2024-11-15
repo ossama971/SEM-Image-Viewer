@@ -2,12 +2,12 @@
 #include <filesystem>
 #include <string>
 #include <regex>
+#include <QDebug>
 
 #define IMAGE_FILE_REGEX "\.(png|jpg|bmp|)$"
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr)
-{
-    load_directory("D:\\Test");
+ImageRepository::ImageRepository() : _selectedImage(nullptr) {
+    load_directory("C:/Users/nahel/OneDrive/Pictures/test");
 }
 
 bool ImageRepository::load_directory(const std::string &path)
@@ -38,6 +38,7 @@ bool ImageRepository::load_directory(const std::string &path)
 
         _images = std::move(images);
         emit onDirectoryChanged(_images);
+        qDebug() << "onDirectoryChanged emitted with" << _images.size() << "images";
 
         return true;
     }

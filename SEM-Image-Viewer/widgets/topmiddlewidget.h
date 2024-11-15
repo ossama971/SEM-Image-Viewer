@@ -3,15 +3,11 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QApplication>
-#include <QMainWindow>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QPushButton>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QToolButton>
 
 #include "image_widget.h"
 #include "GridView.h"
@@ -25,8 +21,20 @@ public:
 public slots:
     void setMaxMinHeight(int mn, int mx);
     void openDiffView();
+
+private slots:
+    void onButton1Clicked();
+    void onButton2Clicked();
+    void onButton3Clicked();
+
+private:
+    QWidget *toolbar;
+    QPushButton *button1;
+    QPushButton *button2;
+    QPushButton *button3;
+    ImageWidget *image;
+    GridView *gridView;
+
 };
 
 #endif // TOPMIDDLEWIDGET_H
-
-
