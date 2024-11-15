@@ -19,7 +19,7 @@ public:
     void evictOldThumbnails();  // New function to evict old cached thumbnails
 
 public slots:
-    void updateImages(const std::vector<Image> &images);  // Slot to receive images from ImageRepository
+    void updateImages(const std::string newDir, const std::vector<Image> *images);  // Slot to receive images from ImageRepository
 
 private:
     QList<Image> images;

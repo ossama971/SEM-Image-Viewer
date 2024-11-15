@@ -10,15 +10,14 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     // Connect the repository's signal to the data model's slot
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
                      this, &ImageDataModel::updateImages);
-    Workspace::Instance()->getActiveSession().loadDirectory("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets");
-
+    Workspace::Instance()->getActiveSession().loadDirectory("");
     // Initially load a small subset of images
     loadImages(0, 20);
 }
 
-void ImageDataModel::updateImages(const std::vector<Image> &newImages) {
+void ImageDataModel::updateImages(const std::string newDir, const std::vector<Image> *newImages) {
     beginResetModel();
-    images = QList<Image>(newImages.begin(), newImages.end());
+    images = QList<Image>(newImages->begin(), newImages->end());
     endResetModel();
     loadImages(0, 20);  // Load the first 20 images after updating
 }

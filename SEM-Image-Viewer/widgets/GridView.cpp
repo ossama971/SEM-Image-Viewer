@@ -60,7 +60,9 @@ void GridView::setModel(ImageDataModel *model) {
 
 void GridView::initializeGrid() {
     listView->setContentsMargins(20, 20, 20, 20);
+
     //listView->setGridSize(QSize(120 + 2 * 20, 120 + 2 * 20));  // Make sure the grid size includes padding
+
     listView->setViewMode(QListView::IconMode);
     listView->setSpacing(50);
     listView->setResizeMode(QListView::Adjust);

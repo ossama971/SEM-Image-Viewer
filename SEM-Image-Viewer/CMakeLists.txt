@@ -24,13 +24,18 @@ endif()
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-set(OpenCV_DIR $ENV{OpenCV})
+message(STATUS "Qt Version: ${Qt${QT_VERSION_MAJOR}_VERSION}")
+message(STATUS "Qt Widgets Include Dir: ${Qt${QT_VERSION_MAJOR}_Widgets_INCLUDE_DIRS}")
+message(STATUS "Qt Widgets Library: ${Qt${QT_VERSION_MAJOR}_Widgets_LIBRARIES}")
+message(STATUS "Qt Core Include Dir: ${Qt${QT_VERSION_MAJOR}_Core_INCLUDE_DIRS}")
+message(STATUS "Qt Core Library: ${Qt${QT_VERSION_MAJOR}_Core_LIBRARIES}")
+message(STATUS "Qt Plugins Dir: ${Qt${QT_VERSION_MAJOR}_PLUGINS_DIR}")
 
+set(OpenCV_DIR $ENV{OpenCV})
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(BOOST_ROOT $ENV{Boost})
-
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -61,6 +66,14 @@ set(PROJECT_SOURCES
     core/engines/Logger.h
     core/engines/Workspace.cpp
     core/engines/Workspace.h
+    core/filters/EdgeDetectionFilter.cpp
+    core/filters/EdgeDetectionFilter.h
+    core/filters/GrayScaleFilter.cpp
+    core/filters/GrayScaleFilter.h
+    core/filters/ImageFilter.cpp
+    core/filters/ImageFilter.h
+    core/filters/NoiseReductionFilter.cpp
+    core/filters/NoiseReductionFilter.h
     core/filters/SharpenFilter.cpp
     core/filters/SharpenFilter.h
     core/imageeditor.h
@@ -70,6 +83,8 @@ set(PROJECT_SOURCES
     core/data/ImageFormat.h
     core/data/ImageColorSpace.h
     # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
+    widgets/actionListWidget.cpp
+    widgets/actionlistwidget.h
     widgets/bottommiddlewidget.cpp
     widgets/bottommiddlewidget.h
     widgets/controllerWidget.cpp
@@ -102,6 +117,12 @@ set(PROJECT_SOURCES
     widgets/progressbar.cpp
     widgets/rightsidebarwidget.cpp
     widgets/rightsidebarwidget.h
+    widgets/savedialogwidget.cpp
+    widgets/savedialogwidget.h
+    widgets/grayscalewidget.cpp
+    widgets/grayscalewidget.h
+    widgets/noisereductionwidget.cpp
+    widgets/noisereductionwidget.h
     widgets/sharpen_filter_widget.cpp
     widgets/sharpen_filter_widget.h
     widgets/topmiddlewidget.cpp
@@ -109,6 +130,16 @@ set(PROJECT_SOURCES
     widgets/zoom_widget.cpp
     widgets/zoom_widget.h
     widgets/ThumbnailDelegate.h
+    widgets/FileBrowserWidget.cpp 
+    widgets/FileBrowserWidget.h 
+    widgets/FileIconHider.cpp 
+    widgets/FileIconHider.h 
+    widgets/ImageFilterProxyModel.cpp 
+    widgets/ImageFilterProxyModel.h
+    widgets/ImageDialog.cpp 
+    widgets/ImageDialog.h
+    widgets/WidgetViewController.cpp 
+    widgets/WidgetViewController.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
     models/MessageDataModel.cpp

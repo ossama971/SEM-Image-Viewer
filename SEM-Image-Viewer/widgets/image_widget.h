@@ -22,7 +22,7 @@ public:
     explicit ImageWidget(QWidget *parent = nullptr);
     void loadAndDisplayImage(const Image &image);
     cv::Mat getImage() const;
-    ImageRepository *imagerepo = new ImageRepository;
+    ImageRepository *imagerepo;
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -62,6 +62,7 @@ signals:
 
 public slots:
     void updateImage(const cv::Mat &image);
+    void onupdateImageState(std::vector<std::unique_ptr<ImageState>>& states);
 };
 
 #endif // IMAGEWIDGET_H

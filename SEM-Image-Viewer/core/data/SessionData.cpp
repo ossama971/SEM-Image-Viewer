@@ -7,6 +7,12 @@ void SessionData::loadDirectory(const std::string path) {
 
 void SessionData::loadImage(const std::string path) {
     _imageRepo.load_image(path);
+
+    Image* selectedImage = _imageRepo.getImage();
+    if (!selectedImage)
+        return;
+
+    emit loadActionList(selectedImage->getHistory());
 }
 
 void SessionData::saveImage(const std::string path, ImageFormat format) {
@@ -17,12 +23,17 @@ void SessionData::saveImage(const std::string path, ImageFormat format) {
     _imageRepo.save(*selectedImage, format, path);
 }
 
+
+
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
+
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
 
+
     selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
+    emit updateActionList(selectedImage->GetCurrentAction());
 }
 
 std::vector<int>
@@ -61,6 +72,31 @@ cv::Mat SessionData::diffTwoImages(const cv::Mat &image2,
     cv::Mat res;
     cv::bitwise_and(image1, image1, res, mask);
     return res;
+}
+
+bool SessionData::undo(){
+    Image* selectedImage = _imageRepo.getImage();
+    if (!selectedImage){
+        return true;
+    }
+
+    if (selectedImage->undo()){
+        emit popActionList();
+    }
+    return true; // TODO: return true or false?
+}
+
+bool SessionData::redo(){
+    Image* selectedImage = _imageRepo.getImage();
+    if (!selectedImage)
+        //logger
+        return false;
+
+
+    if(selectedImage->redo()){
+        emit updateActionList(selectedImage->GetCurrentAction());
+    }
+    return true;
 }
 
 ImageRepository& SessionData::getImageRepo() {
