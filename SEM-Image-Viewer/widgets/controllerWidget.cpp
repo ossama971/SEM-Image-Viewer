@@ -63,7 +63,6 @@ void Controller::setNoiseReductionWidget(NoiseReductionWidget *widget)
     noiseReductionWidget = widget;
     if (noiseReductionWidget)
     {
-        // Connect the EdgeExtractionWidget's signal to the controller's slot
         connect(noiseReductionWidget, &NoiseReductionWidget::applyFilter, this, &Controller::onNoiseReductionFilterApplied);
     }
 }

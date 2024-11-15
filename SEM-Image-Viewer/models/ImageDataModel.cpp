@@ -14,9 +14,11 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
 
 void ImageDataModel::updateImages(const std::string newDir, std::vector<Image>* newImages, bool image_load) {
     beginResetModel();
+    images.clear();
+    m_thumbnails.clear();
     images = QList<Image>(newImages->begin(), newImages->end());
     endResetModel();
-    loadImages(0, 20);  // Load the first 20 images after updating
+    loadImages(0, 20);
 }
 
 int ImageDataModel::rowCount(const QModelIndex &parent) const {

@@ -22,10 +22,10 @@ public:
 private slots:
     void handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void toggleSelectAll(QCheckBox *checkbox, bool checked);
-    void showContextMenu(const QPoint &pos);  // Declare showContextMenu
+    void showContextMenu(const QPoint &pos);
     void onImageChanged(Image* newImage);
-    void onScroll(int value); // New slot to handle scroll events
-    void openInDiffView();  // Declare openInDiffView
+    void onScroll(int value);
+    void openInDiffView();
 
 private:
     QListView *listView;
