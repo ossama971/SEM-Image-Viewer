@@ -1,31 +1,28 @@
 #include "topmiddlewidget.h"
 #include "controllerWidget.h"
 
-TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
+TopMiddleWidget::TopMiddleWidget(QWidget *parent) 
+  : QWidget(parent), viewController(nullptr) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     //setStyleSheet("background-color: #00ee00;");
     setMinimumWidth(mainScreenWidth*0.3);
     setMaximumWidth(mainScreenWidth*1.0);
 
-    ImageWidget *image = new ImageWidget();
-    GridView *gridView = new GridView;
-
-    QVBoxLayout *topMiddleLayout = new QVBoxLayout();
-
-    Controller &controller = Controller::instance();
+    image = new ImageWidget();
+    gridView = new GridView();
+    diffView = new DiffViewWidget();
+    topMiddleLayout = new QVBoxLayout();
 
     QWidget *topMiddleContent = new QWidget(parent);
-    //topMiddleContent->setStyleSheet("background-color: #627e7c;");
-
-    // Connect signal to open DiffView
-    connect(gridView, &GridView::openDiffViewRequested, this, &TopMiddleWidget::openDiffView);
+    connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
+    connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
 
     topMiddleLayout->addWidget(topMiddleContent);
-    topMiddleLayout->addWidget(image);
-    //topMiddleLayout->addWidget(gridView);
+    // topMiddleLayout->addWidget(image);
+    topMiddleLayout->addWidget(gridView);
 
-    controller.setImageWidget(image);
+    Controller::instance().setImageWidget(image);
     this->setLayout(topMiddleLayout);
 }
 
@@ -39,8 +36,8 @@ void TopMiddleWidget::setMaxMinHeight(int mn, int mx){
 }
 
 void TopMiddleWidget::openDiffView() {
-    // topMiddleLayout->removeWidget(gridView);
-    // gridView->setVisible(false);
-    // topMiddleLayout->addWidget(diffView);
-    // diffView->setVisible(true);
+    topMiddleLayout->removeWidget(gridView);
+    gridView->setVisible(false);
+    topMiddleLayout->addWidget(diffView);
+    diffView->setVisible(true);
 }

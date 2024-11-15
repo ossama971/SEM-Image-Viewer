@@ -4,9 +4,9 @@
 #include <QDebug>
 
 DiffViewWidget::DiffViewWidget(QWidget *parent)
-    : QWidget(parent), upperImageWidget(new ImageWidget(this)),
-      lowerImageWidget(new ImageWidget(this)),
-      diffImageWidget(new ImageWidget(this)) {
+    : QWidget(parent), upperImageWidget(new ImageWidgetCore(this)),
+      lowerImageWidget(new ImageWidgetCore(this)),
+      diffImageWidget(new ImageWidgetCore(this)) {
 
   QVBoxLayout *vlayout = new QVBoxLayout();
   vlayout->addWidget(upperImageWidget);
@@ -18,16 +18,16 @@ DiffViewWidget::DiffViewWidget(QWidget *parent)
 
   setLayout(hlayout);
 
-  connect(upperImageWidget, &ImageWidget::imageUpdated, this,
+  connect(upperImageWidget, &ImageWidgetCore::imageUpdated, this,
           &DiffViewWidget::updateDiffImage);
 
-  connect(lowerImageWidget, &ImageWidget::imageUpdated, this,
+  connect(lowerImageWidget, &ImageWidgetCore::imageUpdated, this,
           &DiffViewWidget::updateDiffImage);
 
-  updateDiffImage();
 }
 
 void DiffViewWidget::updateDiffImage() {
+  qDebug() << "Updating diff image";
   cv::Mat upperImage = upperImageWidget->getImage();
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
@@ -43,5 +43,4 @@ void DiffViewWidget::setImages(const Image &upperImage, const Image &lowerImage)
   qDebug() << "Lower image path: " << lowerImage.getPath().string().c_str();
   upperImageWidget->loadAndDisplayImage(upperImage);
   lowerImageWidget->loadAndDisplayImage(lowerImage);
-  // updateDiffImage();
 }

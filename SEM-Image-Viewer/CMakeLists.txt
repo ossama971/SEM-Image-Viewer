@@ -101,6 +101,8 @@ set(PROJECT_SOURCES
     widgets/image_info_bar.h
     widgets/image_info_bar.h
     widgets/image_info_bar.cpp
+    widgets/ImageWidgetCore.cpp
+    widgets/ImageWidgetCore.h
     widgets/image_widget.cpp
     widgets/image_widget.h
     widgets/image_widget.cpp

@@ -31,6 +31,18 @@ public slots:
     void openDiffView();
 
 private:
+    QWidget *toolbar;
+    QPushButton *button1;
+    QPushButton *button2;
+    QPushButton *button3;
+
+    ImageWidget *image;
+
+    GridView *gridView;
+    DiffViewWidget *diffView;
+    QVBoxLayout *topMiddleLayout;
+
+private:
     WidgetViewController* viewController;
 };
 
