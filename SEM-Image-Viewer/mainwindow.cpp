@@ -66,14 +66,13 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
+    menuBarWidget = new MenuBarWidget(viewController, this);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(menuBarWidget);
     layout->addWidget(mainSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
-
-    menuBarWidget = new MenuBarWidget(viewController, this);
-
 
     //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);

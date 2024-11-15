@@ -11,6 +11,9 @@ MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget
     viewMenu();
     optionsMenu();
 
+    // make the menu bar expanded by default
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
 }
 
 void MenuBarWidget::fileMenu(){
