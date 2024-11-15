@@ -62,7 +62,6 @@ void TopMiddleWidget::onButton2Clicked(){
     // Handle button 2 click
 }
 
-// Add GridView and show it
 void TopMiddleWidget::onButton3Clicked() {
     layout()->removeWidget(image);
     image->setVisible(false);

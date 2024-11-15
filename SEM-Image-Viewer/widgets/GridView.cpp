@@ -46,7 +46,6 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 void GridView::handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
     if (!selectedIndexes.isEmpty()) {
-        //if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
         if (selectedIndexes.size()==1){
             int selectedIndex = selectedIndexes.first().row();  // Get the selected index
             Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
@@ -98,7 +97,6 @@ void GridView::onScroll(int value) {
     // Detect when the scrollbar reaches the bottom
     int maxScroll = listView->verticalScrollBar()->maximum();
     if (value == maxScroll) {
-        // Load the next 20 images
         int startIndex = imageDataModel->rowCount();
         int endIndex = startIndex + 20; // Load the next 20 images
         imageDataModel->loadImages(startIndex, endIndex);

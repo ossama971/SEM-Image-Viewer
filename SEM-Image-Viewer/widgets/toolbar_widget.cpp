@@ -7,7 +7,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QHBoxLayout *toolbarLayout = new QHBoxLayout(this);
-    toolbarLayout->setContentsMargins(0, 0, 0, 0); // No margins around layout
+    toolbarLayout->setContentsMargins(0, 0, 0, 0);
     toolbarLayout->setSpacing(-1);
 
     // Create QToolButtons with icons

@@ -12,7 +12,7 @@ public:
 
         if (option.state & QStyle::State_Selected) {
             // Draw a border around the selected item
-            painter->setPen(QPen(Qt::blue));  // You can set any color for the selection border
+            painter->setPen(QPen(Qt::blue));
             painter->setBrush(Qt::NoBrush);
             painter->drawRect(option.rect);
         }
