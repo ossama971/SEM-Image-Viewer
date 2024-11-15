@@ -1,5 +1,6 @@
 #include "topmiddlewidget.h"
 #include "controllerWidget.h"
+#include "toolbar_widget.h"
 TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -26,8 +27,8 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent) : QWidget(parent), viewControl
 
     topMiddleLayout->addWidget(toolbar, 0, Qt::AlignTop);
     topMiddleLayout->addWidget(topMiddleContent);
-    //topMiddleLayout->addWidget(image);
-    topMiddleLayout->addWidget(gridView);
+    topMiddleLayout->addWidget(image);
+    //topMiddleLayout->addWidget(gridView);
 
     controller.setImageWidget(image);
     this->setLayout(topMiddleLayout);
