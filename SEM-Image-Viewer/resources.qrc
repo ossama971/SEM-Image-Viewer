@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>icons/zoom-in.svg</file>
         <file>icons/zoom-out.svg</file>
+        <file>icons/edit-view.png</file>
         <file>icons/redo-icon.svg</file>
         <file>icons/undo-icon.svg</file>
         <file>icons/play-icon.svg</file>

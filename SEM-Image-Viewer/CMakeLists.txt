@@ -142,6 +142,8 @@ set(PROJECT_SOURCES
     widgets/ImageDialog.h
     widgets/WidgetViewController.cpp 
     widgets/WidgetViewController.h
+    widgets/toolbar_widget.cpp
+    widgets/toolbar_widget.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
     models/MessageDataModel.cpp

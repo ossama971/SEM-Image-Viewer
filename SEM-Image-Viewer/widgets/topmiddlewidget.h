@@ -4,19 +4,16 @@
 #include "WidgetViewController.h"
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QApplication>
-#include <QMainWindow>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QPushButton>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QToolButton>
 
 #include "image_widget.h"
 #include "GridView.h"
 #include "DiffViewWidget.h"
+#include "toolbar_widget.h"
 
 class TopMiddleWidget : public QWidget
 {
@@ -30,14 +27,17 @@ public slots:
     void setMaxMinHeight(int mn, int mx);
     void openDiffView();
 
+private slots:
+    void onButton1Clicked();
+    void onButton2Clicked();
+    void onButton3Clicked();
+
 private:
-    QWidget *toolbar;
+    ToolbarWidget *toolbar;
     QPushButton *button1;
     QPushButton *button2;
     QPushButton *button3;
-
     ImageWidget *image;
-
     GridView *gridView;
     DiffViewWidget *diffView;
     QVBoxLayout *topMiddleLayout;
@@ -47,5 +47,3 @@ private:
 };
 
 #endif // TOPMIDDLEWIDGET_H
-
-

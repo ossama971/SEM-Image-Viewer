@@ -13,11 +13,16 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     gridView = new GridView();
     diffView = new DiffViewWidget();
     topMiddleLayout = new QVBoxLayout();
+    toolbar = new ToolbarWidget();
 
     QWidget *topMiddleContent = new QWidget(parent);
     connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
+    
+    connect(toolbar->button1, &QToolButton::clicked, this, &TopMiddleWidget::onButton1Clicked);
+    connect(toolbar->button3, &QToolButton::clicked, this, &TopMiddleWidget::onButton3Clicked);
 
+    topMiddleLayout->addWidget(toolbar, 0, Qt::AlignTop);
     topMiddleLayout->addWidget(topMiddleContent);
     // topMiddleLayout->addWidget(image);
     topMiddleLayout->addWidget(gridView);
@@ -40,4 +45,25 @@ void TopMiddleWidget::openDiffView() {
     gridView->setVisible(false);
     topMiddleLayout->addWidget(diffView);
     diffView->setVisible(true);
+}
+
+void TopMiddleWidget::onButton1Clicked(){
+    layout()->removeWidget(gridView);
+    gridView->setVisible(false);
+
+    layout()->addWidget(image);
+    image->setVisible(true);
+}
+
+void TopMiddleWidget::onButton2Clicked(){
+    // Handle button 2 click
+}
+
+// Add GridView and show it
+void TopMiddleWidget::onButton3Clicked() {
+    layout()->removeWidget(image);
+    image->setVisible(false);
+
+    layout()->addWidget(gridView);
+    gridView->setVisible(true);
 }

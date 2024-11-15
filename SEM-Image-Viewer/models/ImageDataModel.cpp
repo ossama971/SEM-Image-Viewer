@@ -10,12 +10,9 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     // Connect the repository's signal to the data model's slot
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
                      this, &ImageDataModel::updateImages);
-    Workspace::Instance()->getActiveSession().loadDirectory("");
-    // Initially load a small subset of images
-    loadImages(0, 20);
 }
 
-void ImageDataModel::updateImages(const std::string newDir, const std::vector<Image> *newImages) {
+void ImageDataModel::updateImages(const std::string newDir, std::vector<Image>* newImages, bool image_load) {
     beginResetModel();
     images = QList<Image>(newImages->begin(), newImages->end());
     endResetModel();
@@ -58,7 +55,7 @@ QImage ImageDataModel::generateThumbnail(const Image &image) const {
 }
 
 void ImageDataModel::loadImages(int startIndex, int endIndex) {
-    // Ensure we're loading valid indices
+    // Ensure I'm loading valid indices
     endIndex = qMin(endIndex, images.size() - 1);
     if (startIndex > endIndex) return;
 
@@ -78,13 +75,4 @@ Image ImageDataModel::getImageAt(int index) const {
         return images[index];
     }
     return Image(); // Return a default/empty Image if index is out of bounds
-}
-
-void ImageDataModel::evictOldThumbnails() {
-    if (m_thumbnails.size() > 100) { // Limit to 100 cached thumbnails
-        auto it = m_thumbnails.begin();
-        for (int i = 0; i < 50 && it != m_thumbnails.end(); ++i) { // Evict the first 50 entries
-            it = m_thumbnails.erase(it);
-        }
-    }
 }
