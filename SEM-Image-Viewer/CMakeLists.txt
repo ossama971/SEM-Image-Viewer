@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+
 
 if (PROJECT_IS_TOP_LEVEL AND UNIX)
     # Create symlink to compile_commands.json for IDE to pick it up
@@ -65,14 +67,18 @@ set(PROJECT_SOURCES
         widgets/zoom_widget.h widgets/zoom_widget.cpp
         widgets/image_info_bar.h widgets/image_info_bar.cpp
         resources.qrc
+
         icons/zoom-in.svg icons/zoom-out.svg
         icons/edit-view.png
+        icons/redo-icon.svg icons/undo-icon.svg
+
         widgets/image_widget.h widgets/image_widget.cpp
         widgets/sharpen_filter_widget.h
         widgets/sharpen_filter_widget.cpp
         # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
         widgets/image_info_bar.h widgets/image_info_bar.cpp
-
+        widgets/savedialogwidget.cpp
+        widgets/savedialogwidget.h
         widgets/bottommiddlewidget.cpp widgets/bottommiddlewidget.h widgets/image_info_bar.cpp widgets/image_info_bar.h widgets/image_widget.cpp widgets/image_widget.h widgets/leftsidebarwidget.cpp widgets/leftsidebarwidget.h widgets/menubarwidget.cpp widgets/menubarwidget.h widgets/rightsidebarwidget.cpp widgets/rightsidebarwidget.h widgets/sharpen_filter_widget.cpp widgets/sharpen_filter_widget.h widgets/topmiddlewidget.cpp widgets/topmiddlewidget.h widgets/zoom_widget.cpp widgets/zoom_widget.h
         models/ImageDataModel.cpp
         models/ImageDataModel.h
@@ -88,6 +94,8 @@ set(PROJECT_SOURCES
         core/data/ImageRepository.cpp core/data/ImageRepository.h core/data/SessionData.cpp core/data/SessionData.h
         widgets/grayscalewidget.h widgets/grayscalewidget.cpp
         widgets/noisereductionwidget.h widgets/noisereductionwidget.cpp widgets/toolbar_widget.cpp widgets/toolbar_widget.h
+        widgets/actionListWidget.cpp
+        widgets/actionlistwidget.h
 
 )
 
@@ -97,6 +105,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         widgets/progressbar.h
         widgets/progressbar.cpp
+        icons/play-icon.svg
+        widgets/savedialogwidget.h widgets/savedialogwidget.cpp
+
+
+
+
+
+        widgets/FileBrowserWidget.cpp widgets/FileBrowserWidget.h widgets/FileIconHider.cpp widgets/FileIconHider.h widgets/ImageFilterProxyModel.cpp widgets/ImageFilterProxyModel.h
+        widgets/ImageDialog.cpp widgets/ImageDialog.h
+        widgets/WidgetViewController.cpp widgets/WidgetViewController.h
 
 
 

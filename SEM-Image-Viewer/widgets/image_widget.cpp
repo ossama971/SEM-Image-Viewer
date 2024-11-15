@@ -52,7 +52,7 @@ void ImageWidget::showEvent(QShowEvent *event)
     // loadAndDisplayImage(image_path);
     reload();
     // loadAndDisplayImage("E:\\Siemens\\sem-image-viewer\\SEM-Image-Viewer\\assets\\micro-electronic-sed.jpg");
-    // scene->installEventFilter(this);
+    scene->installEventFilter(this);
 }
 
 bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
@@ -75,8 +75,32 @@ bool ImageWidget::eventFilter(QObject *obj, QEvent *event)
 
             // Update info bar with real-time mouse position
             infoBar->setMousePosition(static_cast<int>(scenePos.x()), static_cast<int>(scenePos.y()));
+            // qDebug() << "Real-time position in scene:" << scenePos; // Debug message
 
-            return true;
+            Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+            if (image)
+            {
+                Mat img = image->getImageMat();
+                int x = scenePos.x();
+                int y = scenePos.y();
+                if (img.type() == CV_8UC3) {
+                    cv::Vec3b intensity = img.at<cv::Vec3b>(y, x);
+                    uchar blue = intensity[0];
+                    uchar green = intensity[1];
+                    uchar red = intensity[2];
+
+                    // Use qDebug to print BGR intensity values with proper formatting
+                    qDebug() << "BGR intensity at (" << x << "," << y << "): "
+                             << "B=" << blue << "G=" << green << "R=" << red;
+                }
+                else if (img.type() == CV_8UC1) {
+                    // Grayscale image (8-bit single channel)
+                    uchar intensity = img.at<uchar>(y, x);
+                    qDebug()<< "Grayscale intensity (float) at (" << x << ", " << y << "): " << intensity ;
+                }
+
+                return true;
+            }
         }
     }
     return QWidget::eventFilter(obj, event);
@@ -103,8 +127,14 @@ optional<QPixmap> ImageWidget::loadAndPrepareImage(const Image &selected_image, 
     {
         return nullopt;
     }
-
-    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    QImage qImage;
+    if (image.channels() == 1) {
+        // Grayscale image: Use QImage::Format_Grayscale8
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_Grayscale8);
+    } else if (image.channels() == 3) {
+        // RGB image: Use QImage::Format_RGB888 and swap if necessary
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    }
     // QPixmap pixmap = QPixmap::fromImage(qImage.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     QPixmap pixmap = QPixmap::fromImage(qImage);
     return pixmap;
@@ -224,7 +254,15 @@ void ImageWidget::zoomOut()
 void ImageWidget::updateImage(const cv::Mat &image)
 {
     currentImage = image;
-    QImage qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+
+    QImage qImage;
+    if (image.channels() == 1) {
+        // Grayscale image: Use QImage::Format_Grayscale8
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_Grayscale8);
+    } else if (image.channels() == 3) {
+        // RGB image: Use QImage::Format_RGB888 and swap if necessary
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0], QImage::Format_RGB888).rgbSwapped();
+    }
     QPixmap pixmap = QPixmap::fromImage(qImage);
     setImage(pixmap);
 }

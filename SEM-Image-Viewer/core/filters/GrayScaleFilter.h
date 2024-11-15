@@ -2,6 +2,8 @@
 #define GRAY_SCALE_FILTER_H
 
 #include "ImageFilter.h"
+#include "../engines/Logger.h"
+#include "../data/InfoMessage.h"
 
 class GrayScaleFilter : public ImageFilter {
 public:

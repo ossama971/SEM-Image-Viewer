@@ -14,10 +14,22 @@ ContourWidget::ContourWidget(QWidget *parent)
     label->setText("Sharpen");
 
     QPushButton *applyButton = new QPushButton(this);
-    applyButton->setText("Apply");
+    QIcon Icon(":/icons/play-icon.svg");
+    applyButton->setIcon(Icon);
+    applyButton->setStyleSheet(
+        "QPushButton { "
+        "   border: none; "
+        "   background-color: transparent; "
+        "padding:2px"
+        "}"
+        "QPushButton:hover { "
+        "   background-color: rgba(0, 122, 255, 0.2); " // Light blue highlight on hover
+        "}"
+        );
     compactLayout->addWidget(label);
     compactLayout->addWidget(applyButton);
-    compactLayout->setSpacing(10);
+    compactLayout->addStretch();
+    compactLayout->setSpacing(5);
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
