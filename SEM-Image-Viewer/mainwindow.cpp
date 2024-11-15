@@ -15,8 +15,7 @@
 #include <QMenu>
 #include <QAction>
 
-
-
+#include "core/engines/JsonVisitor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -132,20 +131,49 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    // Your code to save changes here
+    // If a thread is already running, return early (optional)
+    if (saveThread && saveThread->isRunning()) {
+        QMessageBox::information(this, "Save", "A save operation is already in progress.");
+        return;
+    }
 
-    // JsonVisitor visitor;
-    // Workspace::Instance()->getActiveSession().accept(visitor);
-    // visitor.write_json("session.json");
+    // Create the QThread and worker objects
+    saveThread = new QThread(this);  // Store the thread as a member variable
+    QObject *worker = new QObject();
+    worker->moveToThread(saveThread);
 
-    QMessageBox::information(this, "Save", "Changes have been saved.");
-    QApplication::quit();  // Exit after saving
+    // Start the save operation in the worker thread
+    connect(saveThread, &QThread::started, worker, [worker]() {
+        JsonVisitor visitor;
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json("session.json");
+    });
+
+    // When worker finishes, quit the thread and delete worker
+    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+    // When the thread finishes, show a message and quit the application
+    connect(saveThread, &QThread::finished, this, [this]() {
+        QMessageBox::information(nullptr, "Save", "Changes have been saved.");
+        QApplication::quit();  // Exit the application after saving
+    });
+
+    // Start the thread
+    saveThread->start();
 }
 
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    // If the saveThread is running, quit and wait for it to finish
+    if (saveThread && saveThread->isRunning()) {
+        saveThread->quit();  // Request the thread to quit
+        saveThread->wait();  // Wait for the thread to finish
+    }
+    
+    delete ui;  // Call the default destructor to clean up the UI
 }
 
 
