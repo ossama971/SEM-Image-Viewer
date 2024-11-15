@@ -17,8 +17,8 @@ void ZoomWidget::setupLayout()
     QIcon zoomInIcon(":/icons/zoom-in-dark-mode.svg");
     QIcon zoomOutIcon(":/icons/zoom-out-dark-mode.svg");
 
-    zoomInButton->setIcon(zoomInIcon);
-    zoomOutButton->setIcon(zoomOutIcon);
+    zoomInButton->setObjectName("zoom-in");
+    zoomOutButton->setObjectName("zoom-out");
     zoomInButton->setCursor(Qt::PointingHandCursor);
     zoomOutButton->setCursor(Qt::PointingHandCursor);
 

@@ -36,7 +36,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    void applyInitialStylesheet();
 public slots:
     void onShowLeftSidebarClicked(bool isChecked);
     void onShowRightSidebarClicked(bool isChecked);

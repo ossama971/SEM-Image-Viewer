@@ -16,37 +16,9 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     rightButton = new QPushButton(">",this);
 
     // Apply styles to buttons
-    leftButton->setStyleSheet(R"(
-        QPushButton {
-            background-color: #333;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            width: 5px;
-            height: 30px;
-            color: white;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #555;
-        }
-    )");
+    leftButton->setObjectName("leftbutton");
 
-    rightButton->setStyleSheet(R"(
-        QPushButton {
-            background-color: #333;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            width: 5px;
-            height: 30px;
-            color: white;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #555;
-        }
-    )");
+    rightButton->setObjectName("leftbutton");
 
     // Add buttons to buttonLayout
     buttonLayout->addWidget(leftButton);

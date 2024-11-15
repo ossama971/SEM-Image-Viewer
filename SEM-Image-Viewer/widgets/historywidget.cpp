@@ -35,16 +35,14 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
     // Create Undo button with icon
     undoButton = new QPushButton(this);
-    undoButton->setIcon(QIcon(":/icons/undo-icon-dark-mode.svg"));
-    undoButton->setIconSize(QSize(16, 16));
+    undoButton->setObjectName("undoButton");
 
     headerLayout->addWidget(undoButton);
 
     // Create Redo button with icon
     // Create Redo button with icon
     redoButton = new QPushButton(this);
-    redoButton->setIcon(QIcon(":/icons/redo-icon-dark-mode.svg"));
-    redoButton->setIconSize(QSize(16, 16));
+    redoButton->setObjectName("redoButton");
     redoButton->setStyleSheet(
         "QPushButton { "
         "   padding: 2px;"
@@ -78,6 +76,14 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
     // Create action list
     actionList = new QListWidget(this);
+    actionList->setStyleSheet(
+        "QListWidget {"
+        "    background: transparent;" // Makes the background transparent
+        "    border: none;"            // Removes the border
+        "    outline: none;"           // Removes focus rectangle (optional)
+        "}"
+        );
+
     listContentLayout->addWidget(actionList);
 
     listContainerLayout->addWidget(listContentContainer);

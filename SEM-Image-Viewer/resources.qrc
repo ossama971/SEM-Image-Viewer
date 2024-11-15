@@ -24,5 +24,7 @@
         <file>icons/nav-arrow-light.svg</file>
         <file>icons/vline-dark.png</file>
         <file>icons/vline-light.png</file>
+	<file>styles/dark-mode.qss</file>
+	<file>styles/light-mode.qss</file>
     </qresource>
 </RCC>

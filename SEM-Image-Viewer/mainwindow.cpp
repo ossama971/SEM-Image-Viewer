@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
-
     // ui->setupUi(this);
 
     resize(1000, 800);  // Adjust this size as needed
@@ -33,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(centralWidget);
 
     leftSidebarWidget = new LeftSidebarWidget(this);
-
+    leftSidebarWidget->setMinimumWidth(160);
     rightSidebarWidget = new RightSidebarWidget(this);
     rightSidebarWidget->setMinimumWidth(190);
 
@@ -143,7 +142,6 @@ void MainWindow::onSaveChangesClicked() {
     QMessageBox::information(this, "Save", "Changes have been saved.");
     QApplication::quit();  // Exit after saving
 }
-
 
 MainWindow::~MainWindow()
 {

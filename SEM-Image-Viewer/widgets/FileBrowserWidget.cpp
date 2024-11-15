@@ -22,53 +22,49 @@ void FileBrowserWidget::Initialize() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     QPushButton* newFolderBtn = new QPushButton();
-    newFolderBtn->setIcon(QIcon(":/icons/new-folder-dark.svg"));
+    newFolderBtn->setObjectName("newFolderBtn");
     newFolderBtn->setStyleSheet(
         "QPushButton {"
         "    border: 0;"
         "}"
         "QPushButton:hover {"
-        "    background-color: #424242;"
         "    border-style: inset;"
         "}"
         "QPushButton:pressed {"
-        "    background-color: #353535;"
         "    border-style: inset;"
         "}"
         );
     newFolderBtn->setIconSize(QSize(24, 24));
     newFolderBtn->resize(24, 24);
+    newFolderBtn->setToolTip("Open Folder");
 
     QPushButton* newFileBtn = new QPushButton();
-    newFileBtn->setIcon(QIcon(":/icons/new-file-dark.svg"));
+    newFileBtn->setObjectName("newFileBtn");
     newFileBtn->setStyleSheet(
         "QPushButton {"
         "    border: 0;"
         "}"
         "QPushButton:hover {"
-        "    background-color: #424242;"
         "    border-style: inset;"
         "}"
         "QPushButton:pressed {"
-        "    background-color: #353535;"
         "    border-style: inset;"
         "}"
         );
     newFileBtn->setIconSize(QSize(24, 24));
     newFileBtn->resize(24, 24);
+    newFileBtn->setToolTip("Open File");
 
     QPushButton* collapseBtn = new QPushButton();
-    collapseBtn->setIcon(QIcon(":/icons/nav-arrow-dark.svg"));
+    collapseBtn->setObjectName("collapseBtn");
     collapseBtn->setStyleSheet(
         "QPushButton {"
         "    border: 0;"
         "}"
         "QPushButton:hover {"
-        "    background-color: #424242;"
         "    border-style: inset;"
         "}"
         "QPushButton:pressed {"
-        "    background-color: #353535;"
         "    border-style: inset;"
         "}"
         );
@@ -81,37 +77,24 @@ void FileBrowserWidget::Initialize() {
 
 
     QWidget *searchBoxHolder = new QWidget();
-    searchBoxHolder->setStyleSheet(
-        "    border: 2px solid darkgray;"
-        "    border-radius: 10px;"
-        "    padding: 3px 5px 5px 5px;"
-        );
+    searchBoxHolder->setObjectName("searchBoxHolder");
+
     searchBoxHolder->move(9, 47);
     searchBoxHolder->resize(239, 35);
 
     searchBox = new QLineEdit(searchBoxHolder);
     searchBox->setPlaceholderText("File Name");
-    searchBox->setStyleSheet(
-        "QLineEdit {"
-        "	 color: #CCCCCC;"
-        "    border: 0;"
-        "    padding: 3px 5px 5px 5px;"
-        "    selection-background-color: darkgray;"
-        "}"
-        );
 
     QPushButton* searchButton = new QPushButton(searchBoxHolder);
-    searchButton->setIcon(QIcon(":/icons/search-dark.svg"));
+    searchButton->setObjectName("searchButton");
     searchButton->setStyleSheet(
         "QPushButton {"
         "    border: 0;"
         "}"
         "QPushButton:hover {"
-        "    background-color: #424242;"
         "    border-style: inset;"
         "}"
         "QPushButton:pressed {"
-        "    background-color: #353535;"
         "    border-style: inset;"
         "}"
         );
@@ -128,34 +111,6 @@ void FileBrowserWidget::Initialize() {
 
     proxyModel = new ImageFilterProxyModel(this);
     proxyModel->setSourceModel(model);
-
-    treeView->setStyleSheet(
-        "QTreeView {"
-        "   background-color: #2C2C2C; "
-        "   color: white; "
-        "   border: 0; "
-        "}"
-        "QTreeView::branch:has-siblings:!adjoins-item {"
-        "    border-image: url(:/icons/vline-dark.png) 0;"
-        "}"
-        "QTreeView::branch:has-siblings:adjoins-item {"
-        "    border-image: url(:/icons/vline-dark.png) 0;"
-        "}"
-        "QTreeView::branch:!has-children:!has-siblings:adjoins-item {"
-        "    border-image: url(:/icons/vline-dark.png) 0;"
-        "}"
-        "QTreeView::branch:has-children:!has-siblings:closed,"
-        "QTreeView::branch:closed:has-children:has-siblings {"
-        "    border-image: none;"
-        "    image: url(:/icons/arrow-right-dark.svg);"
-        "}"
-        ""
-        "QTreeView::branch:open:has-children:!has-siblings,"
-        "QTreeView::branch:open:has-children:has-siblings  {"
-        "    border-image: none;"
-        "    image: url(:/icons/arrow-down-dark.svg);"
-        "}"
-        );
 
     treeView->setHeaderHidden(true);
     treeView->setModel(proxyModel);

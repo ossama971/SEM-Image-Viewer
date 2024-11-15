@@ -38,6 +38,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
         main.cpp
+        styles/dark-mode.qss
+        styles/light-mode.qss
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui

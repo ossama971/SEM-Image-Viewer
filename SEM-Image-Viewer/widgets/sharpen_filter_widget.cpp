@@ -14,8 +14,7 @@ SharpenWidget::SharpenWidget(QWidget *parent)
     label->setText("Sharpen");
 
     QPushButton *applyButton = new QPushButton(this);
-    QIcon Icon(":/icons/play-icon-dark-mode.svg");
-    applyButton->setIcon(Icon);
+    applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(
         "QPushButton { "
         "padding:2px"

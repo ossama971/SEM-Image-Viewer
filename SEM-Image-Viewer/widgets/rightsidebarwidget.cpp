@@ -36,8 +36,13 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     // rightSidebarLayout->addWidget(_edgeExtractionWidget);
     // rightSidebarLayout->addWidget(_noiseReductionWidget);
     rightSidebarLayout->addWidget(list);
-    rightSidebarLayout->addWidget(_progressBar);
 
+    QWidget *progressBarContainer = new QWidget();
+    QHBoxLayout *progressBarLayout = new QHBoxLayout();
+    progressBarLayout->addWidget(_progressBar);
+    progressBarContainer->setLayout(progressBarLayout);
+    rightSidebarLayout->addWidget(progressBarContainer);
+    progressBarContainer->setContentsMargins(3, 0, 3, 0);
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);

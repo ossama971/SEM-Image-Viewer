@@ -21,8 +21,7 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
     label->setText("Noise Reduction");
 
     QPushButton *applyButton = new QPushButton(this);
-    QIcon Icon(":/icons/play-icon-dark-mode.svg");
-    applyButton->setIcon(Icon);
+    applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(
         "QPushButton { "
         "padding:2px"
