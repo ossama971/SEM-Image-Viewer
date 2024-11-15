@@ -4,6 +4,8 @@
 
 MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent) : QMenuBar(parent), viewController(widgetViewController) {
 
+    imageDialog = new ImageDialog(this);
+
     fileMenu();
     editMenu();
     viewMenu();
@@ -44,8 +46,8 @@ void MenuBarWidget::fileMenu(){
     fileMenu->addMenu(exportMenu);
     fileMenu->addMenu(exportAllMenu);
 
-    connect(openImageAction, &QAction::triggered, this, [=]() { ImageDialog::openFile(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
-    connect(openFolderAction, &QAction::triggered, this, [=]() { ImageDialog::openFolder(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
+    connect(openImageAction, &QAction::triggered, this, [=]() { imageDialog->openFile(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
+    connect(openFolderAction, &QAction::triggered, this, [=]() { imageDialog->openFolder(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
 
     connect(JPGAllAction, &QAction::triggered, this, [=]() { exportImages("*.jpg"); });
     connect(PNGAllAction, &QAction::triggered, this, [=]() { exportImages("*.png"); });

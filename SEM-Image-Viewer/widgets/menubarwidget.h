@@ -18,6 +18,7 @@
 #include "../core/engines/Workspace.h"
 #include "../core/data/Image.h"
 #include "../core/data/ImageFormat.h"
+#include "ImageDialog.h"
 #include "WidgetViewController.h"
 
 #include<iostream>
@@ -65,6 +66,7 @@ private:
     QAction *showLoggerAction;
     QAction *showImageAction;
 
+    ImageDialog *imageDialog;
     WidgetViewController* viewController;
 };
 

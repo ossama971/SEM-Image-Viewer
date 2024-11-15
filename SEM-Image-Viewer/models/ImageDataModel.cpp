@@ -14,9 +14,9 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     loadImages(0, 20);
 }
 
-void ImageDataModel::updateImages(const std::string newDir, const std::vector<Image> &newImages) {
+void ImageDataModel::updateImages(const std::string newDir, const std::vector<Image> *newImages) {
     beginResetModel();
-    images = QList<Image>(newImages.begin(), newImages.end());
+    images = QList<Image>(newImages->begin(), newImages->end());
     endResetModel();
     loadImages(0, 20);  // Load the first 20 images after updating
 }

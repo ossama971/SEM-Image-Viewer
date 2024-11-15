@@ -2,6 +2,7 @@
 #define RIGHTSIDEBARWIDGET_H
 
 #include "WidgetViewController.h"
+#include "../core/data/ImageRepository.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -27,8 +28,12 @@ public slots:
     void initializeProgress(int maxIterations);
     void updateProgress();
     void hideProgressBar();
+private slots:
+    void onImageLoadStarted(int image_count);
+    void onImageLoaded(Image* newImage);
 private:
     WidgetViewController* viewController;
+    ImageRepository* _imageRepo;
     ProgressBarComponent* _progressBar;
 
 };
