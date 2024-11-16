@@ -218,6 +218,34 @@ QPushButton#undoButton {
     qproperty-icon: url(:/icons/undo-icon-dark-mode.svg);
      qproperty-iconSize: 16px 16px;
 }
+QToolButton#redoButton {
+ qproperty-icon: url(:/icons/redo.svg);
+  qproperty-iconSize: 16px 16px;
+}
+QToolButton#undoButton {
+    qproperty-icon: url(:/icons/undo.svg);
+     qproperty-iconSize: 16px 16px;
+}
+QToolButton#saveButton {
+    qproperty-icon: url(:/icons/save.svg);
+     qproperty-iconSize: 17px 17px;
+}
+QToolButton#seperator {
+    qproperty-icon: url(:/icons/toolbar-seperator-icon.svg);
+     qproperty-iconSize: 23px 23px;
+}
+QToolButton#grid{
+    qproperty-icon: url(:/icons/grid-icon.svg);
+     qproperty-iconSize: 18px 18px;
+}
+QToolButton#diff{
+    qproperty-icon: url(:/icons/diff-icon.svg);
+     qproperty-iconSize: 20px 20px;
+}
+QToolButton#view{
+    qproperty-icon: url(:/icons/image-icon.svg);
+     qproperty-iconSize: 17px 17px;
+}
 QPushButton#zoom-in {
                qproperty-icon: url(:/icons/zoom-in-dark-mode.svg);
            }

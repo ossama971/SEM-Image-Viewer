@@ -31,6 +31,13 @@
         <file>icons/redo.svg</file>
         <file>icons/save.svg</file>
         <file>icons/undo.svg</file>
+	<file>icons/redo-light.svg</file>
+        <file>icons/save-light.svg</file>
+        <file>icons/undo-light.svg</file>
+ 	<file>icons/diff-icon-light.svg</file>
+        <file>icons/grid-icon-light.svg</file>
+        <file>icons/image-icon-light.svg</file>
+        <file>icons/toolbar-seperator-icon-light.svg</file>
 	<file>styles/dark-mode.qss</file>
 	<file>styles/light-mode.qss</file>
     </qresource>
