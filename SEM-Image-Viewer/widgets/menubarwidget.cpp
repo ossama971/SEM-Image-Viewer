@@ -154,7 +154,7 @@ void MenuBarWidget::exportImages(QString format) {
             size_t startIdx = i * imagesPerThread;
             size_t endIdx = (i == numCores - 1) ? images.size() : (startIdx + imagesPerThread);
             threads.emplace_back(saveImagesSubset, startIdx, endIdx);
-            // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         }
 
         for (auto& thread : threads) {
@@ -239,10 +239,11 @@ void MenuBarWidget::optionsMenu(){
     QMenu *optionsMenu = this->addMenu("Options");
     QMenu *fontMenu = new QMenu("Font", optionsMenu);
 
-    QAction *darkModeAction = new QAction("Dark Mode", this);
-
+    darkModeAction = new QAction(this);
+    darkModeAction->setText("Dark Mode");
     optionsMenu->addAction(darkModeAction);
     optionsMenu->addMenu(fontMenu);
+     connect(darkModeAction, &QAction::triggered, this, &MenuBarWidget::onThemeActionTriggered);
 }
 
 void MenuBarWidget::showLeftSidebarClicked(bool isChecked) {
@@ -276,7 +277,15 @@ void MenuBarWidget::onImageViewChanged(bool state) {
 void MenuBarWidget::onLoggerViewChanged(bool state) {
     showLoggerAction->setChecked(state);
 }
-
+void MenuBarWidget::onThemeActionTriggered() {
+    isDarkMode = !isDarkMode;
+    if(isDarkMode){
+        darkModeAction->setText("Light Mode");
+    }else {
+        darkModeAction->setText("Dark Mode");
+    }
+    emit themeToggled();
+}
 void MenuBarWidget::saveSession() {
     QThread* saveThread = new QThread;
 

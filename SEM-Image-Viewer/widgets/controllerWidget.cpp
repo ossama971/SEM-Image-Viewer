@@ -40,12 +40,12 @@ void Controller::setImageWidget(ImageWidget *widget)
     }
 }
 
-void Controller::setContourWidget(ContourWidget *widget)
+void Controller::setSharpenWidget(SharpenWidget *widget)
 {
-    contourWidget = widget;
-    if (contourWidget)
+    sharpenWidget = widget;
+    if (sharpenWidget)
     {
-        connect(contourWidget, &ContourWidget::applyFilter, this, &Controller::onContourFilterApplied);
+        connect(sharpenWidget, &SharpenWidget::applyFilter, this, &Controller::onSharpenFilterApplied);
     }
 }
 
@@ -93,7 +93,7 @@ void Controller::onNoiseReductionFilterApplied()
     SessionData_.applyFilter(std::move(filter));
 }
 
-void Controller::onContourFilterApplied()
+void Controller::onSharpenFilterApplied()
 {
     std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
 

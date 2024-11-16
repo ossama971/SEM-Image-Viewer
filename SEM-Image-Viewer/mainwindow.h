@@ -36,7 +36,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
 public slots:
     void onShowLeftSidebarClicked(bool isChecked);
     void onShowRightSidebarClicked(bool isChecked);
@@ -45,7 +44,7 @@ public slots:
     void onSaveChangesClicked();
 
 private slots:
-
+    void applyTheme();
 protected:
     void closeEvent(QCloseEvent *event) override;
 

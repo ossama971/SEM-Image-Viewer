@@ -4,7 +4,6 @@
 LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
-    setStyleSheet("background-color: #2C2C2C;");
     setMinimumWidth(mainScreenWidth*0.05);
     setMaximumWidth(mainScreenWidth*0.3);
 
@@ -13,7 +12,6 @@ LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent), viewCon
 
 
     /*QWidget *leftContent = new QWidget(parent);
-    leftContent->setStyleSheet("background-color: #627e7c;");
     leftSidebarLayout->addWidget(leftContent);*/
 
     _fileBrowser = new FileBrowserWidget();

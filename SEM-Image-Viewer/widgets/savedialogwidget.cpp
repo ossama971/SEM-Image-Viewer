@@ -23,6 +23,7 @@ SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
     // Create a label with a larger font for the main message
     auto *mainLabel = new QLabel("Do you want to save the changes?");
     mainLabel->setAlignment(Qt::AlignCenter);
+
     QFont mainFont;
     mainFont.setPointSize(12);
     mainLabel->setFont(mainFont);
@@ -30,20 +31,50 @@ SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
     // Create a label for the warning message
     auto *warningLabel = new QLabel("Your changes will be lost if you don't save them.");
     warningLabel->setAlignment(Qt::AlignCenter);
-    warningLabel->setStyleSheet("color: gray;");
+    warningLabel->setStyleSheet("color: #a0a0a0;");
 
     // Set up icons for the buttons
     auto *saveButton = new QPushButton("Save");
+    saveButton->setStyleSheet(
+        "QPushButton {"
+        "    padding: 6px 12px;"
+        "    background-color: #4CAF50;"  // Dark green for Save button
+        "    color: white;"
+        "    border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #45a049;"
+        "}"
+        );
     auto *dontSaveButton = new QPushButton("Don't Save");
     auto *cancelButton = new QPushButton("Cancel");
+    dontSaveButton->setStyleSheet(
+        "QPushButton {"
+        "    padding: 6px 12px;"
+        "    background-color: #FF5733;"  // Dark red for Don't Save button
+        "    color: white;"
+        "    border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #e74c3c;"
+        "}"
+        );
+    cancelButton->setStyleSheet(
+        "QPushButton {"
+        "    padding: 6px 12px;"
+        "    background-color: #555555;"  // Dark gray for Cancel button
+        "    color: white;"
+        "    border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #666666;"
+        "}"
+        );
 
     // Add padding and margin for the buttons
     saveButton->setMinimumHeight(30);
     dontSaveButton->setMinimumHeight(30);
     cancelButton->setMinimumHeight(30);
-    saveButton->setStyleSheet("padding: 6px 12px; background-color: #0078d7; color: white;");
-    dontSaveButton->setStyleSheet("padding: 6px 12px;");
-    cancelButton->setStyleSheet("padding: 6px 12px;");
 
     // Connect the buttons to their respective slots
     connect(saveButton, &QPushButton::clicked, this, &SaveDialogWidget::onSaveClicked);
@@ -66,7 +97,7 @@ SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
     setLayout(mainLayout);
 
     // Set dialog background color and styling
-    setStyleSheet("QDialog { background-color: #f2f2f2; border-radius: 8px; }");
+    setStyleSheet("QDialog { border-radius: 8px; }");
 
 }
 

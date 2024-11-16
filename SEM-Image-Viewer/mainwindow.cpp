@@ -23,17 +23,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
-
     // ui->setupUi(this);
 
-    resize(1000, 600);  // Adjust this size as needed
+    resize(1000, 800);  // Adjust this size as needed
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
     leftSidebarWidget = new LeftSidebarWidget(this);
-
+    leftSidebarWidget->setMinimumWidth(160);
     rightSidebarWidget = new RightSidebarWidget(this);
+    rightSidebarWidget->setMinimumWidth(190);
 
     topMiddleWidget = new TopMiddleWidget(this);
 
@@ -82,13 +82,13 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
-
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(menuBarWidget);
     layout->addWidget(mainSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
+
+    setMenuBar(menuBarWidget);
     //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
@@ -96,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
+    connect(menuBarWidget, &MenuBarWidget::themeToggled, this, &MainWindow::applyTheme);
 }
 
 
@@ -180,7 +181,20 @@ void MainWindow::onSaveChangesClicked() {
     saveThread->start();
 }
 
+void MainWindow::applyTheme() {
+    static bool isDarkMode = false;
 
+    QString styleFile = isDarkMode ? ":/styles/light-mode.qss" : ":/styles/dark-mode.qss";
+
+    QFile file(styleFile);
+    if (file.open(QFile::ReadOnly)) {
+        QString stylesheet = QLatin1String(file.readAll());
+        qApp->setStyleSheet(stylesheet);
+        file.close();
+    }
+
+    isDarkMode = !isDarkMode;
+}
 MainWindow::~MainWindow()
 {
     // If the saveThread is running, quit and wait for it to finish

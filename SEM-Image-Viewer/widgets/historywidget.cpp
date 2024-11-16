@@ -15,6 +15,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     // Create toggle button
     toggleButton = new QToolButton(this);
     toggleButton->setArrowType(Qt::DownArrow);
+
     toggleButton->setStyleSheet(
         "QToolButton { "
         "   border: none; "
@@ -34,33 +35,17 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
     // Create Undo button with icon
     undoButton = new QPushButton(this);
-    undoButton->setIcon(QIcon(":/icons/undo-icon.svg"));
-    undoButton->setIconSize(QSize(16, 16));
-    undoButton->setStyleSheet(
-        "QPushButton { "
-        "   border: none; "
-        "   background-color: transparent; "
-        "   padding: 2px;"
-        "}"
-        "QPushButton:hover { "
-        "   background-color: rgba(0, 122, 255, 0.2); "
-        "}"
-        );
+    undoButton->setObjectName("undoButton");
+
     headerLayout->addWidget(undoButton);
 
     // Create Redo button with icon
     // Create Redo button with icon
     redoButton = new QPushButton(this);
-    redoButton->setIcon(QIcon(":/icons/redo-icon.svg"));
-    redoButton->setIconSize(QSize(16, 16));
+    redoButton->setObjectName("redoButton");
     redoButton->setStyleSheet(
         "QPushButton { "
-        "   border: none; "
-        "   background-color: transparent; "
         "   padding: 2px;"
-        "}"
-        "QPushButton:hover { "
-        "   background-color: rgba(0, 122, 255, 0.2); "
         "}"
         );
     headerLayout->addWidget(redoButton);
@@ -93,14 +78,12 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     actionList = new QListWidget(this);
     actionList->setStyleSheet(
         "QListWidget {"
-        "   background-color: transparent;"
-        "   border: none;"
-        "}"
-        "QListWidget::item {"
-        "   color: black;"
-        "   padding: 2px;"
+        "    background: transparent;" // Makes the background transparent
+        "    border: none;"            // Removes the border
+        "    outline: none;"           // Removes focus rectangle (optional)
         "}"
         );
+
     listContentLayout->addWidget(actionList);
 
     listContainerLayout->addWidget(listContentContainer);

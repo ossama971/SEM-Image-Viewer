@@ -20,7 +20,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
 
     // QWidget *rightContent = new QWidget(parent);
     // rightContent->setStyleSheet("background-color: #627e7c;");
-    ContourWidget *_contourWidget = new ContourWidget();
+    SharpenWidget *_sharpenWidget = new SharpenWidget();
     EdgeExtractionWidget *_edgeExtractionWidget = new EdgeExtractionWidget();
     GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
     NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
@@ -28,7 +28,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     _progressBar = new ProgressBarComponent();
 
     ActionListWidget *list=new ActionListWidget();
-    list->addWidget(_contourWidget);
+    list->addWidget(_sharpenWidget);
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
@@ -37,12 +37,17 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     // rightSidebarLayout->addWidget(_edgeExtractionWidget);
     // rightSidebarLayout->addWidget(_noiseReductionWidget);
     rightSidebarLayout->addWidget(list);
-    rightSidebarLayout->addWidget(_progressBar);
 
+    QWidget *progressBarContainer = new QWidget();
+    QHBoxLayout *progressBarLayout = new QHBoxLayout();
+    progressBarLayout->addWidget(_progressBar);
+    progressBarContainer->setLayout(progressBarLayout);
+    rightSidebarLayout->addWidget(progressBarContainer);
+    progressBarContainer->setContentsMargins(3, 0, 3, 0);
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
-    controller.setContourWidget(_contourWidget);
+    controller.setSharpenWidget(_sharpenWidget);
     controller.setNoiseReductionWidget(_noiseReductionWidget);
     controller.setHistoryWidget(_historyWidget);
     controller.setGraySacleWidget(_grayScaleWidget);

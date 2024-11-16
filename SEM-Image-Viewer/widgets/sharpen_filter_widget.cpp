@@ -5,7 +5,7 @@
 #include <QMenu>
 #include <QIcon>
 
-ContourWidget::ContourWidget(QWidget *parent)
+SharpenWidget::SharpenWidget(QWidget *parent)
     : QWidget(parent),
     label(new QLabel(this))
 {
@@ -14,18 +14,15 @@ ContourWidget::ContourWidget(QWidget *parent)
     label->setText("Sharpen");
 
     QPushButton *applyButton = new QPushButton(this);
-    QIcon Icon(":/icons/play-icon.svg");
-    applyButton->setIcon(Icon);
+    applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(
         "QPushButton { "
-        "   border: none; "
-        "   background-color: transparent; "
         "padding:2px"
         "}"
-        "QPushButton:hover { "
-        "   background-color: rgba(0, 122, 255, 0.2); " // Light blue highlight on hover
-        "}"
         );
+    // "QPushButton:hover { "
+    // "   background-color: rgba(0, 122, 255, 0.2); " // Light blue highlight on hover
+    // "}"
     compactLayout->addWidget(label);
     compactLayout->addWidget(applyButton);
     compactLayout->addStretch();
@@ -39,12 +36,12 @@ ContourWidget::ContourWidget(QWidget *parent)
 
     setLayout(mainLayout);
 
-    connect(applyButton,&QPushButton::clicked,this, &ContourWidget::handleApplyFilter);
+    connect(applyButton,&QPushButton::clicked,this, &SharpenWidget::handleApplyFilter);
 
 }
 
 
-void ContourWidget::handleApplyFilter()
+void SharpenWidget::handleApplyFilter()
 {
     emit applyFilter();
 }

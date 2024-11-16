@@ -1,0 +1,266 @@
+QMainWindow {
+background-color: #FFFFFF; /* Light background color */
+color: #333333;            /* Dark text color */
+}
+
+/* Menu bar styling */
+QMenuBar {
+background-color: #F1F1F1;
+color: #333333;
+}
+QMenuBar::item {
+background-color: #F1F1F1;
+color: #333333;
+}
+QMenuBar::item:selected {
+background-color: #DDDDDD;
+}
+
+/* Toolbar styling */
+QToolBar {
+background-color: #F1F1F1;
+border: 1px solid #CCCCCC;
+}
+
+/* Tool buttons in the toolbar */
+QToolButton {
+background-color: #F1F1F1;
+color: #333333;
+border: none;
+}
+QToolButton:hover {
+background-color: #DDDDDD;
+}
+QToolButton:checked {
+background-color: #CCCCCC;
+}
+
+/* Styling for QSplitter */
+QSplitter {
+background-color: #F9F9F9;
+}
+QSplitter::handle {
+background-color: #CCCCCC; /* Color for the splitter handle */
+}
+
+/* Styling for QTreeView and QListView */
+ QListView {
+ background-color: #FFFFFF;
+ color: #333333;
+ selection-background-color: #DDDDDD;
+ selection-color: #000000;
+ border: 1px solid #CCCCCC;
+}
+QTreeView{
+background-color: #FFFFFF;
+color: #333333;
+selection-background-color: #DDDDDD;
+selection-color: #000000;
+border: 0;
+}
+QTreeView::branch:has-siblings:!adjoins-item {
+    border-image: url(:/icons/vline-light.png) 0;
+}
+
+QTreeView::branch:has-siblings:adjoins-item {
+    border-image: url(:/icons/vline-light.png) 0;
+}
+
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    border-image: url(:/icons/vline-light.png) 0;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(:/icons/arrow-right-light.svg);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings {
+    border-image: none;
+    image: url(:/icons/arrow-down-light.svg);
+}
+/* Styling for QTableView */
+QTableView {
+background-color: #FFFFFF;
+color: #333333;
+gridline-color: #CCCCCC;
+selection-background-color: #DDDDDD;
+}
+
+QComboBox {
+background-color: #FFFFFF;
+color: #333333;
+border: 1px solid #CCCCCC;
+padding: 4px;
+}
+QLineEdit{
+background-color: #FFFFFF;
+color: #333333;
+border: none;
+padding: 4px;
+border: 0;
+padding: 3px 5px 5px 5px;
+selection-background-color: lightgray;
+}
+
+QPushButton {
+color: #333333;
+padding: 4px;
+border: none;
+background-color: transparent;
+}
+QPushButton:hover {
+background-color: #DDDDDD;
+}
+QPushButton:pressed {
+background-color: #CCCCCC;
+}
+
+
+QLabel {
+color: #333333;
+background-color: #FFFFFF;
+}
+QDialog{
+background-color: #FFFFFF;
+}
+
+/* Tabs styling */
+QTabWidget::pane {
+border: 1px solid #CCCCCC;
+}
+QTabBar::tab {
+background-color: #F1F1F1;
+color: #333333;
+padding: 8px;
+margin: 2px;
+}
+QTabBar::tab:selected {
+background-color: #DDDDDD;
+}
+
+QStatusBar {
+background-color: #F1F1F1;
+color: #333333;
+}
+
+QListWidget::item {
+background-color: #FFFFFF;
+color: #333333;
+border: 1px solid #CCCCCC;
+padding: 4px;
+}
+QListWidget::item:selected {
+background-color: #DDDDDD;
+}
+
+QMenu {
+background-color: #FFFFFF;
+color: #333333;
+border: 1px solid #CCCCCC;
+}
+QMenu::item {
+background-color: transparent;
+color: #333333;
+padding: 5px 20px;
+margin: 2px;
+}
+QMenu::item:selected {
+background-color: #DDDDDD;
+}
+QMenu::separator {
+height: 1px;
+background: #CCCCCC;
+margin: 5px 0;
+}
+QAction {
+color: #333333;
+}
+
+QPushButton#applyButton {
+    qproperty-icon: url(:/icons/play-icon.svg);
+       qproperty-iconSize: 16px 16px;
+    }
+QPushButton#searchButton {
+    qproperty-icon: url(:/icons/search-light.svg);
+}
+QPushButton#searchButton2 {
+            qproperty-icon: url(:/icons/search-light.svg);
+        }
+QPushButton:hover#searchButton2 {
+background-color: transparent;
+}
+QPushButton#newFolderBtn {
+    qproperty-icon: url(:/icons/new-folder-light.svg);
+}
+QPushButton#newFileBtn {
+   qproperty-icon: url(:/icons/new-file-light.svg);
+}
+QPushButton#collapseBtn {
+  qproperty-icon: url(:/icons/nav-arrow-light.svg);
+}
+QPushButton#redoButton {
+ qproperty-icon: url(:/icons/redo-icon.svg);
+  qproperty-iconSize: 16px 16px;
+}
+QPushButton#undoButton {
+    qproperty-icon: url(:/icons/undo-icon.svg);
+     qproperty-iconSize: 16px 16px;
+}
+QToolButton#redoButton {
+ qproperty-icon: url(:/icons/redo-light.svg);
+  qproperty-iconSize: 16px 16px;
+}
+QToolButton#undoButton {
+    qproperty-icon: url(:/icons/undo-light.svg);
+     qproperty-iconSize: 16px 16px;
+}
+QToolButton#saveButton {
+    qproperty-icon: url(:/icons/save-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
+QToolButton#seperator {
+    qproperty-icon: url(:/icons/toolbar-seperator-icon-light.svg);
+     qproperty-iconSize: 23px 23px;
+}
+QToolButton#grid{
+    qproperty-icon: url(:/icons/grid-icon-light.svg);
+     qproperty-iconSize: 18px 18px;
+}
+QToolButton#diff{
+    qproperty-icon: url(:/icons/diff-icon-light.svg);
+     qproperty-iconSize: 20px 20px;
+}
+QToolButton#view{
+    qproperty-icon: url(:/icons/image-icon-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
+QPushButton#zoom-in {
+               qproperty-icon: url(:/icons/zoom-in.svg);
+           }
+QPushButton#zoom-out {
+    qproperty-icon: url(:/icons/zoom-out.svg);
+}
+QPushButton#leftbutton {
+    background-color: #ddd;  /* Light gray background for light mode */
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    width: 5px;
+    height: 30px;
+    color: #333;  /* Dark gray text color */
+    font-weight: bold;
+}
+
+QPushButton:hover#leftbutton {
+    background-color: #bbb;  /* Slightly darker gray for hover effect */
+}
+
+QWidget#searchBoxHolder {
+            border: 2px solid darkgray;
+            border-radius: 10px;
+            padding: 3px 5px 5px 5px;
+        }
+

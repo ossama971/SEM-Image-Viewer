@@ -38,21 +38,20 @@ private:
     void editMenu();
     void viewMenu();
     void optionsMenu();
-
     void saveSession();
 
 signals:
     void exportProgressUpdated();
     void exportStarted(int maxIterations);
     void exportFinished();
-
+    void themeToggled();
 private slots:
     void showLeftSidebarClicked(bool isChecked);
     void showRightSidebarClicked(bool isChecked);
     void showImageClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void exportImages(QString format);
-
+    void onThemeActionTriggered();
     void onLeftSidebarViewChanged(bool state);
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
@@ -70,9 +69,10 @@ private:
     QAction *showRightSidebarAction;
     QAction *showLoggerAction;
     QAction *showImageAction;
-
+    QAction *darkModeAction;
     ImageDialog *imageDialog;
     WidgetViewController* viewController;
+    bool isDarkMode = false;
 };
 
 #endif // MENUBARWIDGET_H

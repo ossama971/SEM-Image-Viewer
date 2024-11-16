@@ -8,11 +8,11 @@
 #include <QSlider>
 
 
-class ContourWidget:public QWidget
+class SharpenWidget:public QWidget
 {
     Q_OBJECT
 public:
-    explicit ContourWidget(QWidget* parent=nullptr);
+    explicit SharpenWidget(QWidget* parent=nullptr);
 
 
 private:

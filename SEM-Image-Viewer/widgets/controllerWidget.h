@@ -10,7 +10,7 @@
 #include "noisereductionwidget.h"
 class LoggerWidget;
 class ImageWidget;
-class ContourWidget;
+class SharpenWidget;
 class EdgeExtractionWidget;
 
 
@@ -27,7 +27,7 @@ public:
 
     void setLoggerWidget(LoggerWidget *widget);
     void setImageWidget(ImageWidget *widget);
-    void setContourWidget(ContourWidget *widget);
+    void setSharpenWidget(SharpenWidget *widget);
     void setEdgeExtractionWidget(EdgeExtractionWidget *widget);
     void setNoiseReductionWidget(NoiseReductionWidget *widget);
     void setHistoryWidget(HistoryWidget *widget);
@@ -37,7 +37,7 @@ private slots:
 
     void onEdgeWidgetFilterApplied();
     void onNoiseReductionFilterApplied();
-    void onContourFilterApplied();
+    void onSharpenFilterApplied();
     void onGraySacleFilterApplied();
     void redoAction();
     void undoAction();
@@ -52,7 +52,7 @@ private:
     LoggerWidget *loggerWidget = nullptr;
     HistoryWidget* historyWidget=nullptr;
     ImageWidget *imageWidget = nullptr;
-    ContourWidget *contourWidget = nullptr;
+    SharpenWidget *sharpenWidget = nullptr;
     EdgeExtractionWidget *edgeExtractionWidget = nullptr;
     NoiseReductionWidget *noiseReductionWidget = nullptr;
     GrayScaleWidget *graySacleWidget = nullptr;
