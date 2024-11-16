@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QToolButton>
 #include <QHBoxLayout>
+#include <QButtonGroup>
 
 class ToolbarWidget : public QWidget
 {
