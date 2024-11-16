@@ -1,10 +1,9 @@
 #include "toolbar_widget.h"
 
 ToolbarWidget::ToolbarWidget(QWidget *parent)
-    : QWidget(parent)
-{
+    : QWidget(parent) {
     QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor("#2C2C2C")); // Use Window instead of Background
+    palette.setColor(QPalette::Window, QColor("#2C2C2C"));
     setPalette(palette);
     setAutoFillBackground(true);
 
@@ -44,8 +43,8 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
                         "QToolButton:checked { background-color: #555555; border-radius: 4px; }";
 
     auto buttonStyle2 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
-                       "QToolButton:checked { background-color: #555555; border-radius: 4px; }"
-                       "QToolButton:hover { background-color: #444444; border-radius: 4px; }";
+                        "QToolButton:checked { background-color: #555555; border-radius: 4px; }"
+                        "QToolButton:hover { background-color: #444444; border-radius: 4px; }";
 
     imageViewButton->setStyleSheet(buttonStyle1);
     diffViewButton->setStyleSheet(buttonStyle1);
@@ -59,6 +58,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     imageViewButton->setCheckable(true);
     diffViewButton->setCheckable(true);
     gridViewButton->setCheckable(true);
+
     // Create a button group to manage exclusive selection
     QButtonGroup *buttonGroup = new QButtonGroup(this);
     buttonGroup->setExclusive(true);
@@ -82,8 +82,14 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     // Set the first button as checked by default
     imageViewButton->setChecked(true);
 
+    // Disable save button by default
+    saveButton->setEnabled(imageViewButton->isChecked());
+
+    // Connections
+    connect(imageViewButton, &QToolButton::toggled, saveButton, &QToolButton::setEnabled);
     connect(undoButton, &QToolButton::clicked, this, &ToolbarWidget::onUndoClicked);
     connect(redoButton, &QToolButton::clicked, this, &ToolbarWidget::onRedoClicked);
+    connect(saveButton, &QToolButton::clicked, this, &ToolbarWidget::onSaveClicked);
 }
 
 void ToolbarWidget::onSelectDiffView() {
@@ -96,4 +102,8 @@ void ToolbarWidget::onUndoClicked() {
 
 void ToolbarWidget::onRedoClicked() {
     emit redoTriggered();
+}
+
+void ToolbarWidget::onSaveClicked() {
+    emit saveButtonClicked();
 }

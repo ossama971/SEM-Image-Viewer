@@ -52,13 +52,15 @@ private slots:
     void showImageClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void exportImages(QString format);
-    void exportSelectedImage(QString format);
 
     void onLeftSidebarViewChanged(bool state);
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
     void onLoggerViewChanged(bool state);
     // void exportAll();
+
+public slots:
+    void exportSelectedImage(QString format);
 
 private:
     QAction *explorerAction;

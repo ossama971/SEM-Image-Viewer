@@ -48,14 +48,22 @@ MainWindow::MainWindow(QWidget *parent)
     rightSidebarWidget->setViewController(viewController);
     topMiddleWidget->setViewController(viewController);
     bottomMiddleWidget->setViewController(viewController);
+    menuBarWidget = new MenuBarWidget(viewController, this);
 
     // Connecting signals sent from toolbar to history widget
     ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
     HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
     if (toolbarWidget && historyWidget) {
-        // Connect signals from ToolbarWidget to HistoryWidget
+        // Connect signals from Toolbar to History
         connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
         connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
+    }
+
+    // Connecting signals sent from Toolbar to MenuBar
+    if (toolbarWidget && menuBarWidget) {
+        connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
+            menuBarWidget->exportSelectedImage("*.jpg");
+        });
     }
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
@@ -74,7 +82,6 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
-    menuBarWidget = new MenuBarWidget(viewController, this);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(menuBarWidget);

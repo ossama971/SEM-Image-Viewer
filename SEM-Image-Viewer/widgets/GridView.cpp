@@ -33,7 +33,7 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
     // Set up the model and load images automatically
     setModel(imageDataModel);
-    listView->setItemDelegate(new ThumbnailDelegate(this));
+    //listView->setItemDelegate(new ThumbnailDelegate(this));
 
     // Connect the selection changed signal to the slot
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &GridView::handleSelectionChanged);

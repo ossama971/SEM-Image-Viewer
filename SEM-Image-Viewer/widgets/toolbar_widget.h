@@ -28,10 +28,12 @@ public slots:
 private slots:
     void onUndoClicked();
     void onRedoClicked();
+    void onSaveClicked();
 
 signals:
     void undoTriggered();
     void redoTriggered();
+    void saveButtonClicked();
 
 };
 
