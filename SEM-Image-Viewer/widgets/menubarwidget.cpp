@@ -225,10 +225,11 @@ void MenuBarWidget::optionsMenu(){
     QMenu *optionsMenu = this->addMenu("Options");
     QMenu *fontMenu = new QMenu("Font", optionsMenu);
 
-    QAction *darkModeAction = new QAction("Dark Mode", this);
-
+    darkModeAction = new QAction(this);
+    darkModeAction->setText("Dark Mode");
     optionsMenu->addAction(darkModeAction);
     optionsMenu->addMenu(fontMenu);
+     connect(darkModeAction, &QAction::triggered, this, &MenuBarWidget::onThemeActionTriggered);
 }
 
 void MenuBarWidget::showLeftSidebarClicked(bool isChecked) {
@@ -261,4 +262,14 @@ void MenuBarWidget::onImageViewChanged(bool state) {
 
 void MenuBarWidget::onLoggerViewChanged(bool state) {
     showLoggerAction->setChecked(state);
+}
+
+void MenuBarWidget::onThemeActionTriggered() {
+    isDarkMode = !isDarkMode;
+    if(isDarkMode){
+        darkModeAction->setText("Light Mode");
+    }else {
+        darkModeAction->setText("Dark Mode");
+    }
+    emit themeToggled();
 }

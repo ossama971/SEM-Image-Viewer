@@ -49,7 +49,10 @@ set(PROJECT_SOURCES
 
         widgets/LoggerWidget.h
         widgets/LoggerWidget.cpp
-        assets/errors_icon.png assets/information_icon.png assets/micro-electronic-sed.jpg assets/warnings_icon.png
+        assets/errors-icon.png
+        assets/information_icon.png
+        assets/micro-electronic-sed.jpg
+        assets/warnings_icon.png
 
 
 

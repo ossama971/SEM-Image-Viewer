@@ -38,17 +38,17 @@ void LoggerWidget::createButtons()
         buttonsStyle);
 
     infoShowButton = new QPushButton("Info", this);
-    infoShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/information_icon.png"));
+    infoShowButton->setIcon(QIcon(":/assets/information_icon.png"));
     infoShowButton->setIconSize(QSize(16, 16));
     infoShowButton->setStyleSheet(buttonsStyle);
 
     errorsShowButton = new QPushButton("Errors", this);
-    errorsShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/errors_icon.png"));
+    errorsShowButton->setIcon(QIcon(":/assets/errors_icon.png"));
     errorsShowButton->setIconSize(QSize(16, 16));
     errorsShowButton->setStyleSheet(buttonsStyle);
 
     warningsShowButton = new QPushButton("Warnings", this);
-    warningsShowButton->setIcon(QIcon("A:/Siemens_Academy/GP/project/sem-image-viewer/SEM-Image-Viewer/assets/warnings_icon.png"));
+    warningsShowButton->setIcon(QIcon(":/assets/warnings_icon.png"));
     warningsShowButton->setIconSize(QSize(16, 16));
     warningsShowButton->setStyleSheet(buttonsStyle);
 
@@ -59,22 +59,47 @@ void LoggerWidget::createButtons()
     switchLayoutButtonCompact->setStyleSheet(buttonsStyle);
     //switchLayoutButtonCompact->setFixedWidth(50);
     // Search line edit for filtering logs by text
+    QWidget *searchWidget = new QWidget(this);
+    QHBoxLayout *searchContainerLayout = new QHBoxLayout(searchWidget);
+    searchContainerLayout->setContentsMargins(5, 5, 5, 5); // Padding inside the border
+    searchContainerLayout->setSpacing(0);
+    layout = new QHBoxLayout(searchWidget);
+    layout->setContentsMargins(0, 0, 0, 0);
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Search log message");
     // Set a fixed width (e.g., 200 pixels)
     //searchLineEdit->setFixedWidth(300);
-
     // Set the style sheet for rounded borders and other properties
     searchLineEdit->setStyleSheet(""
-        "QLineEdit {"
-        "border: 2px solid #aaaaaa;"
-        "border-radius: 10px;"
-        "padding: 5px;"
-        "}"
-        "QLineEdit:focus {"
-        "border: 2px solid #0078d7;"
-        "}");
+                                  "QLineEdit {"
+                                  "    border: none;"
+                                  "    padding: 5px;"
+                                  "}");
+    QPushButton *searchIcon = new QPushButton(this);
+    searchIcon->setObjectName("searchButton2");
 
+    searchContainerLayout->addWidget(searchLineEdit);
+    searchContainerLayout->addWidget(searchIcon);
+    searchWidget->setStyleSheet(
+        "QWidget {"
+        "    border: 2px solid #aaaaaa;"
+        "    border-radius: 10px;"
+        "    padding: 5px;"
+        "}"
+        "QWidget:focus-within {"
+        "    border: 2px solid #0078d7;"
+        "}"
+        "QPushButton {"
+        "    border: 0;"
+        "}"
+        "QPushButton:hover {"
+        "    border-style: inset;"
+        "}"
+        "QPushButton:pressed {"
+        "    border-style: inset;"
+        "}"
+        );
+    layout->addWidget(searchWidget);
     // Log list widget for displaying messages
     logListWidget = new QListView(this);
     logListWidget->setStyleSheet(
@@ -97,6 +122,8 @@ void LoggerWidget::createConnections()
 
 void LoggerWidget::createLayouts()
 {
+    QWidget *layoutContainer = new QWidget();
+    layoutContainer->setLayout(layout);
     QWidget *line = new QWidget(this);
     line->setStyleSheet("background-color: #aaaaaa;");
     line->setFixedHeight(2);
@@ -114,7 +141,7 @@ void LoggerWidget::createLayouts()
     topLayoutFull->addWidget(warningsShowButton);
     topLayoutFull->addWidget(errorsShowButton);
     topLayoutFull->addSpacing(50);
-    topLayoutFull->addWidget(searchLineEdit);
+    topLayoutFull->addWidget(layoutContainer);
     topLayoutFull->addWidget(switchLayoutButtonFull);
 
     // Why i canot use the same topLayout

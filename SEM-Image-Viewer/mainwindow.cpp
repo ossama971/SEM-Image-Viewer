@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
+    connect(menuBarWidget, &MenuBarWidget::themeToggled, this, &MainWindow::applyTheme);
 }
 
 
@@ -143,6 +144,20 @@ void MainWindow::onSaveChangesClicked() {
     QApplication::quit();  // Exit after saving
 }
 
+void MainWindow::applyTheme() {
+    static bool isDarkMode = false;
+
+    QString styleFile = isDarkMode ? ":/styles/light-mode.qss" : ":/styles/dark-mode.qss";
+
+    QFile file(styleFile);
+    if (file.open(QFile::ReadOnly)) {
+        QString stylesheet = QLatin1String(file.readAll());
+        qApp->setStyleSheet(stylesheet);
+        file.close();
+    }
+
+    isDarkMode = !isDarkMode;
+}
 MainWindow::~MainWindow()
 {
     delete ui;

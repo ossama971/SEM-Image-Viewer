@@ -43,7 +43,7 @@ private:
 
     QLineEdit *searchLineEdit;
     QListView *logListWidget;
-
+    QHBoxLayout *layout;
     std::shared_ptr<MessageDataModel> m_dataModel;
 };
 

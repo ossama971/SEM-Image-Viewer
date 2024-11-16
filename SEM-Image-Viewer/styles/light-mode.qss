@@ -186,6 +186,12 @@ QPushButton#applyButton {
 QPushButton#searchButton {
     qproperty-icon: url(:/icons/search-light.svg);
 }
+QPushButton#searchButton2 {
+            qproperty-icon: url(:/icons/search-light.svg);
+        }
+QPushButton:hover#searchButton2 {
+background-color: transparent;
+}
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-light.svg);
 }
