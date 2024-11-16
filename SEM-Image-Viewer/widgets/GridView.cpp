@@ -52,7 +52,6 @@ void GridView::handleSelectionChanged(const QItemSelection &selected, const QIte
             int selectedIndex = selectedIndexes.first().row();  // Get the selected index
             Workspace::Instance()->getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
-        qDebug() << "Selected Indexes:" << selectedIndexes.size();
 
         // Store two selected images if exactly two are selected
         if (selectedIndexes.size() == 2) {
