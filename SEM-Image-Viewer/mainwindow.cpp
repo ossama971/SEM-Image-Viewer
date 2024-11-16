@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
+    // Create the MiniGrid instance
+    MiniGrid *miniGrid = new MiniGrid(this);
+
     viewController = new WidgetViewController(leftSidebarWidget, rightSidebarWidget, topMiddleWidget, bottomMiddleWidget, this);
 
     leftSidebarWidget->setViewController(viewController);
@@ -46,8 +49,14 @@ MainWindow::MainWindow(QWidget *parent)
     topMiddleWidget->setViewController(viewController);
     bottomMiddleWidget->setViewController(viewController);
 
-    // Create the MiniGrid instance
-    MiniGrid *miniGrid = new MiniGrid(this);
+    // Connecting signals sent from toolbar to history widget
+    ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
+    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    if (toolbarWidget && historyWidget) {
+        // Connect signals from ToolbarWidget to HistoryWidget
+        connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
+        connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
+    }
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(topMiddleWidget);

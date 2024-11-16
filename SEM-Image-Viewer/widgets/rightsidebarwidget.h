@@ -15,6 +15,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include "progressbar.h"
+#include "historywidget.h"
 
 class RightSidebarWidget : public QWidget
 {
@@ -35,6 +36,7 @@ private:
     WidgetViewController* viewController;
     ImageRepository* _imageRepo;
     ProgressBarComponent* _progressBar;
+    HistoryWidget *_historyWidget;
 
 };
 

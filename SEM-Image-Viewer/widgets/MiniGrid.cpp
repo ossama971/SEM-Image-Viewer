@@ -72,7 +72,7 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
     // Set up the model and initialize the grid
     setModel(imageDataModel);
-    listView->setItemDelegate(new ThumbnailDelegate(this));
+    //listView->setItemDelegate(new ThumbnailDelegate(this));
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MiniGrid::handleSelectionChanged);
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
 }

@@ -24,7 +24,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     EdgeExtractionWidget *_edgeExtractionWidget = new EdgeExtractionWidget();
     GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
     NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
-    HistoryWidget *_historyWidget = new HistoryWidget();
+    _historyWidget = new HistoryWidget();
     _progressBar = new ProgressBarComponent();
 
     ActionListWidget *list=new ActionListWidget();

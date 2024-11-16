@@ -20,7 +20,6 @@ class TopMiddleWidget : public QWidget
     Q_OBJECT
 public:
     explicit TopMiddleWidget(QWidget *parent = nullptr);
-
     void setViewController(WidgetViewController* widgetViewController);
 
 public slots:
@@ -28,22 +27,20 @@ public slots:
     void openDiffView();
 
 private slots:
-    void onButton1Clicked();
-    void onButton2Clicked();
-    void onButton3Clicked();
+    void onimageViewButtonClicked();
+    void ondiffViewButtonClicked();
+    void ongridViewButtonClicked();
 
 private:
     ToolbarWidget *toolbar;
-    QPushButton *button1;
-    QPushButton *button2;
-    QPushButton *button3;
     ImageWidget *image;
     GridView *gridView;
     DiffViewWidget *diffView;
     QVBoxLayout *topMiddleLayout;
-
-private:
     WidgetViewController* viewController;
+
+signals:
+    void selectDiffView();
 };
 
 #endif // TOPMIDDLEWIDGET_H

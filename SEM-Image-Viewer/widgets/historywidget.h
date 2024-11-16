@@ -28,9 +28,10 @@ public slots:
     void loadActionList(QList<QString> actions);
     void updateActionList(QString action);
     void popAction();
-private slots:
+public slots:
     void undoAction();
     void redoAction();
+private slots:
     void showAndHideList();
 
 };

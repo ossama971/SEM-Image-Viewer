@@ -19,17 +19,19 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
     
-    connect(toolbar->button1, &QToolButton::clicked, this, &TopMiddleWidget::onButton1Clicked);
-    connect(toolbar->button2, &QToolButton::clicked, this, &TopMiddleWidget::onButton2Clicked);
-    connect(toolbar->button3, &QToolButton::clicked, this, &TopMiddleWidget::onButton3Clicked);
+    connect(toolbar->imageViewButton, &QToolButton::clicked, this, &TopMiddleWidget::onimageViewButtonClicked);
+    connect(toolbar->diffViewButton, &QToolButton::clicked, this, &TopMiddleWidget::ondiffViewButtonClicked);
+    connect(toolbar->gridViewButton, &QToolButton::clicked, this, &TopMiddleWidget::ongridViewButtonClicked);
 
     topMiddleLayout->addWidget(toolbar, 0, Qt::AlignTop);
     topMiddleLayout->addWidget(topMiddleContent);
     topMiddleLayout->addWidget(image);
-    //topMiddleLayout->addWidget(gridView);
 
     Controller::instance().setImageWidget(image);
     this->setLayout(topMiddleLayout);
+
+    // Connect to tell toolbar that diff view is opened when to images is selected and right clicked to open in diff view
+    connect(this, &TopMiddleWidget::selectDiffView, toolbar, &ToolbarWidget::onSelectDiffView);
 }
 
 void TopMiddleWidget::setViewController(WidgetViewController* widgetViewController) {
@@ -46,9 +48,10 @@ void TopMiddleWidget::openDiffView() {
     gridView->setVisible(false);
     topMiddleLayout->addWidget(diffView);
     diffView->setVisible(true);
+    emit selectDiffView();
 }
 
-void TopMiddleWidget::onButton1Clicked(){
+void TopMiddleWidget::onimageViewButtonClicked(){
     layout()->removeWidget(gridView);
     gridView->setVisible(false);
     topMiddleLayout->removeWidget(diffView);
@@ -58,7 +61,7 @@ void TopMiddleWidget::onButton1Clicked(){
     image->setVisible(true);
 }
 
-void TopMiddleWidget::onButton2Clicked(){
+void TopMiddleWidget::ondiffViewButtonClicked(){
     topMiddleLayout->removeWidget(gridView);
     gridView->setVisible(false);
     layout()->removeWidget(image);
@@ -68,7 +71,7 @@ void TopMiddleWidget::onButton2Clicked(){
     diffView->setVisible(true);
 }
 
-void TopMiddleWidget::onButton3Clicked() {
+void TopMiddleWidget::ongridViewButtonClicked() {
     layout()->removeWidget(image);
     image->setVisible(false);
     topMiddleLayout->removeWidget(diffView);

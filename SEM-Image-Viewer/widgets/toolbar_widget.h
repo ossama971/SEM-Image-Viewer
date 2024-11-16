@@ -9,11 +9,30 @@
 class ToolbarWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit ToolbarWidget(QWidget *parent = nullptr);
-    QToolButton *button1;
-    QToolButton *button2;
-    QToolButton *button3;
+    QToolButton *imageViewButton;
+    QToolButton *diffViewButton;
+    QToolButton *gridViewButton;
+    QToolButton *saveButton;
+    QToolButton *redoButton;
+    QToolButton *undoButton;
+
+private:
+    QToolButton *seperatorIcon;
+
+public slots:
+    void onSelectDiffView();
+
+private slots:
+    void onUndoClicked();
+    void onRedoClicked();
+
+signals:
+    void undoTriggered();
+    void redoTriggered();
+
 };
 
 #endif // TOOLBARWIDGET_H

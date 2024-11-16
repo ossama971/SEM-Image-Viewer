@@ -23,5 +23,8 @@
         <file>icons/grid-icon.svg</file>
         <file>icons/image-icon.svg</file>
         <file>icons/toolbar-seperator-icon.svg</file>
+        <file>icons/redo.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/undo.svg</file>
     </qresource>
 </RCC>
