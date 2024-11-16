@@ -15,8 +15,7 @@
 #include <QMenu>
 #include <QAction>
 
-
-
+#include "core/engines/JsonVisitor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -40,15 +39,32 @@ MainWindow::MainWindow(QWidget *parent)
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
+    // Create the MiniGrid instance
+    MiniGrid *miniGrid = new MiniGrid(this);
+
     viewController = new WidgetViewController(leftSidebarWidget, rightSidebarWidget, topMiddleWidget, bottomMiddleWidget, this);
 
     leftSidebarWidget->setViewController(viewController);
     rightSidebarWidget->setViewController(viewController);
     topMiddleWidget->setViewController(viewController);
     bottomMiddleWidget->setViewController(viewController);
+    menuBarWidget = new MenuBarWidget(viewController, this);
+    setMenuBar(menuBarWidget);
+    // Connecting signals sent from toolbar to history widget
+    ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
+    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    if (toolbarWidget && historyWidget) {
+        // Connect signals from Toolbar to History
+        connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
+        connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
+    }
 
-    // Create the MiniGrid instance
-    MiniGrid *miniGrid = new MiniGrid(this);
+    // Connecting signals sent from Toolbar to MenuBar
+    if (toolbarWidget && menuBarWidget) {
+        connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
+            menuBarWidget->exportSelectedImage("*.jpg");
+        });
+    }
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(topMiddleWidget);
@@ -67,13 +83,12 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(2, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(menuBarWidget);
     layout->addWidget(mainSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
 
-    menuBarWidget = new MenuBarWidget(viewController, this);
-    setMenuBar(menuBarWidget);
 
     //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
@@ -134,14 +149,37 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    // Your code to save changes here
+    // If a thread is already running, return early (optional)
+    if (saveThread && saveThread->isRunning()) {
+        QMessageBox::information(this, "Save", "A save operation is already in progress.");
+        return;
+    }
 
-    // JsonVisitor visitor;
-    // Workspace::Instance()->getActiveSession().accept(visitor);
-    // visitor.write_json("session.json");
+    // Create the QThread and worker objects
+    saveThread = new QThread(this);  // Store the thread as a member variable
+    QObject *worker = new QObject();
+    worker->moveToThread(saveThread);
 
-    QMessageBox::information(this, "Save", "Changes have been saved.");
-    QApplication::quit();  // Exit after saving
+    // Start the save operation in the worker thread
+    connect(saveThread, &QThread::started, worker, [worker]() {
+        JsonVisitor visitor;
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json("session.json");
+    });
+
+    // When worker finishes, quit the thread and delete worker
+    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+    // When the thread finishes, show a message and quit the application
+    connect(saveThread, &QThread::finished, this, [this]() {
+        QMessageBox::information(nullptr, "Save", "Changes have been saved.");
+        QApplication::quit();  // Exit the application after saving
+    });
+
+    // Start the thread
+    saveThread->start();
 }
 
 void MainWindow::applyTheme() {
@@ -160,7 +198,13 @@ void MainWindow::applyTheme() {
 }
 MainWindow::~MainWindow()
 {
-    delete ui;
+    // If the saveThread is running, quit and wait for it to finish
+    if (saveThread && saveThread->isRunning()) {
+        saveThread->quit();  // Request the thread to quit
+        saveThread->wait();  // Wait for the thread to finish
+    }
+    
+    delete ui;  // Call the default destructor to clean up the UI
 }
 
 

@@ -5,6 +5,8 @@
 #include "../core/engines/Workspace.h"
 #include "ThumbnailDelegate.h"
 
+#include <QDebug>
+
 MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::SingleSelection); // Enable single selection
@@ -34,7 +36,7 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     listView->setFixedHeight(rowHeight);
 
     // Add top margin to the listView widget to create vertical padding between the thumbnails and the widget top
-    listView->setContentsMargins(2, 2, 2, 2);  // Adds padding on top of the list view
+    listView->setContentsMargins(2, 2, 2, 2);
 
     // Connect buttons to slots
     connect(leftButton, &QPushButton::clicked, this, &MiniGrid::scrollLeft);
@@ -42,9 +44,9 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
     // Set up the model and initialize the grid
     setModel(imageDataModel);
-    listView->setItemDelegate(new ThumbnailDelegate(this));
+    //listView->setItemDelegate(new ThumbnailDelegate(this));
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MiniGrid::handleSelectionChanged);
-    QObject::connect(&Workspace::Instance().getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
+    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
 }
 
 void MiniGrid::setModel(ImageDataModel *model) {
@@ -59,7 +61,7 @@ void MiniGrid::initializeMiniGrid() {
     listView->setResizeMode(QListView::Adjust);
     listView->setFlow(QListView::LeftToRight);
     listView->setUniformItemSizes(true);
-    listView->setGridSize(QSize(90, 90));  // Adjust this to match the size of your thumbnails
+    listView->setGridSize(QSize(90, 90));  // Size of thumbnails
 
 
     listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -84,9 +86,8 @@ void MiniGrid::handleSelectionChanged(const QItemSelection &selected, const QIte
     if (!selectedIndexes.isEmpty()) {
         int selectedIndex = selectedIndexes.first().row();  // Get the first selected index
         if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
-            qDebug() << "Selected Image Row:" << selectedIndex;
             // Notify the ImageRepository about the selection change
-            Workspace::Instance().getActiveSession().getImageRepo().selectImage(selectedIndex);
+            Workspace::Instance()->getActiveSession().getImageRepo().selectImage(selectedIndex);
         }
     }
 }

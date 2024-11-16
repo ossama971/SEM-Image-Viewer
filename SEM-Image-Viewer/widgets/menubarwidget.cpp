@@ -1,13 +1,19 @@
 #include "menubarwidget.h"
 #include "ImageDialog.h"
+#include "../core/engines/JsonVisitor.h"
 #include "../core/engines/Workspace.h"
 
 MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent) : QMenuBar(parent), viewController(widgetViewController) {
+
+    imageDialog = new ImageDialog(this);
 
     fileMenu();
     editMenu();
     viewMenu();
     optionsMenu();
+
+    // make the menu bar expanded by default
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 }
 
@@ -24,6 +30,9 @@ void MenuBarWidget::fileMenu(){
     QAction *JPGAction = new QAction("JPG", this);
     QAction *PNGAction = new QAction("PNG", this);
     QAction *BMPAction = new QAction("BMP", this);
+
+    QAction *saveSessionAction = new QAction("Save Session", this);
+    QAction *loadSessionAction  = new QAction("Load Session", this);
 
     QAction *JPGAllAction = new QAction("JPG", this);
     QAction *PNGAllAction = new QAction("PNG", this);
@@ -43,9 +52,12 @@ void MenuBarWidget::fileMenu(){
     fileMenu->addSeparator();
     fileMenu->addMenu(exportMenu);
     fileMenu->addMenu(exportAllMenu);
+    fileMenu->addSeparator();
+    fileMenu->addAction(saveSessionAction);
+    fileMenu->addAction(loadSessionAction);
 
-    connect(openImageAction, &QAction::triggered, this, [=]() { ImageDialog::openFile(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
-    connect(openFolderAction, &QAction::triggered, this, [=]() { ImageDialog::openFolder(&Workspace::Instance().getActiveSession().getImageRepo(), this); });
+    connect(openImageAction, &QAction::triggered, this, [=]() { imageDialog->openFile(&Workspace::Instance()->getActiveSession().getImageRepo(), this); });
+    connect(openFolderAction, &QAction::triggered, this, [=]() { imageDialog->openFolder(&Workspace::Instance()->getActiveSession().getImageRepo(), this); });
 
     connect(JPGAllAction, &QAction::triggered, this, [=]() { exportImages("*.jpg"); });
     connect(PNGAllAction, &QAction::triggered, this, [=]() { exportImages("*.png"); });
@@ -55,11 +67,13 @@ void MenuBarWidget::fileMenu(){
     connect(JPGAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.jpg"); });
     connect(PNGAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.png"); });
     connect(BMPAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.bmp"); });
+
+    connect(saveSessionAction, &QAction::triggered, this, [=]() { saveSession(); });
 }
 
 void MenuBarWidget::exportSelectedImage(QString format){
     qDebug("-------------------------------------------------exportSelctedImage called-------------------------------------------------");
-    Image* image = Workspace::Instance().getActiveSession().getImageRepo().getImage();
+    Image* image = Workspace::Instance()->getActiveSession().getImageRepo().getImage();
 
     string fileName = image->getPath().filename().string();
     size_t lastDot = fileName.find_last_of('.');
@@ -92,7 +106,7 @@ void MenuBarWidget::exportImages(QString format) {
     qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
 
     // Collect necessary data
-    vector<Image> images = Workspace::Instance().getActiveSession().getImageRepo().getImages();
+    vector<Image> images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
 
     QString directoryPath = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Images"));
 
@@ -263,7 +277,6 @@ void MenuBarWidget::onImageViewChanged(bool state) {
 void MenuBarWidget::onLoggerViewChanged(bool state) {
     showLoggerAction->setChecked(state);
 }
-
 void MenuBarWidget::onThemeActionTriggered() {
     isDarkMode = !isDarkMode;
     if(isDarkMode){
@@ -272,4 +285,24 @@ void MenuBarWidget::onThemeActionTriggered() {
         darkModeAction->setText("Dark Mode");
     }
     emit themeToggled();
+}
+void MenuBarWidget::saveSession() {
+    QThread* saveThread = new QThread;
+
+    QObject* worker = new QObject();
+    worker->moveToThread(saveThread);
+
+    connect(saveThread, &QThread::started, [worker]() {
+        JsonVisitor visitor;
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json("session.json");
+
+        emit worker->destroyed();
+    });
+
+    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+    saveThread->start();
 }

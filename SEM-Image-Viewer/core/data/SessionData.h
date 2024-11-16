@@ -2,11 +2,12 @@
 #define IMAGE_SESSION_H
 
 #include "ImageRepository.h"
+#include "Visitor.h"
+#include "Visitable.h"
 #include "../filters/ImageFilter.h"
-#include <QObject.h>
 
-class SessionData : public QObject {
-     Q_OBJECT
+class SessionData : public QObject, public Visitable {
+  Q_OBJECT
 public:
     void loadDirectory(const std::string path);
     void loadImage(const std::string path);
@@ -22,6 +23,8 @@ public:
 
     ImageRepository& getImageRepo();
     Image* getSelectedImage();
+
+    void accept(Visitor &v) const override;
 
 signals:
     void loadActionList(QList<QString> actions);

@@ -2,13 +2,17 @@
 #define IMAGEDIALOG_H
 
 #include "../core/data/ImageRepository.h"
+#include <QWidget>
 #include <QString>
 
-class ImageDialog
+class ImageDialog : public QWidget
 {
+    Q_OBJECT
 public:
-    static QString openFolder(ImageRepository* imageRepo, QWidget* parent = nullptr);
-    static QString openFile(ImageRepository* imageRepo, QWidget* parent = nullptr);
+    ImageDialog(QWidget* parent = nullptr);
+
+    void openFolder(ImageRepository* imageRepo, QWidget* parent = nullptr);
+    void openFile(ImageRepository* imageRepo, QWidget* parent = nullptr);
 };
 
 #endif // IMAGEDIALOG_H

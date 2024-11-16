@@ -3,11 +3,14 @@
 
 #include "ImageFormat.h"
 #include "ImageColorSpace.h"
+#include "Visitor.h"
+#include "Visitable.h"
+
 #include <string>
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 
-class ImageMetadata {
+class ImageMetadata : public Visitable {
 public:
     void load(const std::string &path, const cv::Mat &image);
 
@@ -20,6 +23,9 @@ public:
     int getHeight() const;
     ImageFormat getFormat() const;
     ColorSpace getColorSpace() const;
+    std::filesystem::file_time_type getDateModified() const;
+
+    void accept(Visitor &v) const override;
 
 private:
     int _width, _height;

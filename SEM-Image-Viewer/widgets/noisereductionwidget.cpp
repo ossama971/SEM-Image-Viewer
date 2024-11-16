@@ -111,7 +111,6 @@ void NoiseReductionWidget::expandCollapseSliders(bool checked)
 
 void NoiseReductionWidget::handleApplyFilter()
 {
-    qDebug() << "Applying noise reduction filter";
     emit applyFilter();
 }
 

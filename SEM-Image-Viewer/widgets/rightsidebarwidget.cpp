@@ -6,8 +6,9 @@
 #include "noisereductionwidget.h"
 #include "historywidget.h"
 #include "actionlistwidget.h"
+#include "../core/engines/Workspace.h"
 
-RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr)
+RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -23,7 +24,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     EdgeExtractionWidget *_edgeExtractionWidget = new EdgeExtractionWidget();
     GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
     NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
-    HistoryWidget *_historyWidget = new HistoryWidget();
+    _historyWidget = new HistoryWidget();
     _progressBar = new ProgressBarComponent();
 
     ActionListWidget *list=new ActionListWidget();
@@ -52,6 +53,9 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     controller.setGraySacleWidget(_grayScaleWidget);
 
     this->setLayout(rightSidebarLayout);
+
+    connect(_imageRepo, &ImageRepository::onImageLoadStarted, this, &RightSidebarWidget::onImageLoadStarted);
+    connect(_imageRepo, &ImageRepository::onImageLoaded, this, &RightSidebarWidget::onImageLoaded);
 }
 
 void RightSidebarWidget::setViewController(WidgetViewController* widgetViewController) {
@@ -73,10 +77,22 @@ void RightSidebarWidget::initializeProgress(int maxIterations)
 
 void RightSidebarWidget::updateProgress()
 {
-    _progressBar->setValue(_progressBar->value() + 1);
+    int new_value = _progressBar->value() + 1;
+    _progressBar->setValue(new_value);
+
+    if (new_value == _progressBar->maximum())
+        hideProgressBar();
 }
 
 void RightSidebarWidget::hideProgressBar()
 {
     _progressBar->hide();
+}
+
+void RightSidebarWidget::onImageLoadStarted(int image_count) {
+    initializeProgress(image_count);
+}
+
+void RightSidebarWidget::onImageLoaded(Image* newImage) {
+    updateProgress();
 }

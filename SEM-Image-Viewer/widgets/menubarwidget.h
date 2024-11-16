@@ -18,6 +18,7 @@
 #include "../core/engines/Workspace.h"
 #include "../core/data/Image.h"
 #include "../core/data/ImageFormat.h"
+#include "ImageDialog.h"
 #include "WidgetViewController.h"
 
 #include<iostream>
@@ -37,6 +38,7 @@ private:
     void editMenu();
     void viewMenu();
     void optionsMenu();
+    void saveSession();
 
 signals:
     void exportProgressUpdated();
@@ -49,14 +51,15 @@ private slots:
     void showImageClicked(bool isChecked);
     void showLoggerClicked(bool isChecked);
     void exportImages(QString format);
-    void exportSelectedImage(QString format);
     void onThemeActionTriggered();
-
     void onLeftSidebarViewChanged(bool state);
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
     void onLoggerViewChanged(bool state);
     // void exportAll();
+
+public slots:
+    void exportSelectedImage(QString format);
 
 private:
     QAction *explorerAction;
@@ -67,6 +70,7 @@ private:
     QAction *showLoggerAction;
     QAction *showImageAction;
     QAction *darkModeAction;
+    ImageDialog *imageDialog;
     WidgetViewController* viewController;
     bool isDarkMode = false;
 };

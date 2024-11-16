@@ -33,7 +33,7 @@ private slots:
     void onCollapse();
     void onSearch();
     void onTreeClick(const QModelIndex &index);
-    void onDirectoryChanged(const std::string newDir, std::vector<Image>& newImages, bool image_load);
+    void onDirectoryChanged(const std::string newDir, std::vector<Image>* newImages, bool image_load);
 
 private:
     QDir _rootDir;
@@ -45,6 +45,7 @@ private:
     ImageFilterProxyModel *proxyModel;
     QLineEdit *searchBox;
     WidgetViewController* viewController;
+    class ImageDialog* imageDialog;
 };
 
 #endif // FILEBROWSERWIDGET_H

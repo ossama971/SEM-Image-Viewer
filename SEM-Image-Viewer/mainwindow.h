@@ -50,7 +50,7 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    ImageWidget *imageWidget;  // Member variable for the custom widget
+    ImageWidget *imageWidget;
 
     WidgetViewController *viewController;
     LeftSidebarWidget *leftSidebarWidget;
@@ -61,9 +61,7 @@ private:
     QSplitter *mainSplitter;
     MenuBarWidget *menuBarWidget;
 
-    // signals:
-
-
+    QThread *saveThread = nullptr;
 };
 
 

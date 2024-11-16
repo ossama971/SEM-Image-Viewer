@@ -24,6 +24,13 @@
         <file>icons/nav-arrow-light.svg</file>
         <file>icons/vline-dark.png</file>
         <file>icons/vline-light.png</file>
+        <file>icons/diff-icon.svg</file>
+        <file>icons/grid-icon.svg</file>
+        <file>icons/image-icon.svg</file>
+        <file>icons/toolbar-seperator-icon.svg</file>
+        <file>icons/redo.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/undo.svg</file>
 	<file>styles/dark-mode.qss</file>
 	<file>styles/light-mode.qss</file>
     </qresource>
