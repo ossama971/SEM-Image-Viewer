@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     topMiddleWidget->setViewController(viewController);
     bottomMiddleWidget->setViewController(viewController);
     menuBarWidget = new MenuBarWidget(viewController, this);
-    setMenuBar(menuBarWidget);
+
     // Connecting signals sent from toolbar to history widget
     ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
     HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
@@ -83,13 +83,12 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(2, 1);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(menuBarWidget);
     layout->addWidget(mainSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
 
-
+    setMenuBar(menuBarWidget);
     //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
     //connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
