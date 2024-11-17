@@ -24,8 +24,7 @@ void JsonVisitor::visit(const ImageState &state) {
   // - session_data folder should be configurable
   // - if that directory does not exist, it should be created
   const std::filesystem::path image_path("./session_data/" + Utils::generateString(11) + state.ImageExtension);
-  state.save(image_path);
-  if (state.save(image_path)) {
+  if (state.save(image_path.string())) {
     state_tree.put("state", imageStateSourceToString(state.State));
     state_tree.put("image", image_path.string());
     json_tree.add_child("state", state_tree);
