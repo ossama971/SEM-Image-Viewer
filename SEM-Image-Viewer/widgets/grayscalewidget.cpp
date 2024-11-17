@@ -10,7 +10,7 @@ GrayScaleWidget::GrayScaleWidget(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     label->setText("Gray Scale");
-
+    label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
     applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(

@@ -192,6 +192,18 @@ QPushButton#applyButton {
         qproperty-icon: url(:/icons/play-icon-dark-mode.svg);
            qproperty-iconSize: 16px 16px;
     }
+QPushButton#info {
+    qproperty-icon: url(:/icons/info-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#error {
+    qproperty-icon: url(:/icons/error-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#warning {
+    qproperty-icon: url(:/icons/warning-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
 QPushButton#searchButton {
             qproperty-icon: url(:/icons/search-dark.svg);
         }
