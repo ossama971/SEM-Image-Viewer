@@ -32,8 +32,8 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     setLayout(mainLayout);
 
     // Set a fixed height for the list view
-    int rowHeight = 80;
-    listView->setFixedHeight(rowHeight);
+    // int rowHeight = 80;
+    // listView->setFixedHeight(rowHeight);
 
     // Add top margin to the listView widget to create vertical padding between the thumbnails and the widget top
     listView->setContentsMargins(2, 2, 2, 2);
