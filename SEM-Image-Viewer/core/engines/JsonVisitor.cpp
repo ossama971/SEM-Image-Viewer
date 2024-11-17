@@ -1,8 +1,12 @@
 #include "JsonVisitor.h"
 
+#include "../utils.h"
 #include "../data/ImageFormat.h"
 #include "../data/ImageColorSpace.h"
 #include "../data/ImageState.h"
+
+// TODO: need to handle errors & exceptions that can be thrown by any of the
+// visit() methods report the errors through the Logger
 
 void JsonVisitor::visit(const ImageMetadata &metadata) {
   boost::property_tree::ptree metadata_tree;
@@ -16,9 +20,21 @@ void JsonVisitor::visit(const ImageMetadata &metadata) {
 
 void JsonVisitor::visit(const ImageState &state) {
   boost::property_tree::ptree state_tree;
-  state_tree.put("state", imageStateSourceToString(state.State));
-  state_tree.put("image", state.getImageBase64());
-  json_tree.add_child("state", state_tree);
+  // TODO: 
+  // - session_data folder should be configurable
+  // - if that directory does not exist, it should be created
+  const std::filesystem::path image_path("./session_data/" + Utils::generateString(11) + state.ImageExtension);
+  state.save(image_path);
+  if (state.save(image_path)) {
+    state_tree.put("state", imageStateSourceToString(state.State));
+    state_tree.put("image", image_path.string());
+    json_tree.add_child("state", state_tree);
+  }
+  else {
+    state_tree.put("state", "Error");
+    state_tree.put("image", "Error");
+    json_tree.add_child("state", state_tree);
+  }
 }
 
 void JsonVisitor::visit(const Image &image) {
@@ -29,6 +45,10 @@ void JsonVisitor::visit(const Image &image) {
   JsonVisitor metadataVisitor;
   image.getMetadata().accept(metadataVisitor);
   image_tree.add_child("metadata", metadataVisitor.json_tree.get_child("metadata"));
+
+  // TODO: saving the states/images to disk should be done concurrently
+  // an idea is to have a threadpool and put the saving tasks (states & undos)
+  // in a queue and have the threads in the pool take tasks from the queue
 
   boost::property_tree::ptree states_tree;
   for (const auto &state : image.getStates()) {
@@ -75,7 +95,6 @@ void JsonVisitor::visit(const SessionData &session) {
 }
 
 void JsonVisitor::write_json(const std::string &filename) const {
-  // TODO: handle errors & log errors if can't write to file
   boost::property_tree::write_json(filename, json_tree);
 }
 

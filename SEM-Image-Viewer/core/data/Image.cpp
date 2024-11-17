@@ -81,9 +81,15 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
     if (image.empty()){
         return false;
     }
-  _states.push_back(std::make_unique<ImageState>(newState, std::move(image)));
+  std::string imageExtension = this->_path.extension().string();
+  _states.push_back(std::make_unique<ImageState>(newState, std::move(image), imageExtension));
   emit onImageStateUpdated(_states);
   return true;
+}
+
+void Image::addRedo(cv::Mat image, ImageStateSource newState) {
+  std::string imageExtension = this->_path.extension().string();
+  _states.push_back(std::make_unique<ImageState>(newState, std::move(image), imageExtension));
 }
 
 bool Image::isLoaded() const { return _loaded; }

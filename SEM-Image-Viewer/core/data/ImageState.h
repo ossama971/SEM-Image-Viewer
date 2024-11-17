@@ -24,11 +24,12 @@ ImageStateSource imageStateSourceFromString(const std::string &state);
 struct ImageState : public Visitable {
   ImageStateSource State;
   cv::Mat Image;
+  std::string ImageExtension;
 
   ImageState();
-  ImageState(ImageStateSource state, cv::Mat image);
-  std::string getImageBase64() const;
-  // void setImageBase64(const std::string &base64);
+  ImageState(ImageStateSource state, cv::Mat image, std::string imageExtension);
+
+  bool save(const std::string &path) const;
 
   void accept(Visitor &v) const override;
 };

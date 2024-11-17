@@ -27,6 +27,8 @@ public:
     bool load(const std::filesystem::path path);
     bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
 
+    void addRedo(cv::Mat image, ImageStateSource newState);
+
     bool isLoaded() const;
     cv::Mat& getImageMat() const;
     ImageStateSource getImageState() const;
