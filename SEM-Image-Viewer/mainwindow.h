@@ -10,6 +10,7 @@
 #include "widgets/topmiddlewidget.h"
 #include "widgets/menubarwidget.h"
 #include "widgets/savedialogwidget.h"
+#include "widgets/MiniGrid.h"
 // #include "core/engines/JsonVisitor.h"
 
 #include <QApplication>
@@ -40,6 +41,7 @@ public slots:
     void onShowRightSidebarClicked(bool isChecked);
     void onShowLoggerClicked(bool isChecked);
     void onShowImageClicked(bool isChecked);
+    void showMiniGridClicked(bool isChecked);
     void onSaveChangesClicked();
 
 private slots:
@@ -58,6 +60,7 @@ private:
     QSplitter *middleSplitter;
     QSplitter *mainSplitter;
     MenuBarWidget *menuBarWidget;
+    MiniGrid *miniGrid;
 
     QThread *saveThread = nullptr;
 };

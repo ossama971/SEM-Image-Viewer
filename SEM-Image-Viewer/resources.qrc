@@ -42,13 +42,15 @@
         <file>icons/close-logger-dark.svg</file>
         <file>icons/arrow-up-light.svg</file>
         <file>icons/close-logger-light.svg</file>
-	<file>styles/dark-mode.qss</file>
-	<file>styles/light-mode.qss</file>
+        <file>styles/dark-mode.qss</file>
+        <file>styles/light-mode.qss</file>
         <file>icons/info-dark.svg</file>
         <file>icons/info-light.svg</file>
         <file>icons/warning-dark.svg</file>
         <file>icons/warning-light.svg</file>
-         <file>icons/error-dark.svg</file>
+        <file>icons/error-dark.svg</file>
         <file>icons/error-light.svg</file>
+        <file>icons/mini-grid-dark.svg</file>
+        <file>icons/mini-grid-light.svg</file>
     </qresource>
 </RCC>

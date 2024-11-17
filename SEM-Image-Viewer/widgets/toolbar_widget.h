@@ -23,6 +23,7 @@ public:
 
 private:
     QToolButton *seperatorIcon;
+    QToolButton *seperatorIcon2;
 
 public slots:
     void onSelectDiffView();
@@ -31,12 +32,15 @@ private slots:
     void onUndoClicked();
     void onRedoClicked();
     void onSaveClicked();
+    void onMinimizeLoggerClicked(bool checked);
+    void onMinimizeToolbarClicked(bool checked);
 
 signals:
     void undoTriggered();
     void redoTriggered();
     void saveButtonClicked();
-
+    void minimizeLoggerClicked(bool);
+    void minimizeToolbarClicked(bool);
 };
 
 #endif // TOOLBARWIDGET_H

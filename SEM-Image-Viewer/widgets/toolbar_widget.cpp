@@ -13,6 +13,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     diffViewButton = new QToolButton(this);
     gridViewButton = new QToolButton(this);
     seperatorIcon = new QToolButton(this);
+    seperatorIcon2 = new QToolButton(this);
     saveButton = new QToolButton(this);
     undoButton = new QToolButton(this);
     redoButton = new QToolButton(this);
@@ -23,6 +24,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     diffViewButton->setObjectName("diff");
     gridViewButton->setObjectName("grid");
     seperatorIcon->setObjectName("seperator");
+    seperatorIcon2->setObjectName("seperator");
     saveButton->setObjectName("saveButton");
     undoButton->setObjectName("undoButton");
     redoButton->setObjectName("redoButton");
@@ -30,24 +32,29 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     minimizeLoggerButton->setObjectName("closelog");
 
     auto buttonStyle1 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
-                        "QToolButton:checked { border-radius: 4px; }";
-
-    auto buttonStyle2 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
                         "QToolButton:checked { border-radius: 4px; }"
                         "QToolButton:hover { border-radius: 4px; }";
+    auto buttonStyle2 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
+                        "QToolButton:checked { border-radius: 4px; padding: 0px 3px 0px 3px;}"
+                        "QToolButton:hover { border-radius: 4px; padding: 0px 3px 0px 3px;}";
 
     imageViewButton->setStyleSheet(buttonStyle1);
     diffViewButton->setStyleSheet(buttonStyle1);
     gridViewButton->setStyleSheet(buttonStyle1);
     seperatorIcon->setStyleSheet("QToolButton {margin: 0px; padding: 0px; border: none; }");
-    saveButton->setStyleSheet(buttonStyle2);
-    undoButton->setStyleSheet(buttonStyle2);
-    redoButton->setStyleSheet(buttonStyle2);
+    seperatorIcon2->setStyleSheet("QToolButton {margin: 0px; padding: 0px; border: none; }");
+    saveButton->setStyleSheet(buttonStyle1);
+    undoButton->setStyleSheet(buttonStyle1);
+    redoButton->setStyleSheet(buttonStyle1);
+    minimizeLoggerButton->setStyleSheet(buttonStyle2);
+    minimizeToolbarButton->setStyleSheet(buttonStyle2);
 
     // Set the buttons to be checkable
     imageViewButton->setCheckable(true);
     diffViewButton->setCheckable(true);
     gridViewButton->setCheckable(true);
+    minimizeLoggerButton->setCheckable(true);
+    minimizeToolbarButton->setCheckable(true);
 
     // Create a button group to manage exclusive selection
     QButtonGroup *buttonGroup = new QButtonGroup(this);
@@ -69,13 +76,16 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     toolbarLayout->addStretch();
 
     // Add right-aligned buttons
+    toolbarLayout->addWidget(seperatorIcon2);
     toolbarLayout->addWidget(minimizeLoggerButton);
     toolbarLayout->addWidget(minimizeToolbarButton);
 
     setLayout(toolbarLayout);
 
-    // Set the first button as checked by default
+    // Set buttons as checked by default
     imageViewButton->setChecked(true);
+    minimizeToolbarButton->setChecked(true);
+    minimizeLoggerButton->setChecked(true);
 
     // Disable save button by default
     saveButton->setEnabled(imageViewButton->isChecked());
@@ -85,6 +95,8 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     connect(undoButton, &QToolButton::clicked, this, &ToolbarWidget::onUndoClicked);
     connect(redoButton, &QToolButton::clicked, this, &ToolbarWidget::onRedoClicked);
     connect(saveButton, &QToolButton::clicked, this, &ToolbarWidget::onSaveClicked);
+    connect(minimizeLoggerButton, &QToolButton::toggled, this, &ToolbarWidget::onMinimizeLoggerClicked);
+    connect(minimizeToolbarButton, &QToolButton::toggled, this, &ToolbarWidget::onMinimizeToolbarClicked);
 }
 
 void ToolbarWidget::onSelectDiffView() {
@@ -101,4 +113,12 @@ void ToolbarWidget::onRedoClicked() {
 
 void ToolbarWidget::onSaveClicked() {
     emit saveButtonClicked();
+}
+
+void ToolbarWidget::onMinimizeLoggerClicked(bool checked) {
+    emit minimizeLoggerClicked(checked);
+}
+
+void ToolbarWidget::onMinimizeToolbarClicked(bool checked){
+    emit minimizeToolbarClicked(checked);
 }

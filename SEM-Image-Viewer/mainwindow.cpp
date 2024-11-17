@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "widgets/MiniGrid.h"
-
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QSplitter>
@@ -40,25 +38,27 @@ MainWindow::MainWindow(QWidget *parent)
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
     // Create the MiniGrid instance
-    MiniGrid *miniGrid = new MiniGrid(this);
-
+    miniGrid = new MiniGrid(this);
+    // Create MenuBar instance
     menuBarWidget = new MenuBarWidget(this);
 
     // Connecting signals sent from toolbar to history widget
     ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
     HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
-    if (toolbarWidget && historyWidget) {
-        // Connect signals from Toolbar to History
-        connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
-        connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
-    }
+
+    // Connecting signals sent from Toolbar to History
+    connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
+    connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
 
     // Connecting signals sent from Toolbar to MenuBar
-    if (toolbarWidget && menuBarWidget) {
-        connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
-            menuBarWidget->exportSelectedImage("*.jpg");
-        });
-    }
+    connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
+        menuBarWidget->exportSelectedImage("*.jpg");});
+
+    // Connecting signals sent from Toolbar to show/hide Logger
+    connect(toolbarWidget, &ToolbarWidget::minimizeLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+
+    // Connecting signals sent from Toolbar to show/hide Minigrid
+    connect(toolbarWidget, &ToolbarWidget::minimizeToolbarClicked, this, &MainWindow::showMiniGridClicked);
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(topMiddleWidget);
@@ -112,6 +112,14 @@ void MainWindow::onShowRightSidebarClicked(bool isChecked) {
         rightSidebarWidget->show();
     } else {
         rightSidebarWidget->hide();
+    }
+}
+
+void MainWindow::showMiniGridClicked(bool isChecked) {
+    if (isChecked) {
+        miniGrid->show();
+    } else {
+        miniGrid->hide();
     }
 }
 
