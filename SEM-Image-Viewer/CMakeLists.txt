@@ -144,8 +144,8 @@ set(PROJECT_SOURCES
     widgets/ImageFilterProxyModel.h
     widgets/ImageDialog.cpp 
     widgets/ImageDialog.h
-    widgets/WidgetViewController.cpp 
-    widgets/WidgetViewController.h
+
+
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
     models/ImageDataModel.cpp

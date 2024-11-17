@@ -1,7 +1,6 @@
 #ifndef RIGHTSIDEBARWIDGET_H
 #define RIGHTSIDEBARWIDGET_H
 
-#include "WidgetViewController.h"
 #include "../core/data/ImageRepository.h"
 #include <QWidget>
 #include <QVBoxLayout>
@@ -23,7 +22,12 @@ class RightSidebarWidget : public QWidget
 public:
     explicit RightSidebarWidget(QWidget *parent = nullptr);
 
-    void setViewController(WidgetViewController* widgetViewController);
+public:
+    void setVisible(bool visible) override;
+
+signals:
+    void onVisibilityChange(bool visible);
+
 public slots:
     void setMaxMinWidth(int mn, int mx);
     void initializeProgress(int maxIterations);
@@ -33,7 +37,6 @@ private slots:
     void onImageLoadStarted(int image_count);
     void onImageLoaded(Image* newImage);
 private:
-    WidgetViewController* viewController;
     ImageRepository* _imageRepo;
     ProgressBarComponent* _progressBar;
     HistoryWidget *_historyWidget;

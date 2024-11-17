@@ -1,7 +1,6 @@
 #ifndef TOPMIDDLEWIDGET_H
 #define TOPMIDDLEWIDGET_H
 
-#include "WidgetViewController.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -20,7 +19,12 @@ class TopMiddleWidget : public QWidget
     Q_OBJECT
 public:
     explicit TopMiddleWidget(QWidget *parent = nullptr);
-    void setViewController(WidgetViewController* widgetViewController);
+
+public:
+    void setVisible(bool visible) override;
+
+signals:
+    void onVisibilityChange(bool visible);
 
 public slots:
     void setMaxMinHeight(int mn, int mx);
@@ -37,7 +41,6 @@ private:
     GridView *gridView;
     DiffViewWidget *diffView;
     QVBoxLayout *topMiddleLayout;
-    WidgetViewController* viewController;
 
 signals:
     void selectDiffView();

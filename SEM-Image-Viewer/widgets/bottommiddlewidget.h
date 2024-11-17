@@ -1,7 +1,6 @@
 #ifndef BOTTOMMIDDLEWIDGET_H
 #define BOTTOMMIDDLEWIDGET_H
 
-#include "WidgetViewController.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -22,13 +21,14 @@ class BottomMiddleWidget : public QWidget
 public:
     explicit BottomMiddleWidget(QWidget *parent = nullptr);
 
-    void setViewController(WidgetViewController* widgetViewController);
+public:
+    void setVisible(bool visible) override;
+
+signals:
+    void onVisibilityChange(bool visible);
 
 public slots:
     void setMaxMinHeight(int mn, int mx);
-
-private:
-    WidgetViewController* viewController;
 };
 
 #endif // BOTTOMMIDDLEWIDGET_H

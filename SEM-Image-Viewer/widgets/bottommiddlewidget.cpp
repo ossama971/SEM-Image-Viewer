@@ -1,7 +1,7 @@
 #include "bottommiddlewidget.h"
 #include "LoggerWidget.h"
 #include "controllerWidget.h"
-BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
+BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     //setStyleSheet("background-color: #000000;");
@@ -22,8 +22,10 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent), viewC
     this->setLayout(bottomMiddleLayout);
 }
 
-void BottomMiddleWidget::setViewController(WidgetViewController* widgetViewController) {
-    viewController = widgetViewController;
+void BottomMiddleWidget::setVisible(bool visible) {
+    QWidget::setVisible(visible);
+
+    emit onVisibilityChange(visible);
 }
 
 void BottomMiddleWidget::setMaxMinHeight(int mn, int mx){

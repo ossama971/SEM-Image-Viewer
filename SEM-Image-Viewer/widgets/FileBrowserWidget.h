@@ -3,7 +3,6 @@
 
 #include "FileIconHider.h"
 #include "ImageFilterProxyModel.h"
-#include "WidgetViewController.h"
 #include "../core/data/ImageRepository.h"
 #include <QWidget>
 #include <QPushButton>
@@ -23,7 +22,6 @@ private:
     void Initialize();
 
 public:
-    void setViewController(WidgetViewController* widgetViewController);
     void setRoot(QString path);
     void setImageFilter(std::filesystem::path path);
 
@@ -35,6 +33,10 @@ private slots:
     void onTreeClick(const QModelIndex &index);
     void onDirectoryChanged(const std::string newDir, std::vector<Image>* newImages, bool image_load);
 
+signals:
+    void expand();
+    void collapse();
+
 private:
     QDir _rootDir;
     ImageRepository* _imageRepo;
@@ -44,7 +46,6 @@ private:
     FileIconHider *iconProvider;
     ImageFilterProxyModel *proxyModel;
     QLineEdit *searchBox;
-    WidgetViewController* viewController;
     class ImageDialog* imageDialog;
 };
 

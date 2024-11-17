@@ -1,7 +1,6 @@
 #ifndef LEFTSIDEBARWIDGET_H
 #define LEFTSIDEBARWIDGET_H
 
-#include "WidgetViewController.h"
 #include "FileBrowserWidget.h"
 #include <QWidget>
 #include <QVBoxLayout>
@@ -22,13 +21,20 @@ class LeftSidebarWidget : public QWidget
 public:
     explicit LeftSidebarWidget(QWidget *parent = nullptr);
 
-    void setViewController(WidgetViewController* widgetViewController);
+public:
+    void setVisible(bool visible) override;
+
+signals:
+    void onVisibilityChange(bool visible);
 
 public slots:
     void setMaxMinWidth(int mn, int mx);
 
+private slots:
+    void expand();
+    void collapse();
+
 private:
-    WidgetViewController* viewController;
     FileBrowserWidget* _fileBrowser;
 };
 

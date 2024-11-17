@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 
 FileBrowserWidget::FileBrowserWidget(QWidget *parent)
-    : QWidget{parent}, _rootDir(""), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo()), viewController(nullptr)
+    : QWidget{parent}, _rootDir(""), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     imageDialog = new ImageDialog(this);
 
@@ -153,10 +153,6 @@ void FileBrowserWidget::Initialize() {
     setLayout(mainLayout);
 }
 
-void FileBrowserWidget::setViewController(WidgetViewController* widgetViewController) {
-    viewController = widgetViewController;
-}
-
 void FileBrowserWidget::setRoot(QString path) {
     _rootDir = path;
 
@@ -176,7 +172,7 @@ void FileBrowserWidget::onOpenFile() {
 }
 
 void FileBrowserWidget::onCollapse() {
-    viewController->showLeftBar(false);
+    emit collapse();
 }
 
 void FileBrowserWidget::onSearch() {

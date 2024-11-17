@@ -8,7 +8,7 @@
 #include "actionlistwidget.h"
 #include "../core/engines/Workspace.h"
 
-RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
+RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -58,8 +58,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), viewC
     connect(_imageRepo, &ImageRepository::onImageLoaded, this, &RightSidebarWidget::onImageLoaded);
 }
 
-void RightSidebarWidget::setViewController(WidgetViewController* widgetViewController) {
-    viewController = widgetViewController;
+void RightSidebarWidget::setVisible(bool visible) {
+    QWidget::setVisible(visible);
+
+    emit onVisibilityChange(visible);
 }
 
 void RightSidebarWidget::setMaxMinWidth(int mn, int mx)

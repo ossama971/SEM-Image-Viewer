@@ -42,13 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the MiniGrid instance
     MiniGrid *miniGrid = new MiniGrid(this);
 
-    viewController = new WidgetViewController(leftSidebarWidget, rightSidebarWidget, topMiddleWidget, bottomMiddleWidget, this);
-
-    leftSidebarWidget->setViewController(viewController);
-    rightSidebarWidget->setViewController(viewController);
-    topMiddleWidget->setViewController(viewController);
-    bottomMiddleWidget->setViewController(viewController);
-    menuBarWidget = new MenuBarWidget(viewController, this);
+    menuBarWidget = new MenuBarWidget(this);
 
     // Connecting signals sent from toolbar to history widget
     ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
@@ -89,10 +83,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     setMenuBar(menuBarWidget);
-    //connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
-    //connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
-    //connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
-    //connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
+    connect(leftSidebarWidget, &LeftSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onLeftSidebarViewChanged);
+    connect(rightSidebarWidget, &RightSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onRightSidebarViewChanged);
+    connect(topMiddleWidget, &TopMiddleWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onImageViewChanged);
+    connect(bottomMiddleWidget, &BottomMiddleWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onLoggerViewChanged);
+    connect(menuBarWidget, &MenuBarWidget::showLeftSidebarClicked, this, &MainWindow::onShowLeftSidebarClicked);
+    connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
+    connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+    connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
     connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);

@@ -3,7 +3,7 @@
 #include "../core/engines/JsonVisitor.h"
 #include "../core/engines/Workspace.h"
 
-MenuBarWidget::MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent) : QMenuBar(parent), viewController(widgetViewController) {
+MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
     imageDialog = new ImageDialog(this);
 
@@ -219,11 +219,6 @@ void MenuBarWidget::viewMenu(){
     connect(showImageAction, &QAction::triggered, this, &MenuBarWidget::showImageClicked);
     connect(showLoggerAction, &QAction::triggered, this, &MenuBarWidget::showLoggerClicked);
 
-    connect(viewController, &WidgetViewController::onLeftBarViewChanged, this, &MenuBarWidget::onLeftSidebarViewChanged);
-    connect(viewController, &WidgetViewController::onRightBarViewChanged, this, &MenuBarWidget::onRightSidebarViewChanged);
-    connect(viewController, &WidgetViewController::onTopMiddleViewChanged, this, &MenuBarWidget::onImageViewChanged);
-    connect(viewController, &WidgetViewController::onBottomMiddleViewChanged, this, &MenuBarWidget::onLoggerViewChanged);
-
     viewMenu->addAction(showLeftSidebarAction);
     viewMenu->addAction(showRightSidebarAction);
     viewMenu->addAction(showLoggerAction);
@@ -244,22 +239,6 @@ void MenuBarWidget::optionsMenu(){
     optionsMenu->addAction(darkModeAction);
     optionsMenu->addMenu(fontMenu);
      connect(darkModeAction, &QAction::triggered, this, &MenuBarWidget::onThemeActionTriggered);
-}
-
-void MenuBarWidget::showLeftSidebarClicked(bool isChecked) {
-    viewController->showLeftBar(isChecked, true);
-}
-
-void MenuBarWidget::showRightSidebarClicked(bool isChecked) {
-    viewController->showRightBar(isChecked, true);
-}
-
-void MenuBarWidget::showImageClicked(bool isChecked) {
-    viewController->showTopMiddleBar(isChecked, true);
-}
-
-void MenuBarWidget::showLoggerClicked(bool isChecked) {
-    viewController->showBottomMiddleBar(isChecked, true);
 }
 
 void MenuBarWidget::onLeftSidebarViewChanged(bool state) {

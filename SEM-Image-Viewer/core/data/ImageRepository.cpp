@@ -16,12 +16,13 @@ bool ImageRepository::load_directory(const std::string &path)
         std::smatch what;
 
         std::string image_path;
-        std::vector<Image> images;
 
         int images_count = count_images(path);
         if (!images_count)
             return false;
 
+        selectImage(-1);
+        _images.clear();
         emit onImageLoadStarted(images_count);
 
         for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it)
@@ -37,10 +38,9 @@ bool ImageRepository::load_directory(const std::string &path)
             image_path = it->path().string();
 
             Image img;
-            load_image_core(img, image_path, images);
+            load_image_core(img, image_path, _images);
         }
 
-        _images = std::move(images);
         emit onDirectoryChanged(path, &_images, false);
 
         return true;
@@ -67,9 +67,9 @@ bool ImageRepository::load_image(const std::string &path)
     if (!std::regex_search(path, what, filter))
         return false;
 
-    emit onImageLoadStarted(1);
-
+    selectImage(-1);
     _images.clear();
+    emit onImageLoadStarted(1);
 
     Image img;
     load_image_core(img, path, _images);

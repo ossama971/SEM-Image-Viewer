@@ -1,8 +1,8 @@
 #include "topmiddlewidget.h"
 #include "controllerWidget.h"
 
-TopMiddleWidget::TopMiddleWidget(QWidget *parent) 
-  : QWidget(parent), viewController(nullptr) {
+TopMiddleWidget::TopMiddleWidget(QWidget *parent)
+  : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     //setStyleSheet("background-color: #00ee00;");
@@ -34,8 +34,10 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     connect(this, &TopMiddleWidget::selectDiffView, toolbar, &ToolbarWidget::onSelectDiffView);
 }
 
-void TopMiddleWidget::setViewController(WidgetViewController* widgetViewController) {
-    viewController = widgetViewController;
+void TopMiddleWidget::setVisible(bool visible) {
+    QWidget::setVisible(visible);
+
+    emit onVisibilityChange(visible);
 }
 
 void TopMiddleWidget::setMaxMinHeight(int mn, int mx){

@@ -1,7 +1,7 @@
 #include "leftsidebarwidget.h"
 
 
-LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent), viewController(nullptr) {
+LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     setMinimumWidth(mainScreenWidth*0.05);
@@ -15,8 +15,8 @@ LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent), viewCon
     leftSidebarLayout->addWidget(leftContent);*/
 
     _fileBrowser = new FileBrowserWidget();
-    //_fileBrowser->setStyleSheet("background-color: #627e7c;");
-    //_fileBrowser->setRoot();
+    connect(_fileBrowser, &FileBrowserWidget::expand, this, &LeftSidebarWidget::expand);
+    connect(_fileBrowser, &FileBrowserWidget::collapse, this, &LeftSidebarWidget::collapse);
 
     leftSidebarLayout->addWidget(_fileBrowser);
 
@@ -25,11 +25,10 @@ LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent), viewCon
     setLayout(leftSidebarLayout);
 }
 
-void LeftSidebarWidget::setViewController(WidgetViewController* widgetViewController) {
-    viewController = widgetViewController;
+void LeftSidebarWidget::setVisible(bool visible) {
+    QWidget::setVisible(visible);
 
-    if (_fileBrowser)
-        _fileBrowser->setViewController(widgetViewController);
+    emit onVisibilityChange(visible);
 }
 
 void LeftSidebarWidget::setMaxMinWidth(int mn, int mx){
@@ -37,3 +36,10 @@ void LeftSidebarWidget::setMaxMinWidth(int mn, int mx){
     setMaximumWidth(mx);
 }
 
+void LeftSidebarWidget::expand() {
+    show();
+}
+
+void LeftSidebarWidget::collapse() {
+    hide();
+}

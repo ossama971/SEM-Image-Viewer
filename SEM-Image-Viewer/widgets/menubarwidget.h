@@ -19,7 +19,6 @@
 #include "../core/data/Image.h"
 #include "../core/data/ImageFormat.h"
 #include "ImageDialog.h"
-#include "WidgetViewController.h"
 
 #include<iostream>
 
@@ -31,7 +30,7 @@ class MenuBarWidget : public QMenuBar
 {
     Q_OBJECT
 public:
-    explicit MenuBarWidget(WidgetViewController* widgetViewController, QWidget *parent = nullptr);
+    explicit MenuBarWidget(QWidget *parent = nullptr);
 
 private:
     void fileMenu();
@@ -41,24 +40,24 @@ private:
     void saveSession();
 
 signals:
+    void showLeftSidebarClicked(bool isChecked);
+    void showRightSidebarClicked(bool isChecked);
+    void showLoggerClicked(bool isChecked);
+    void showImageClicked(bool isChecked);
     void exportProgressUpdated();
     void exportStarted(int maxIterations);
     void exportFinished();
     void themeToggled();
 private slots:
-    void showLeftSidebarClicked(bool isChecked);
-    void showRightSidebarClicked(bool isChecked);
-    void showImageClicked(bool isChecked);
-    void showLoggerClicked(bool isChecked);
     void exportImages(QString format);
     void onThemeActionTriggered();
+    // void exportAll();
+
+public slots:
     void onLeftSidebarViewChanged(bool state);
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
     void onLoggerViewChanged(bool state);
-    // void exportAll();
-
-public slots:
     void exportSelectedImage(QString format);
 
 private:
@@ -71,7 +70,6 @@ private:
     QAction *showImageAction;
     QAction *darkModeAction;
     ImageDialog *imageDialog;
-    WidgetViewController* viewController;
     bool isDarkMode = false;
 };
 
