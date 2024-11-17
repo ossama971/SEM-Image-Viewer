@@ -23,7 +23,7 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
         );
 
     label->setText("Edge Extraction");
-
+    label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
     applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(

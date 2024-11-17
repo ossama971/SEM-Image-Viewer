@@ -26,7 +26,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     // Create header label
 
     headerLabel = new QLabel("History", this);
-    headerLabel->setStyleSheet("font-size: 16px; font-weight: bold;");
+    headerLabel->setStyleSheet("font-size: 16px; font-weight: bold; background-color: transparent");
     headerLayout->addWidget(headerLabel);
 
     // Add a spacer to push buttons to the right
