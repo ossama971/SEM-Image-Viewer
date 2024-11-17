@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <ctime>
 
-#include "widgets/LoggerWidget.h"
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     QApplication a(argc, argv);
     QFile file(":/styles/light-mode.qss");
     if (file.open(QFile::ReadOnly | QFile::Text)) {

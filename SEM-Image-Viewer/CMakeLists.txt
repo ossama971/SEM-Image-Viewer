@@ -80,8 +80,8 @@ set(PROJECT_SOURCES
     core/filters/SharpenFilter.h
     core/imageeditor.h
     core/imageeditor.cpp
-    core/image_utils.cpp
-    core/image_utils.h
+    core/utils.cpp
+    core/utils.h
     core/data/ImageFormat.cpp
     core/data/ImageFormat.h
     core/data/ImageColorSpace.cpp
@@ -144,16 +144,12 @@ set(PROJECT_SOURCES
     widgets/ImageFilterProxyModel.h
     widgets/ImageDialog.cpp 
     widgets/ImageDialog.h
-
-
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
     models/MessageDataModel.cpp
     models/MessageDataModel.h
-    icons/zoom-in.svg
-    icons/zoom-out.svg
     resources.qrc
 )
 

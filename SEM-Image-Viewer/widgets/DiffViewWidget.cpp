@@ -1,5 +1,5 @@
 #include "DiffViewWidget.h"
-#include "../core/image_utils.h"
+#include "../core/utils.h"
 
 #include <QDebug>
 
@@ -32,7 +32,7 @@ void DiffViewWidget::updateDiffImage() {
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
   if (!upperImage.empty() && !lowerImage.empty() && upperImage.size() == lowerImage.size()) {
-    cv::Mat diffImage = ImageUtils::diffTwoImages(upperImage, lowerImage, threshold);
+    cv::Mat diffImage = Utils::diffTwoImages(upperImage, lowerImage, threshold);
     diffImageWidget->updateImage(diffImage);
   }
 }
