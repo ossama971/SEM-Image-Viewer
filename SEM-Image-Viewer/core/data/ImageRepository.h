@@ -43,7 +43,7 @@ signals:
     void onDirectoryChanged(const std::string newDir, std::vector<Image*> newImages, bool image_load);
     void onImageChanged(Image* newImage);
     void onImageSaved(const Image& image, const ImageFormat format, const std::string path);
-
+    void loadActionList(QList<QString> actions);
 private:
     std::string _folderPath;
     std::vector<std::unique_ptr<Image>> _images;
