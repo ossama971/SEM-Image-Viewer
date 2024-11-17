@@ -23,8 +23,10 @@ void JsonVisitor::visit(const ImageState &state) {
   // TODO: 
   // - session_data folder should be configurable
   // - if that directory does not exist, it should be created
-  const std::filesystem::path image_path("./session_data/" + Utils::generateString(11) + state.ImageExtension);
-  state.save(image_path);
+  // - shouldn't do this check everytime
+  Utils::createDirectory(this->session_datapath);
+  const std::string image_filepath = Utils::generateString(11) + state.ImageExtension;
+  const std::filesystem::path image_path(this->session_datapath / image_filepath);
   if (state.save(image_path)) {
     state_tree.put("state", imageStateSourceToString(state.State));
     state_tree.put("image", image_path.string());
@@ -94,7 +96,17 @@ void JsonVisitor::visit(const SessionData &session) {
   json_tree.add_child("SessionData", session_tree);
 }
 
-void JsonVisitor::write_json(const std::string &filename) const {
-  boost::property_tree::write_json(filename, json_tree);
+void JsonVisitor::set_session_datapath(const std::filesystem::path& path) {
+  session_datapath = path;
+}
+
+void JsonVisitor::set_json_filepath(const std::filesystem::path& path) {
+  json_filepath = path;
+}
+
+void JsonVisitor::write_json() const {
+  if(!this->json_filepath.empty()) {
+    boost::property_tree::write_json(this->json_filepath.string(), this->json_tree);
+  }
 }
 

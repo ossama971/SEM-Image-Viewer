@@ -148,6 +148,8 @@ set(PROJECT_SOURCES
     widgets/ImageDialog.h
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
+    widgets/SaveSessionDialog.cpp
+    widgets/SaveSessionDialog.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
     models/MessageDataModel.cpp

@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <QAction>
 
+#include "widgets/SaveSessionDialog.h"
 #include "core/engines/JsonVisitor.h"
 
 
@@ -154,37 +155,43 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    // If a thread is already running, return early (optional)
     if (saveThread && saveThread->isRunning()) {
         QMessageBox::information(this, "Save", "A save operation is already in progress.");
         return;
     }
 
-    // Create the QThread and worker objects
-    saveThread = new QThread(this);  // Store the thread as a member variable
-    QObject *worker = new QObject();
-    worker->moveToThread(saveThread);
+    SaveSessionDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
 
-    // Start the save operation in the worker thread
-    connect(saveThread, &QThread::started, worker, [worker]() {
-        JsonVisitor visitor;
-        Workspace::Instance()->getActiveSession().accept(visitor);
-        visitor.write_json("session.json");
-    });
+      auto directoryPath = dialog.getDirectoryPath();
+      auto jsonFilePath = dialog.getJsonFilePath();
 
-    // When worker finishes, quit the thread and delete worker
-    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
-    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
-    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+      qDebug() << "Directory Path:" << directoryPath;
+      qDebug() << "JSON File Path:" << jsonFilePath;
 
-    // When the thread finishes, show a message and quit the application
-    connect(saveThread, &QThread::finished, this, [this]() {
-        QMessageBox::information(nullptr, "Save", "Changes have been saved.");
-        QApplication::quit();  // Exit the application after saving
-    });
+      saveThread = new QThread(this);
+      QObject *worker = new QObject();
+      worker->moveToThread(saveThread);
 
-    // Start the thread
-    saveThread->start();
+      connect(saveThread, &QThread::started, worker, [worker, directoryPath, jsonFilePath]() {
+          JsonVisitor visitor;
+          visitor.set_session_datapath(directoryPath);
+          visitor.set_json_filepath(jsonFilePath);
+          Workspace::Instance()->getActiveSession().accept(visitor);
+          visitor.write_json();
+          });
+
+      connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+      connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+      connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+      connect(saveThread, &QThread::finished, this, [this]() {
+          QMessageBox::information(nullptr, "Save", "Changes have been saved.");
+          QApplication::quit();
+          });
+
+      saveThread->start();
+    }
 }
 
 void MainWindow::applyTheme() {

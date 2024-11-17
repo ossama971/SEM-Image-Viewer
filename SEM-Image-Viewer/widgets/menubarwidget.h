@@ -71,6 +71,8 @@ private:
     QAction *darkModeAction;
     ImageDialog *imageDialog;
     bool isDarkMode = false;
+
+    QThread *saveThread;
 };
 
 #endif // MENUBARWIDGET_H
