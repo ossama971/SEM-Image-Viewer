@@ -12,11 +12,11 @@ ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
                      this, &ImageDataModel::updateImages);
 }
 
-void ImageDataModel::updateImages(const std::string newDir, std::vector<Image>* newImages, bool image_load) {
+void ImageDataModel::updateImages(const std::string newDir, std::vector<Image*> newImages, bool image_load) {
     beginResetModel();
     images.clear();
     m_thumbnails.clear();
-    images = QList<Image>(newImages->begin(), newImages->end());
+    images = QList<Image*>(newImages.begin(), newImages.end());
     endResetModel();
     loadImages(0, 20);
 }
@@ -37,7 +37,7 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const {
         }
 
         // Otherwise, generate and cache the thumbnail
-        QImage thumbnail = generateThumbnail(images[index.row()]);
+        QImage thumbnail = generateThumbnail(*images[index.row()]);
         m_thumbnails.insert(index.row(), thumbnail);
         return thumbnail;
     }
@@ -64,17 +64,17 @@ void ImageDataModel::loadImages(int startIndex, int endIndex) {
     // Load thumbnails for the specified range of images
     for (int i = startIndex; i <= endIndex; ++i) {
         if (!m_thumbnails.contains(i)) {
-            QImage thumbnail = generateThumbnail(images[i]);
+            QImage thumbnail = generateThumbnail(*images[i]);
             m_thumbnails.insert(i, thumbnail);
         }
     }
 }
 
-Image ImageDataModel::getImageAt(int index) const {
+Image* ImageDataModel::getImageAt(int index) const {
     if (0 <= index && index < images.size()) {
         qDebug() << "ImageDataModel::getImageAt() -> " << index;
-        qDebug() << "ImageDataModel::getImageAt() -> " << images[index].getPath().string().c_str();
+        qDebug() << "ImageDataModel::getImageAt() -> " << images[index]->getPath().string().c_str();
         return images[index];
     }
-    return Image(); // Return a default/empty Image if index is out of bounds
+    return nullptr; // Return a default/empty Image if index is out of bounds
 }

@@ -55,7 +55,7 @@ void JsonVisitor::visit(const ImageRepository &repo) {
   boost::property_tree::ptree images_tree;
   for (const auto &image : repo.getImages()) {
     JsonVisitor imageVisitor;
-    image.accept(imageVisitor);
+    image->accept(imageVisitor);
     images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
   }
   repo_tree.add_child("Images", images_tree);

@@ -37,11 +37,11 @@ bool ImageRepository::load_directory(const std::string &path)
 
             image_path = it->path().string();
 
-            Image img;
-            load_image_core(img, image_path, _images);
+            std::unique_ptr<Image> img = std::make_unique<Image>();
+            load_image_core(std::move(img), image_path, &_images);
         }
 
-        emit onDirectoryChanged(path, &_images, false);
+        emit onDirectoryChanged(path, getImages(), false);
 
         return true;
     }
@@ -71,19 +71,19 @@ bool ImageRepository::load_image(const std::string &path)
     _images.clear();
     emit onImageLoadStarted(1);
 
-    Image img;
-    load_image_core(img, path, _images);
+    std::unique_ptr<Image> img = std::make_unique<Image>();
+    load_image_core(std::move(img), path, &_images);
 
-    emit onDirectoryChanged(fpath.remove_filename().string(), &_images, true);
+    emit onDirectoryChanged(fpath.remove_filename().string(), getImages(), true);
     return true;
 }
 
-void ImageRepository::load_image_core(Image& image, const std::string &path, std::vector<Image>& container) {
-    image.load(path);
+void ImageRepository::load_image_core(std::unique_ptr<Image> image, const std::string &path, std::vector<std::unique_ptr<Image>>* container) {
+    image->load(path);
 
-    container.push_back(std::move(image));
+    container->push_back(std::move(image));
 
-    emit onImageLoaded(&image);
+    emit onImageLoaded(image.get());
 }
 
 int ImageRepository::count_images(const std::string &dir) {
@@ -127,7 +127,7 @@ void ImageRepository::selectImage(int index)
     if (index == -1)
         _selectedImage = nullptr;
     else if (index < _images.size())
-        _selectedImage = &_images[index];
+        _selectedImage = _images[index].get();
 
     emit onImageChanged(_selectedImage);
 }
@@ -138,7 +138,7 @@ void ImageRepository::selectImage(const std::string& path)
 
     for (auto it = _images.begin(); it != _images.end(); ++it, ++i)
     {
-        if (!it->getPath().compare(path))
+        if (!(*it)->getPath().compare(path))
         {
             image_index = i;
             break;
@@ -156,8 +156,42 @@ Image *ImageRepository::getImage()
     return _selectedImage;
 }
 
-std::vector<Image> ImageRepository::getImages() const {
-    return _images;
+std::vector<Image*> ImageRepository::getImages() const {
+    std::vector<Image*> images(_images.size());
+
+    for (int i = 0; i < _images.size(); ++i)
+        images[i] = _images[i].get();
+
+    return images;
+}
+
+std::vector<Image*> ImageRepository::getImages(std::vector<int> indices) const {
+    std::vector<Image*> result;
+    if (indices.empty())
+        return result;
+
+    std::vector<Image*> images = getImages();
+    int i = 0;
+    int currentImage = 0;
+
+    while (i < images.size() && currentImage < indices.size())
+    {
+        if (indices[currentImage] == i)
+        {
+            result.push_back(images[i]);
+
+            ++currentImage;
+            ++i;
+        }
+
+        else if (indices[currentImage] > i)
+            ++i;
+
+        else
+            ++currentImage;
+    }
+
+    return result;
 }
 
 std::string ImageRepository::getFolderPath() const {

@@ -106,7 +106,7 @@ void MenuBarWidget::exportImages(QString format) {
     qDebug("-------------------------------------------------exportAllImage called-------------------------------------------------");
 
     // Collect necessary data
-    vector<Image> images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
+    vector<Image*> images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
 
     QString directoryPath = QFileDialog::getExistingDirectory(this, tr("Select Directory to Save Images"));
 
@@ -130,7 +130,7 @@ void MenuBarWidget::exportImages(QString format) {
         auto saveImagesSubset = [&](size_t start, size_t end) {
             for (size_t i = start; i < end; ++i) {
 
-                std::string fileName = images[i].getPath().filename().string();
+                std::string fileName = images[i]->getPath().filename().string();
                 size_t lastDot = fileName.find_last_of('.');
 
                 if (lastDot != std::string::npos) {
@@ -138,7 +138,7 @@ void MenuBarWidget::exportImages(QString format) {
                 }
 
                 QString baseName = QString::fromStdString(fileName);
-                cv::Mat matImg = images[i].getImageMat();
+                cv::Mat matImg = images[i]->getImageMat();
                 QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
                 QString numberedFileName = QString("%1/%2.%3").arg(directoryPath).arg(baseName).arg(extension);
 

@@ -15,6 +15,7 @@
 #include <QScreen>
 #include "progressbar.h"
 #include "historywidget.h"
+#include <mutex>
 
 class RightSidebarWidget : public QWidget
 {
@@ -38,6 +39,7 @@ private slots:
     void onImageLoaded(Image* newImage);
 private:
     ImageRepository* _imageRepo;
+    std::mutex _progressBarMtx;
     ProgressBarComponent* _progressBar;
     HistoryWidget *_historyWidget;
 

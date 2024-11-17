@@ -19,5 +19,6 @@ void Logger::log(std::unique_ptr<IMessage> msg) {
   if (m_dataModel == nullptr) {
     throw std::runtime_error("Logger model is not set");
   }
+  std::scoped_lock<std::mutex> lock(m_mutex);
   m_dataModel->addLogEntry(std::move(msg));
 }
