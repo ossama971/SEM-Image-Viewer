@@ -9,6 +9,7 @@
 #include <QObject>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 
@@ -31,6 +32,7 @@ public:
     void selectImage(const std::string& path);
 
     Image* getImage();
+    Image* getImage(const std::filesystem::path &path);
     std::vector<Image> getImages() const;
     std::string getFolderPath() const;
 
@@ -45,6 +47,7 @@ signals:
 
 private:
     std::string _folderPath;
+    // TODO: this should be a map of path to image, to have faster lookups
     std::vector<Image> _images;
     Image* _selectedImage;
 };

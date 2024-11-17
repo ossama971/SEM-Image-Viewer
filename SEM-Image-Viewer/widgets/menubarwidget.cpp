@@ -1,5 +1,6 @@
 #include "menubarwidget.h"
 #include "ImageDialog.h"
+#include "../core/utils.h"
 #include "../core/engines/JsonVisitor.h"
 #include "../core/engines/Workspace.h"
 
@@ -69,6 +70,7 @@ void MenuBarWidget::fileMenu(){
     connect(BMPAction, &QAction::triggered, this, [=]() { exportSelectedImage("*.bmp"); });
 
     connect(saveSessionAction, &QAction::triggered, this, [=]() { saveSession(); });
+    connect(loadSessionAction, &QAction::triggered, this, [=]() { Utils::loadSessionJson("session.json"); });
 }
 
 void MenuBarWidget::exportSelectedImage(QString format){

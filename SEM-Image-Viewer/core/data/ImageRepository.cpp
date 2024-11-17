@@ -25,6 +25,7 @@ bool ImageRepository::load_directory(const std::string &path)
         _images.clear();
         emit onImageLoadStarted(images_count);
 
+        _folderPath = path;
         for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it)
         {
             if (!std::filesystem::is_regular_file(it->status()))
@@ -154,6 +155,17 @@ void ImageRepository::selectImage(const std::string& path)
 Image *ImageRepository::getImage()
 {
     return _selectedImage;
+}
+
+Image *ImageRepository::getImage(const std::filesystem::path &path)
+{
+    for (auto it = _images.begin(); it != _images.end(); ++it)
+    {
+        if (!it->getPath().compare(path.string()))
+            return &(*it);
+    }
+
+    return nullptr;
 }
 
 std::vector<Image> ImageRepository::getImages() const {
