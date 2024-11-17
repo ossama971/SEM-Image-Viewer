@@ -26,6 +26,7 @@ public:
   explicit ImageWidgetCore(QWidget *parent = nullptr);
   void loadAndDisplayImage(const Image &image);
   cv::Mat getImage() const;
+  void setIntensityPlotMode(bool enabled);
 
 protected:
   void showEvent(QShowEvent *event) override;
@@ -52,6 +53,14 @@ private:
   QPoint lastMousePosition;
   bool isPanning = false;
   double zoomFactor = 1.0;
+
+  bool intensityPlotMode = true;
+  QGraphicsLineItem* intensityLine = nullptr;
+  QPointF lineStart;
+  QPointF lineEnd;
+  int xStart;
+  int xEnd;
+  void drawIntensityPlot(int y);
 
 private slots:
   void zoomIn();

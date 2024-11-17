@@ -1,5 +1,10 @@
 #include "ImageWidgetCore.h"
 #include <QDebug>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QCategoryAxis>
+#include <vector>
 
 using namespace cv;
 using namespace std;
@@ -39,16 +44,87 @@ void ImageWidgetCore::showEvent(QShowEvent *event) {
   scene->installEventFilter(this);
 }
 
-bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
-  if (obj == scene) {
-    if (event->type() == QEvent::GraphicsSceneMousePress) {
-      QGraphicsSceneMouseEvent *mouseEvent =
-          dynamic_cast<QGraphicsSceneMouseEvent *>(event);
-      if (mouseEvent) {
-        QPointF clickPos = mouseEvent->scenePos();
-      }
-      return true;
+void ImageWidgetCore::drawIntensityPlot(int y) {
+    if (currentImage.empty() || currentImage.type() != CV_8UC1) {
+        qDebug() << "Image is not grayscale or is empty.";
+        return;
     }
+
+    // Extract the intensity values along the specified row (horizontal line)
+    std::vector<int> intensities;
+    for (int x = 0; x < currentImage.cols; ++x) {
+        intensities.push_back(currentImage.at<uchar>(y, x));
+    }
+
+    // Create a QtCharts series for plotting the intensity values
+    QLineSeries *series = new QLineSeries();
+    for (int x = 0; x < intensities.size(); ++x) {
+        series->append(x, intensities[x]);
+    }
+
+    // Clear any previous plot items in the scene
+    QList<QGraphicsItem *> items = scene->items();
+    for (auto *item : items) {
+        if (dynamic_cast<QChartView *>(item)) {
+            scene->removeItem(item);
+            delete item;
+        }
+    }
+
+    // Create a chart and configure it
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Intensity Plot");
+    chart->legend()->hide();
+
+    // Customize axes
+    QValueAxis *axisX = new QValueAxis();
+    axisX->setRange(0, intensities.size() - 1);
+    axisX->setTitleText("X-axis (Pixel)");
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, 255);
+    axisY->setTitleText("Intensity (Value)");
+
+    // Add axes to the chart
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+
+    // Attach the series to the axes
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+
+    // Create a ChartView and embed it in the scene
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Set position for the plot overlay
+    QRectF viewRect = graphicsView->sceneRect();
+    chartView->setGeometry(viewRect.width() / 4, viewRect.height() / 2, viewRect.width() / 2, viewRect.height() / 3);
+
+    scene->addWidget(chartView);
+}
+
+bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
+    if (obj == scene) {
+        if (event->type() == QEvent::GraphicsSceneMousePress) {
+            QGraphicsSceneMouseEvent *mouseEvent =
+                dynamic_cast<QGraphicsSceneMouseEvent *>(event);
+            if (mouseEvent) {
+                QPointF clickPos = mouseEvent->scenePos();
+                int y = static_cast<int>(clickPos.y());
+                if (intensityPlotMode) {
+                    // Draw horizontal line
+                    QGraphicsLineItem *line = scene->addLine(0, y, currentImage.cols, y, QPen(Qt::red, 2));
+                    line->setZValue(1); // Bring line to the top
+                    // Plot the intensity
+                    drawIntensityPlot(y);
+                }
+            }
+            return true;
+        }
+
+
     if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
       QGraphicsSceneMouseEvent *mouseEvent =
           static_cast<QGraphicsSceneMouseEvent *>(event);
@@ -145,40 +221,89 @@ void ImageWidgetCore::resizeEvent(QResizeEvent *event) {
 }
 
 void ImageWidgetCore::mousePressEvent(QMouseEvent *event) {
-  if (event->button() == Qt::LeftButton) {
-    isPanning = true;
-    lastMousePosition = event->pos();
-    setCursor(Qt::ClosedHandCursor);
-    event->accept();
-    return;
-  }
-  event->ignore();
+    if (intensityPlotMode && event->button() == Qt::LeftButton) {
+        QPointF scenePos = graphicsView->mapToScene(event->pos());
+        lineStart = scenePos;
+        if (!intensityLine) {
+            intensityLine = new QGraphicsLineItem();
+            scene->addItem(intensityLine);
+        }
+        intensityLine->setLine(scenePos.x(), scenePos.y(), scenePos.x(), scenePos.y());
+        event->accept();
+        return;
+    }
+      if (event->button() == Qt::LeftButton) {
+        isPanning = true;
+        lastMousePosition = event->pos();
+        setCursor(Qt::ClosedHandCursor);
+        event->accept();
+        return;
+      }
+      event->ignore();
+    QWidget::mousePressEvent(event);
 }
 
 void ImageWidgetCore::mouseMoveEvent(QMouseEvent *event) {
-  event->accept();
-  if (isPanning) {
-    QPoint delta = lastMousePosition - event->pos();
-    graphicsView->horizontalScrollBar()->setValue(
-        graphicsView->horizontalScrollBar()->value() + delta.x());
-    graphicsView->verticalScrollBar()->setValue(
-        graphicsView->verticalScrollBar()->value() + delta.y());
-    lastMousePosition = event->pos();
     event->accept();
-    return;
-  }
-  event->ignore();
+    if (intensityPlotMode && intensityLine) {
+        QPointF scenePos = graphicsView->mapToScene(event->pos());
+        intensityLine->setLine(lineStart.x(), lineStart.y(), scenePos.x(), lineStart.y());
+        event->accept();
+        return;
+    }
+      if (isPanning) {
+        QPoint delta = lastMousePosition - event->pos();
+        graphicsView->horizontalScrollBar()->setValue(
+            graphicsView->horizontalScrollBar()->value() + delta.x());
+        graphicsView->verticalScrollBar()->setValue(
+            graphicsView->verticalScrollBar()->value() + delta.y());
+        lastMousePosition = event->pos();
+        event->accept();
+        return;
+    }
+    event->ignore();
+    QWidget::mouseMoveEvent(event);
 }
 
 void ImageWidgetCore::mouseReleaseEvent(QMouseEvent *event) {
-  if (event->button() == Qt::LeftButton) {
-    isPanning = false;
-    setCursor(Qt::ArrowCursor);
-    event->accept();
-    return;
-  }
-  event->ignore();
+    if (intensityPlotMode && event->button() == Qt::LeftButton) {
+        QPointF scenePos = graphicsView->mapToScene(event->pos());
+        lineEnd = scenePos;
+
+        // Ensure the line is horizontal
+        intensityLine->setLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineStart.y());
+
+        // Extract intensity values
+        if (!currentImage.empty() && currentImage.channels() == 1) {
+            int y = static_cast<int>(lineStart.y());
+            int xStart = static_cast<int>(std::min(lineStart.x(), lineEnd.x()));
+            int xEnd = static_cast<int>(std::max(lineStart.x(), lineEnd.x()));
+
+            std::vector<uchar> intensities;
+            for (int x = xStart; x <= xEnd; ++x) {
+                if (x >= 0 && x < currentImage.cols && y >= 0 && y < currentImage.rows) {
+                    intensities.push_back(currentImage.at<uchar>(y, x));
+                }
+            }
+
+            qDebug() << "Intensity values along the line:" << intensities;
+
+            // Signal or method call to plot the intensity values
+            // emit intensityPlotGenerated(intensities);
+        }
+        event->accept();
+        return;
+    }
+    if (event->button() == Qt::LeftButton) {
+        isPanning = false;
+        setCursor(Qt::ArrowCursor);
+        event->accept();
+        return;
+    }
+    event->ignore();
+    QWidget::mouseReleaseEvent(event);
 }
+
 
 void ImageWidgetCore::wheelEvent(QWheelEvent *event) {
   if (event->modifiers() & Qt::ControlModifier) {
@@ -247,4 +372,16 @@ void ImageWidgetCore::onupdateImageState(
 
 cv::Mat ImageWidgetCore::getImage() const {
   return currentImage;
+}
+
+
+void ImageWidgetCore::setIntensityPlotMode(bool enabled) {
+    intensityPlotMode = enabled;
+
+    // Clear existing line if the mode is disabled
+    if (!enabled && intensityLine) {
+        scene->removeItem(intensityLine);
+        delete intensityLine;
+        intensityLine = nullptr;
+    }
 }

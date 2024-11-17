@@ -9,7 +9,6 @@ ImageWidget::ImageWidget(QWidget *parent)
     setLayout(layout); 
 
     connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &ImageWidget::reload);
-    // connect(imagerepo->getImage(), &Image::onImageStateUpdated, this, &ImageWidget::reload, Qt::UniqueConnection);
 }
 
 void ImageWidget::reload()
@@ -17,7 +16,6 @@ void ImageWidget::reload()
     Image* image = Workspace::Instance()->getActiveSession().getImageRepo().getImage();
     if (!image)
         return;
-    //disconnect(this, SIGNAL(onImageStateUpdated()), nullptr, nullptr);
     connect(image, &Image::onImageStateUpdated, core, &ImageWidgetCore::onupdateImageState, Qt::UniqueConnection);
     this->core->loadAndDisplayImage(*image);
 }
