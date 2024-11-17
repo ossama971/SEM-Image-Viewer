@@ -113,7 +113,9 @@ void HistoryWidget::loadActionList(QList<QString> actions){
     actionList->clear();
 
 
-
+    if(actions.empty()){
+        return;
+    }
     for (const QString &action : actions)
     {
         actionList->addItem(action);

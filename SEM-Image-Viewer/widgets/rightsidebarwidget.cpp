@@ -32,10 +32,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
-    // rightSidebarLayout->addWidget(_contourWidget);
-    // rightSidebarLayout->addWidget(_grayScaleWidget);
-    // rightSidebarLayout->addWidget(_edgeExtractionWidget);
-    // rightSidebarLayout->addWidget(_noiseReductionWidget);
+
     rightSidebarLayout->addWidget(list);
 
     QWidget *progressBarContainer = new QWidget();
@@ -44,6 +41,8 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     progressBarContainer->setLayout(progressBarLayout);
     rightSidebarLayout->addWidget(progressBarContainer);
     progressBarContainer->setContentsMargins(3, 0, 3, 0);
+    rightSidebarLayout->addItem(new QSpacerItem(1, 2, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
