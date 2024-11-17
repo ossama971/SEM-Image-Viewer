@@ -18,6 +18,7 @@ LoggerWidget::LoggerWidget(QWidget *parent, std::shared_ptr<MessageDataModel> da
     }
     Logger::instance()->setModel(m_dataModel);
     this->logListWidget->setModel(m_dataModel.get());
+
 }
 
 void LoggerWidget::createButtons()

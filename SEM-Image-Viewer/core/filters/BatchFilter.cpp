@@ -7,12 +7,13 @@ BatchFilter::BatchFilter(bool isolateMainThread, int threadCount)
 {}
 
 void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, std::vector<Image*> input) {
+    startTime = QDateTime::currentDateTime();
+    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterStarted().toStdString())));
     if (_isolateMainThread)
     {
         QThread *thread = QThread::create(&BatchFilter::execute, this, std::move(filter), std::move(input));
         thread->start();
     }
-
     else
         execute(std::move(filter), std::move(input));
 }
@@ -66,6 +67,9 @@ void BatchFilter::execute(std::unique_ptr<ImageFilter> filter, std::vector<Image
         if (thread->joinable())
             thread->join();
     }
+
+    auto duration = startTime.msecsTo(QDateTime::currentDateTime());
+    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterCompleted(duration).toStdString())));
 
     emit onFinish(std::move(input), std::move(output), filter->getImageSource());
 }

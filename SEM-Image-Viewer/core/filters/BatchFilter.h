@@ -5,7 +5,10 @@
 #include <QWidget>
 #include <memory>
 #include <vector>
-
+#include <QDateTime>
+#include "../engines/Logger.h"
+#include "../data/InfoMessage.h"
+#include "../data/logMessageMapper.h"
 class BatchFilter : public QObject
 {
     Q_OBJECT
@@ -25,6 +28,7 @@ signals:
 private:
     bool _isolateMainThread;
     int _threadCount;
+    QDateTime startTime;
 };
 
 #endif // BATCHFILTER_H

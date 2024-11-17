@@ -6,6 +6,7 @@
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
+
 }
 
 bool ImageRepository::load_directory(const std::string &path)
@@ -75,6 +76,7 @@ bool ImageRepository::load_image(const std::string &path)
     load_image_core(std::move(img), path, &_images);
 
     emit onDirectoryChanged(fpath.remove_filename().string(), getImages(), true);
+
     return true;
 }
 
@@ -129,7 +131,13 @@ void ImageRepository::selectImage(int index)
     else if (index < _images.size())
         _selectedImage = _images[index].get();
 
+    if (_selectedImage) {
+
+        emit loadActionList(_selectedImage->getHistory());
+    }
+
     emit onImageChanged(_selectedImage);
+
 }
 
 void ImageRepository::selectImage(const std::string& path)
@@ -149,6 +157,7 @@ void ImageRepository::selectImage(const std::string& path)
         return;
 
     selectImage(image_index);
+
 }
 
 Image *ImageRepository::getImage()

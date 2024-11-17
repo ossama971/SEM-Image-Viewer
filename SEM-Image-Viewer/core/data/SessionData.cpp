@@ -123,6 +123,7 @@ ImageRepository& SessionData::getImageRepo() {
 }
 
 Image* SessionData::getSelectedImage(void) {
+
     return _imageRepo.getImage();
 }
 

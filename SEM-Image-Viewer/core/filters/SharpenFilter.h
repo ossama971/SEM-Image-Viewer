@@ -4,7 +4,7 @@
 #include "ImageFilter.h"
 #include "../engines/Logger.h"
 #include "../data/InfoMessage.h"
-
+#include "../data/logMessageMapper.h"
 class SharpenFilter : public ImageFilter {
 public:
     cv::Mat applyFilter(const Image& inputImage) const override;
