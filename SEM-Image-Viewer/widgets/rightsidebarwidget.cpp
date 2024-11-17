@@ -32,10 +32,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
-    // rightSidebarLayout->addWidget(_contourWidget);
-    // rightSidebarLayout->addWidget(_grayScaleWidget);
-    // rightSidebarLayout->addWidget(_edgeExtractionWidget);
-    // rightSidebarLayout->addWidget(_noiseReductionWidget);
+
     rightSidebarLayout->addWidget(list);
 
     QWidget *progressBarContainer = new QWidget();
@@ -44,6 +41,8 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     progressBarContainer->setLayout(progressBarLayout);
     rightSidebarLayout->addWidget(progressBarContainer);
     progressBarContainer->setContentsMargins(3, 0, 3, 0);
+    rightSidebarLayout->addItem(new QSpacerItem(1, 2, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+
     rightSidebarLayout->addWidget(_historyWidget);
 
     controller.setEdgeExtractionWidget(_edgeExtractionWidget);
@@ -72,6 +71,8 @@ void RightSidebarWidget::setMaxMinWidth(int mn, int mx)
 
 void RightSidebarWidget::initializeProgress(int maxIterations)
 {
+    std::lock_guard<std::mutex> guard(_progressBarMtx);
+
     _progressBar->setMaximum(maxIterations);
     _progressBar->setValue(0);
     _progressBar->show();
@@ -79,15 +80,23 @@ void RightSidebarWidget::initializeProgress(int maxIterations)
 
 void RightSidebarWidget::updateProgress()
 {
+    std::unique_lock<std::mutex> guard(_progressBarMtx);
+
     int new_value = _progressBar->value() + 1;
     _progressBar->setValue(new_value);
 
     if (new_value == _progressBar->maximum())
-        hideProgressBar();
+    {
+        //guard.unlock();
+        //hideProgressBar();
+        _progressBar->hide();
+    }
 }
 
 void RightSidebarWidget::hideProgressBar()
 {
+    std::lock_guard<std::mutex> guard(_progressBarMtx);
+
     _progressBar->hide();
 }
 

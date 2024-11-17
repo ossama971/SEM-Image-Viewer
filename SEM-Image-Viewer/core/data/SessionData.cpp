@@ -1,5 +1,11 @@
 #include "SessionData.h"
 #include "../data/Image.h"
+#include "../filters/BatchFilter.h"
+
+SessionData::SessionData() : _batchFilter() {
+    connect(&_batchFilter, &BatchFilter::onImageProcessed, this, &SessionData::onBatchFilterProgress);
+    connect(&_batchFilter, &BatchFilter::onFinish, this, &SessionData::onBatchFilterApplied);
+}
 
 void SessionData::loadDirectory(const std::string path) {
     _imageRepo.load_directory(path);
@@ -23,17 +29,30 @@ void SessionData::saveImage(const std::string path, ImageFormat format) {
     _imageRepo.save(*selectedImage, format, path);
 }
 
-
-
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
 
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
 
-
     selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
     emit updateActionList(selectedImage->GetCurrentAction());
+}
+
+void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices) {
+    std::vector<Image*> batchInput = _imageRepo.getImages(std::move(image_indices));
+    if (batchInput.empty())
+        return;
+
+    emit onBatchFilterStarted(batchInput.size());
+    _batchFilter.apply(std::move(filter), batchInput);
+}
+
+void SessionData::onBatchFilterApplied(std::vector<Image*> input, std::vector<cv::Mat> output, ImageStateSource stateSource) {
+    for (int i = 0; i < input.size(); ++i)
+        input[i]->setImage(output[i], stateSource);
+
+    emit onBatchFilterFinished();
 }
 
 std::vector<int>
@@ -104,6 +123,7 @@ ImageRepository& SessionData::getImageRepo() {
 }
 
 Image* SessionData::getSelectedImage(void) {
+
     return _imageRepo.getImage();
 }
 

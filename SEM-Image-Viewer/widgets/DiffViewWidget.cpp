@@ -37,10 +37,10 @@ void DiffViewWidget::updateDiffImage() {
   }
 }
 
-void DiffViewWidget::setImages(const Image &upperImage, const Image &lowerImage) {
+void DiffViewWidget::setImages(Image *upperImage, Image *lowerImage) {
   qDebug() << "Setting images in diff view";
-  qDebug() << "Upper image path: " << upperImage.getPath().string().c_str();
-  qDebug() << "Lower image path: " << lowerImage.getPath().string().c_str();
-  upperImageWidget->loadAndDisplayImage(upperImage);
-  lowerImageWidget->loadAndDisplayImage(lowerImage);
+  qDebug() << "Upper image path: " << upperImage->getPath().string().c_str();
+  qDebug() << "Lower image path: " << lowerImage->getPath().string().c_str();
+  upperImageWidget->loadAndDisplayImage(*upperImage);
+  lowerImageWidget->loadAndDisplayImage(*lowerImage);
 }

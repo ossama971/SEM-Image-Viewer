@@ -12,7 +12,7 @@ SharpenWidget::SharpenWidget(QWidget *parent)
     // Compact layout
     QHBoxLayout *compactLayout = new QHBoxLayout();
     label->setText("Sharpen");
-
+    label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
     applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(

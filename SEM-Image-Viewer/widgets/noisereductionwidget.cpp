@@ -19,7 +19,7 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
         "}"
         );
     label->setText("Noise Reduction");
-
+    label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
     applyButton->setObjectName("applyButton");
     applyButton->setStyleSheet(

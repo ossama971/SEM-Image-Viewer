@@ -31,15 +31,19 @@ cv::Mat EdgeDetectionFilter::ToGrayscale(const cv::Mat &image) const
 }
 cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
-    Logger::instance()->log(std::make_unique<InfoMessage>(1, boost::format("EdgeDetectionFilter::applyFilter()")));
+
+
     const cv::Mat image = inputImage.getImageMat();
 
     cv::Mat detected_edges = image;
     if(image.channels() !=1){
+        Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Gray scale Filter").toStdString())));
         detected_edges = ToGrayscale(image);
     }
     detected_edges=Denoise(detected_edges);
     cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
+
+    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Edge Detection Filter").toStdString())));
 
     return detected_edges;
     // cv::Vec3b tint(50, 0, 0);

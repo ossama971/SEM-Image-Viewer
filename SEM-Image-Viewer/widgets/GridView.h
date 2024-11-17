@@ -13,7 +13,7 @@ class GridView : public QWidget {
     Q_OBJECT
 
 signals:
-    void openDiffViewRequested(const Image& image1, const Image& image2);
+    void openDiffViewRequested(Image* image1, Image* image2);
     void openDiffView();
 
 public:
@@ -34,8 +34,8 @@ private:
     void setModel(ImageDataModel *model);
     void loadImages(const QString &path);
     void initializeGrid();
-    Image firstImage;
-    Image secondImage;
+    Image* firstImage;
+    Image* secondImage;
 };
 
 #endif // GRIDVIEW_H

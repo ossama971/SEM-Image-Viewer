@@ -12,16 +12,16 @@ class ImageDataModel : public QAbstractListModel {
 
 public:
     explicit ImageDataModel(QObject *parent = nullptr);
-    Image getImageAt(int index) const; // Function to get image at a specific index
+    Image* getImageAt(int index) const; // Function to get image at a specific index
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void loadImages(int startIndex, int endIndex);  // New function to load images in chunks
 
 public slots:
-    void updateImages(const std::string newDir, std::vector<Image>* newImages, bool image_load);  // Slot to receive images from ImageRepository
+    void updateImages(const std::string newDir, std::vector<Image*> newImages, bool image_load);  // Slot to receive images from ImageRepository
 
 private:
-    QList<Image> images;
+    QList<Image*> images;
     QSize thumbnailSize = QSize(80, 80);
     mutable QHash<int, QImage> m_thumbnails; // Cache for thumbnails
     QImage generateThumbnail(const Image &image) const;

@@ -189,11 +189,11 @@ void FileBrowserWidget::onTreeClick(const QModelIndex &index) {
     _imageRepo->selectImage(fileName.string());
 }
 
-void FileBrowserWidget::onDirectoryChanged(const std::string newDir, std::vector<Image>* newImages, bool image_load) {
+void FileBrowserWidget::onDirectoryChanged(const std::string newDir, std::vector<Image*> newImages, bool image_load) {
     setRoot(QString(newDir.c_str()));
 
     if (!image_load)
         proxyModel->setImageFilter("");
     else
-        proxyModel->setImageFilter(!newImages->empty() ? QString::fromStdString(newImages->front().getPath().string()) : "");
+        proxyModel->setImageFilter(!newImages.empty() ? QString::fromStdString(newImages.front()->getPath().string()) : "");
 }

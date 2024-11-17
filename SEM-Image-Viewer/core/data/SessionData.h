@@ -5,14 +5,18 @@
 #include "Visitor.h"
 #include "Visitable.h"
 #include "../filters/ImageFilter.h"
+#include "../filters/BatchFilter.h"
 
 class SessionData : public QObject, public Visitable {
   Q_OBJECT
 public:
+    SessionData();
+
     void loadDirectory(const std::string path);
     void loadImage(const std::string path);
     void saveImage(const std::string path, ImageFormat format);
     void applyFilter(std::unique_ptr<ImageFilter> filter);
+    void applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices);
 
     bool undo();
     bool redo();
@@ -30,9 +34,18 @@ signals:
     void loadActionList(QList<QString> actions);
     void updateActionList(QString action);
     void popActionList();
+
+    void onBatchFilterStarted(int maxIterations);
+    void onBatchFilterProgress();
+    void onBatchFilterFinished();
+
+private slots:
+    void onBatchFilterApplied(std::vector<Image*> input, std::vector<cv::Mat> output, ImageStateSource stateSource);
+
 private:
     ImageRepository _imageRepo;
     //UndoManager _undoManager;
+    BatchFilter _batchFilter;
 };
 
 #endif // IMAGE_SESSION_H

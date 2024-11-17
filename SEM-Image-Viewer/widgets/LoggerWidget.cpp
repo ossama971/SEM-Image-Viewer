@@ -18,6 +18,7 @@ LoggerWidget::LoggerWidget(QWidget *parent, std::shared_ptr<MessageDataModel> da
     }
     Logger::instance()->setModel(m_dataModel);
     this->logListWidget->setModel(m_dataModel.get());
+
 }
 
 void LoggerWidget::createButtons()
@@ -38,18 +39,15 @@ void LoggerWidget::createButtons()
         buttonsStyle);
 
     infoShowButton = new QPushButton("Info", this);
-    infoShowButton->setIcon(QIcon(":/assets/information_icon.png"));
-    infoShowButton->setIconSize(QSize(16, 16));
+    infoShowButton->setObjectName("info");
     infoShowButton->setStyleSheet(buttonsStyle);
 
     errorsShowButton = new QPushButton("Errors", this);
-    errorsShowButton->setIcon(QIcon(":/assets/errors_icon.png"));
-    errorsShowButton->setIconSize(QSize(16, 16));
+    errorsShowButton->setObjectName("error");
     errorsShowButton->setStyleSheet(buttonsStyle);
 
     warningsShowButton = new QPushButton("Warnings", this);
-    warningsShowButton->setIcon(QIcon(":/assets/warnings_icon.png"));
-    warningsShowButton->setIconSize(QSize(16, 16));
+    warningsShowButton->setObjectName("warning");
     warningsShowButton->setStyleSheet(buttonsStyle);
 
     switchLayoutButtonFull = new QPushButton("   ▼", this);

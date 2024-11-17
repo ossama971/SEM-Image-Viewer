@@ -1,6 +1,6 @@
 QMainWindow {
-background-color: #FFFFFF; /* Light background color */
-color: #333333;            /* Dark text color */
+background-color: #FFFFFF;
+color: #333333;
 }
 
 /* Menu bar styling */
@@ -34,13 +34,12 @@ background-color: #DDDDDD;
 QToolButton:checked {
 background-color: #CCCCCC;
 }
-
 /* Styling for QSplitter */
 QSplitter {
 background-color: #F9F9F9;
 }
 QSplitter::handle {
-background-color: #CCCCCC; /* Color for the splitter handle */
+background-color: #CCCCCC;
 }
 
 /* Styling for QTreeView and QListView */
@@ -96,7 +95,7 @@ border: 1px solid #CCCCCC;
 padding: 4px;
 }
 QLineEdit{
-background-color: #FFFFFF;
+background-color: #F9F9F9;
 color: #333333;
 border: none;
 padding: 4px;
@@ -175,14 +174,33 @@ height: 1px;
 background: #CCCCCC;
 margin: 5px 0;
 }
+QWidget#ToolbarWidget {
+    background-color: #F1F1F1;
+    padding: 0px;
+}
+QGraphicsView {
+    background: #FFFFFF;
+}
 QAction {
 color: #333333;
 }
 
 QPushButton#applyButton {
-    qproperty-icon: url(:/icons/play-icon.svg);
-       qproperty-iconSize: 16px 16px;
-    }
+   qproperty-icon: url(:/icons/play-icon.svg);
+   qproperty-iconSize: 16px 16px;
+}
+QPushButton#info {
+    qproperty-icon: url(:/icons/info-light.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#error {
+    qproperty-icon: url(:/icons/error-light.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#warning {
+    qproperty-icon: url(:/icons/warning-light.svg);
+    qproperty-iconSize: 16px 16px;
+}
 QPushButton#searchButton {
     qproperty-icon: url(:/icons/search-light.svg);
 }
@@ -225,6 +243,9 @@ QToolButton#seperator {
     qproperty-icon: url(:/icons/toolbar-seperator-icon-light.svg);
      qproperty-iconSize: 23px 23px;
 }
+QToolButton:hover#seperator {
+    background-color: #F1F1F1
+}
 QToolButton#grid{
     qproperty-icon: url(:/icons/grid-icon-light.svg);
      qproperty-iconSize: 18px 18px;
@@ -244,18 +265,18 @@ QPushButton#zoom-out {
     qproperty-icon: url(:/icons/zoom-out.svg);
 }
 QPushButton#leftbutton {
-    background-color: #ddd;  /* Light gray background for light mode */
+    background-color: #ddd;
     border: none;
     border-radius: 10px;
     padding: 10px;
     width: 5px;
     height: 30px;
-    color: #333;  /* Dark gray text color */
+    color: #333;
     font-weight: bold;
 }
 
 QPushButton:hover#leftbutton {
-    background-color: #bbb;  /* Slightly darker gray for hover effect */
+    background-color: #bbb;
 }
 
 QWidget#searchBoxHolder {
@@ -264,3 +285,11 @@ QWidget#searchBoxHolder {
             padding: 3px 5px 5px 5px;
         }
 
+QToolButton#arrowup{
+    qproperty-icon: url(:/icons/arrow-up-light.svg);
+     qproperty-iconSize: 21px 21px;
+}
+QToolButton#closelog{
+    qproperty-icon: url(:/icons/close-logger-light.svg);
+     qproperty-iconSize: 18px 18px;
+}

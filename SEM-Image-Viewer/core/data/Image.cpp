@@ -1,6 +1,8 @@
 #include "Image.h"
 #include <QDebug>
-
+#include "../engines/Logger.h"
+#include "../data/ErrorMessage.h"
+#include "../data/logMessageMapper.h"
 Image::Image() : _loaded(false) {
 }
 
@@ -96,11 +98,12 @@ bool Image::isLoaded() const { return _loaded; }
 
 bool  Image::undo(){
     if (!_loaded){
-        //logger
+        Logger::instance()->log(std::make_unique<ErrorMessage>(LOG_ERROR,boost::format(LogMessageMapper::generalError("Undoing the Actions").toStdString())));
         return false;
     }
     if(_states.size()<2){
         //logger
+        Logger::instance()->log(std::make_unique<ErrorMessage>(LOG_ERROR,boost::format(LogMessageMapper::generalError("Undoing the Actions").toStdString())));
         return false;
     }
 
@@ -115,10 +118,12 @@ bool  Image::undo(){
 bool  Image::redo(){
     if (!_loaded){
         //logger
+        Logger::instance()->log(std::make_unique<ErrorMessage>(LOG_ERROR,boost::format(LogMessageMapper::generalError("Redoing the Actions").toStdString())));
         return false;
     }
     if(_redo.empty()){
         //logger
+         Logger::instance()->log(std::make_unique<ErrorMessage>(LOG_ERROR,boost::format(LogMessageMapper::generalError("Redoing the Actions").toStdString())));
         return false;
     }
 

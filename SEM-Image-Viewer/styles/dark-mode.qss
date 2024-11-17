@@ -1,6 +1,6 @@
 QMainWindow {
-    background-color: #2B2B2B; /* Dark background color */
-    color: #D3D3D3;            /* Light text color */
+    background-color: #2B2B2B;
+    color: #D3D3D3;
 }
 
 /* Menu bar styling */
@@ -15,7 +15,14 @@ QMenuBar::item {
 QMenuBar::item:selected {
     background-color: #444444;
 }
-
+QWidget#ToolbarWidget {
+    background-color: #333333;
+    border: none;
+    padding: 0px;
+}
+QGraphicsView {
+    background: #333333;
+}
 /* Toolbar styling */
 QToolBar {
     background-color: #333333;
@@ -34,13 +41,15 @@ QToolButton:hover {
 QToolButton:checked {
     background-color: #555555;
 }
-
+QCheckBox {
+    color: #D3D3D3;
+}
 /* Styling for QSplitter */
 QSplitter {
     background-color: #2C2C2C;
 }
 QSplitter::handle {
-    background-color: #1E1E1E; /* Color for the splitter handle */
+    background-color: #1E1E1E;
 }
 
 /* Styling for QTreeView and QListView */
@@ -118,7 +127,7 @@ QPushButton:pressed {
     background-color: #555555;
 }
 
-/* Styling for QLabel (used for displaying image placeholders, etc.) */
+/* Styling for QLabel */
 QLabel {
     color: #D3D3D3;
     background-color: #2B2B2B;
@@ -192,6 +201,18 @@ QPushButton#applyButton {
         qproperty-icon: url(:/icons/play-icon-dark-mode.svg);
            qproperty-iconSize: 16px 16px;
     }
+QPushButton#info {
+    qproperty-icon: url(:/icons/info-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#error {
+    qproperty-icon: url(:/icons/error-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
+QPushButton#warning {
+    qproperty-icon: url(:/icons/warning-dark.svg);
+    qproperty-iconSize: 16px 16px;
+}
 QPushButton#searchButton {
             qproperty-icon: url(:/icons/search-dark.svg);
         }
@@ -234,6 +255,9 @@ QToolButton#seperator {
     qproperty-icon: url(:/icons/toolbar-seperator-icon.svg);
      qproperty-iconSize: 23px 23px;
 }
+QToolButton:hover#seperator {
+    background-color: #333333
+}
 QToolButton#grid{
     qproperty-icon: url(:/icons/grid-icon.svg);
      qproperty-iconSize: 18px 18px;
@@ -267,3 +291,11 @@ QPushButton:hover#leftbutton {
 }
 
 
+QToolButton#arrowup{
+    qproperty-icon: url(:/icons/arrow-up-dark.svg);
+     qproperty-iconSize: 21px 21px;
+}
+QToolButton#closelog{
+    qproperty-icon: url(:/icons/close-logger-dark.svg);
+     qproperty-iconSize: 18px 18px;
+}
