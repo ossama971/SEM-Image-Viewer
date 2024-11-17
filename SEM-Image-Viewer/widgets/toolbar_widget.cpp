@@ -2,9 +2,9 @@
 
 ToolbarWidget::ToolbarWidget(QWidget *parent)
     : QWidget(parent) {
-
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
+    setObjectName("ToolbarWidget");
+    setAttribute(Qt::WA_StyledBackground, true);
     QHBoxLayout *toolbarLayout = new QHBoxLayout(this);
     toolbarLayout->setContentsMargins(0, 0, 0, 0);
     toolbarLayout->setSpacing(0);
@@ -39,8 +39,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     imageViewButton->setStyleSheet(buttonStyle1);
     diffViewButton->setStyleSheet(buttonStyle1);
     gridViewButton->setStyleSheet(buttonStyle1);
-    seperatorIcon->setStyleSheet("QToolButton { background-color: transparent; margin: 0px; padding: 0px; border: none; } QToolButton::hover {"
-    "background-color: transparent;}");
+    seperatorIcon->setStyleSheet("QToolButton {margin: 0px; padding: 0px; border: none; }");
     saveButton->setStyleSheet(buttonStyle2);
     undoButton->setStyleSheet(buttonStyle2);
     redoButton->setStyleSheet(buttonStyle2);
