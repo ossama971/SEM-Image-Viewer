@@ -2,9 +2,9 @@
 
 ToolbarWidget::ToolbarWidget(QWidget *parent)
     : QWidget(parent) {
-
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
+    setObjectName("ToolbarWidget");
+    setAttribute(Qt::WA_StyledBackground, true);
     QHBoxLayout *toolbarLayout = new QHBoxLayout(this);
     toolbarLayout->setContentsMargins(0, 0, 0, 0);
     toolbarLayout->setSpacing(0);
@@ -16,6 +16,8 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     saveButton = new QToolButton(this);
     undoButton = new QToolButton(this);
     redoButton = new QToolButton(this);
+    minimizeToolbarButton = new QToolButton(this);
+    minimizeLoggerButton = new QToolButton(this);
 
     imageViewButton->setObjectName("view");
     diffViewButton->setObjectName("diff");
@@ -24,6 +26,8 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     saveButton->setObjectName("saveButton");
     undoButton->setObjectName("undoButton");
     redoButton->setObjectName("redoButton");
+    minimizeToolbarButton->setObjectName("arrowup");
+    minimizeLoggerButton->setObjectName("closelog");
 
     auto buttonStyle1 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
                         "QToolButton:checked { border-radius: 4px; }";
@@ -35,8 +39,7 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     imageViewButton->setStyleSheet(buttonStyle1);
     diffViewButton->setStyleSheet(buttonStyle1);
     gridViewButton->setStyleSheet(buttonStyle1);
-    seperatorIcon->setStyleSheet("QToolButton { background-color: transparent; margin: 0px; padding: 0px; border: none; } QToolButton::hover {"
-    "background-color: transparent;}");
+    seperatorIcon->setStyleSheet("QToolButton {margin: 0px; padding: 0px; border: none; }");
     saveButton->setStyleSheet(buttonStyle2);
     undoButton->setStyleSheet(buttonStyle2);
     redoButton->setStyleSheet(buttonStyle2);
@@ -64,6 +67,11 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
 
     // Add a stretchable spacer to push the buttons to the left
     toolbarLayout->addStretch();
+
+    // Add right-aligned buttons
+    toolbarLayout->addWidget(minimizeLoggerButton);
+    toolbarLayout->addWidget(minimizeToolbarButton);
+
     setLayout(toolbarLayout);
 
     // Set the first button as checked by default

@@ -13,7 +13,7 @@ ActionListWidget::ActionListWidget(QWidget* parent)
 
     // Title
     auto titleLabel = new QLabel("Actions", this);
-    titleLabel->setStyleSheet("font-size: 16px; font-weight: bold;");
+    titleLabel->setStyleSheet("font-size: 16px; font-weight: bold; background-color: transparent;");
     mainLayout->addWidget(titleLabel);
 
     // Container for items with vertical line
