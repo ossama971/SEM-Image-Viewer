@@ -292,10 +292,10 @@ QPushButton:hover#leftbutton {
 
 
 QToolButton#arrowup{
-    qproperty-icon: url(:/icons/arrow-up-dark.svg);
-     qproperty-iconSize: 21px 21px;
+    qproperty-icon: url(:/icons/mini-grid-dark.svg);
+    qproperty-iconSize: 18px 18px;
 }
 QToolButton#closelog{
     qproperty-icon: url(:/icons/close-logger-dark.svg);
-     qproperty-iconSize: 18px 18px;
+    qproperty-iconSize: 18px 18px;
 }
