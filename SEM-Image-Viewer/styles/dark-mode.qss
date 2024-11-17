@@ -159,7 +159,7 @@ QStatusBar {
 QListWidget::item {
     background-color: #333333;
     color: #D3D3D3;
-    border: 1px solid #444444;
+    border: none
     padding: 4px;
 }
 QListWidget::item:selected {

@@ -148,7 +148,7 @@ color: #333333;
 QListWidget::item {
 background-color: #FFFFFF;
 color: #333333;
-border: 1px solid #CCCCCC;
+border: none;
 padding: 4px;
 }
 QListWidget::item:selected {
