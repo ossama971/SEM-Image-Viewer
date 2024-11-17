@@ -81,13 +81,17 @@ void RightSidebarWidget::initializeProgress(int maxIterations)
 
 void RightSidebarWidget::updateProgress()
 {
-    std::lock_guard<std::mutex> guard(_progressBarMtx);
+    std::unique_lock<std::mutex> guard(_progressBarMtx);
 
     int new_value = _progressBar->value() + 1;
     _progressBar->setValue(new_value);
 
     if (new_value == _progressBar->maximum())
-        hideProgressBar();
+    {
+        //guard.unlock();
+        //hideProgressBar();
+        _progressBar->hide();
+    }
 }
 
 void RightSidebarWidget::hideProgressBar()
