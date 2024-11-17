@@ -18,6 +18,8 @@ public:
     QToolButton *saveButton;
     QToolButton *redoButton;
     QToolButton *undoButton;
+    QToolButton *minimizeToolbarButton;
+    QToolButton *minimizeLoggerButton;
 
 private:
     QToolButton *seperatorIcon;

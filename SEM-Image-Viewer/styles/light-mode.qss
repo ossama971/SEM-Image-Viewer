@@ -264,3 +264,11 @@ QWidget#searchBoxHolder {
             padding: 3px 5px 5px 5px;
         }
 
+QToolButton#arrowup{
+    qproperty-icon: url(:/icons/arrow-up-light.svg);
+     qproperty-iconSize: 21px 21px;
+}
+QToolButton#closelog{
+    qproperty-icon: url(:/icons/close-logger-light.svg);
+     qproperty-iconSize: 18px 18px;
+}
