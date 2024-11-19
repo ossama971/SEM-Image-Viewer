@@ -30,43 +30,39 @@ MainWindow::MainWindow(QWidget *parent)
 
     leftSidebarWidget = new LeftSidebarWidget(this);
     leftSidebarWidget->setMinimumWidth(160);
+
     rightSidebarWidget = new RightSidebarWidget(this);
     rightSidebarWidget->setMinimumWidth(190);
+
+    toolbarWidget = new ToolbarWidget(this);
 
     topMiddleWidget = new TopMiddleWidget(this);
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
-    // Create the MiniGrid instance
     miniGrid = new MiniGrid(this);
-    // Create MenuBar instance
+    miniGrid->setMaximumHeight(90);
+
     menuBarWidget = new MenuBarWidget(this);
 
-    // Connecting signals sent from toolbar to history widget
-    ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
-    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    // Fixed splitter below the menu bar
+    QWidget *fixedSplitter = new QWidget(this);
+    fixedSplitter->setFixedHeight(0);
+    fixedSplitter->setCursor(Qt::ArrowCursor);
 
-    // Connecting signals sent from Toolbar to History
-    connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
-    connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
-
-    // Connecting signals sent from Toolbar to MenuBar
-    connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
-        menuBarWidget->exportSelectedImage("*.jpg");});
-
-    // Connecting signals sent from Toolbar to show/hide Logger
-    connect(toolbarWidget, &ToolbarWidget::minimizeLoggerClicked, this, &MainWindow::onShowLoggerClicked);
-
-    // Connecting signals sent from Toolbar to show/hide Minigrid
-    connect(toolbarWidget, &ToolbarWidget::minimizeToolbarClicked, this, &MainWindow::showMiniGridClicked);
+    QSplitter *horizontalSplitter = new QSplitter(Qt::Vertical, this);
+    horizontalSplitter->addWidget(topMiddleWidget);
+    horizontalSplitter->addWidget(miniGrid);
+    horizontalSplitter->addWidget(bottomMiddleWidget);
+    horizontalSplitter->setStretchFactor(0, 3);  // topMiddleWidget takes more space
+    horizontalSplitter->setStretchFactor(1, 1);  // miniGrid remains small
+    horizontalSplitter->setStretchFactor(2, 1);
+    //horizontalSplitter->setSizes({600, 90, 200});
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
-    middleSplitter->addWidget(topMiddleWidget);
-    middleSplitter->addWidget(miniGrid); // Add MiniGrid here
-    middleSplitter->addWidget(bottomMiddleWidget);
-    middleSplitter->setStretchFactor(0, 1);
-    middleSplitter->setStretchFactor(1, 1);
-
+    middleSplitter->addWidget(toolbarWidget);
+    middleSplitter->addWidget(fixedSplitter);
+    middleSplitter->addWidget(horizontalSplitter);
 
     QSplitter *mainSplitter = new QSplitter(Qt::Horizontal, this);
     mainSplitter->addWidget(leftSidebarWidget);
@@ -76,12 +72,16 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
+    QSplitter *finalSplitter = new QSplitter(Qt::Vertical, this);
+    finalSplitter->addWidget(fixedSplitter);
+    finalSplitter->addWidget(mainSplitter);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(mainSplitter);
+    layout->addWidget(finalSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
-
+    // Connecting Signals related to MenuBar
     setMenuBar(menuBarWidget);
     connect(leftSidebarWidget, &LeftSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onLeftSidebarViewChanged);
     connect(rightSidebarWidget, &RightSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onRightSidebarViewChanged);
@@ -95,6 +95,36 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
     connect(menuBarWidget, &MenuBarWidget::themeToggled, this, &MainWindow::applyTheme);
+
+    // Connecting signals related to Toolbar
+    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    // Connecting signals sent from Toolbar to History
+    connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
+    connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
+    // Connecting signals sent from Toolbar to MenuBar
+    connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
+        menuBarWidget->exportSelectedImage("*.jpg");});
+    // Connecting signals sent from Toolbar to show/hide Logger
+    connect(toolbarWidget, &ToolbarWidget::minimizeLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+    // Connecting signals sent from Toolbar to show/hide Minigrid
+    connect(toolbarWidget, &ToolbarWidget::minimizeToolbarClicked, this, &MainWindow::showMiniGridClicked);
+    connect(toolbarWidget->imageViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::onimageViewButtonClicked);
+    connect(toolbarWidget->diffViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ondiffViewButtonClicked);
+    connect(toolbarWidget->gridViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ongridViewButtonClicked);
+
+    // Manually setting cursor for splitter handles
+    for (int i = 0; i < finalSplitter->count(); ++i) {
+        QSplitterHandle *handle = finalSplitter->handle(i);
+        if (handle) {
+            handle->setCursor(Qt::ArrowCursor);  // Disable resizing cursor
+        }
+    }
+    for (int i = 0; i < middleSplitter->count(); ++i) {
+        QSplitterHandle *handle = middleSplitter->handle(i);
+        if (handle) {
+            handle->setCursor(Qt::ArrowCursor);
+        }
+    }
 }
 
 

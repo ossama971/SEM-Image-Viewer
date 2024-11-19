@@ -11,6 +11,7 @@
 #include "widgets/menubarwidget.h"
 #include "widgets/savedialogwidget.h"
 #include "widgets/MiniGrid.h"
+#include "widgets/toolbar_widget.h"
 // #include "core/engines/JsonVisitor.h"
 
 #include <QApplication>
@@ -61,6 +62,7 @@ private:
     QSplitter *mainSplitter;
     MenuBarWidget *menuBarWidget;
     MiniGrid *miniGrid;
+    ToolbarWidget *toolbarWidget;
 
     QThread *saveThread = nullptr;
 };
