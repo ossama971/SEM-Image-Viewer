@@ -125,6 +125,8 @@ set(PROJECT_SOURCES
     widgets/progressbar.cpp
     widgets/rightsidebarwidget.cpp
     widgets/rightsidebarwidget.h
+    widgets/LoadSessionDialog.cpp
+    widgets/LoadSessionDialog.h
     widgets/ExitDialogWidget.cpp
     widgets/ExitDialogWidget.h
     widgets/grayscalewidget.cpp

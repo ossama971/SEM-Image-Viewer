@@ -1,8 +1,10 @@
 #include "../core/engines/JsonVisitor.h"
 #include "../core/engines/Workspace.h"
 #include "../core/utils.h"
+
 #include "ImageDialog.h"
 #include "SaveSessionDialog.h"
+#include "LoadSessionDialog.h"
 #include "menubarwidget.h"
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
@@ -84,7 +86,7 @@ void MenuBarWidget::fileMenu() {
   connect(saveSessionAction, &QAction::triggered, this,
           [=]() { saveSession(); });
   connect(loadSessionAction, &QAction::triggered, this,
-          [=]() { Utils::loadSessionJson("session.json"); });
+          [=]() { loadSession(); });
 }
 
 void MenuBarWidget::exportSelectedImage(QString format) {
@@ -330,3 +332,43 @@ void MenuBarWidget::saveSession() {
     saveThread->start();
   }
 }
+
+void MenuBarWidget::loadSession() {
+  LoadSessionDialog dialog(this);
+  if (dialog.exec() == QDialog::Accepted) {
+    auto jsonFilePath = dialog.getJsonFilePath();
+
+    loadThread = new QThread;
+    QObject *worker = new QObject();
+    worker->moveToThread(loadThread);
+
+    connect(loadThread, &QThread::started, [worker, jsonFilePath]() {
+      Utils::loadSessionJson(jsonFilePath.string());
+      emit worker->destroyed();
+    });
+
+    connect(worker, &QObject::destroyed, loadThread, &QThread::quit);
+    connect(loadThread, &QThread::finished, loadThread, &QThread::deleteLater);
+    connect(loadThread, &QThread::finished, worker, &QObject::deleteLater);
+
+    loadThread->start();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
