@@ -51,6 +51,24 @@ std::string Utils::generateString(size_t length) {
   return out;
 }
 
+bool Utils::createDirectory(const std::string &path) {
+  if (std::filesystem::exists(path)) {
+    return true;
+  }
+  else {
+    // create the directory
+    qDebug() << "Creating directory: " << path;
+    if (std::filesystem::create_directory(path)) {
+      return true;
+    }
+    else {
+      Logger::instance()->log(std::make_unique<ErrorMessage>(
+          1, boost::format("Error creating directory: %1%") % path));
+      return false;
+    }
+  }
+}
+
 void Utils::loadSessionJson(const std::string &filename) {
   boost::property_tree::ptree root;
   try {

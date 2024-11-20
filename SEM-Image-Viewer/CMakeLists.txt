@@ -127,8 +127,10 @@ set(PROJECT_SOURCES
     widgets/progressbar.cpp
     widgets/rightsidebarwidget.cpp
     widgets/rightsidebarwidget.h
-    widgets/savedialogwidget.cpp
-    widgets/savedialogwidget.h
+    widgets/LoadSessionDialog.cpp
+    widgets/LoadSessionDialog.h
+    widgets/ExitDialogWidget.cpp
+    widgets/ExitDialogWidget.h
     widgets/grayscalewidget.cpp
     widgets/grayscalewidget.h
     widgets/noisereductionwidget.cpp
@@ -150,6 +152,8 @@ set(PROJECT_SOURCES
     widgets/ImageDialog.h
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
+    widgets/SaveSessionDialog.cpp
+    widgets/SaveSessionDialog.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
     models/MessageDataModel.cpp

@@ -248,11 +248,11 @@ QToolButton:hover#seperator {
 }
 QToolButton#grid{
     qproperty-icon: url(:/icons/grid-icon-light.svg);
-     qproperty-iconSize: 18px 18px;
+     qproperty-iconSize: 17px 17px;
 }
 QToolButton#diff{
     qproperty-icon: url(:/icons/diff-icon-light.svg);
-     qproperty-iconSize: 20px 20px;
+     qproperty-iconSize: 17px 17px;
 }
 QToolButton#view{
     qproperty-icon: url(:/icons/image-icon-light.svg);

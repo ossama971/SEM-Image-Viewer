@@ -19,12 +19,20 @@ public:
   void visit(const ImageRepository &repo) override;
   void visit(const SessionData &session) override;
 
-  void write_json(const std::string& filename) const;
+  void write_json() const;
 
+  JsonVisitor() = default;
+  JsonVisitor(std::string session_datapath, std::string json_filepath);
   ~JsonVisitor() override = default;
+
+  // TODO: should have a better way to enforce setting these paths
+  void set_session_datapath(const std::filesystem::path& path);
+  void set_json_filepath(const std::filesystem::path& path);
 
 private:
     boost::property_tree::ptree json_tree;
+    std::string session_datapath;
+    std::string json_filepath;
 };
 
 #endif // JSON_VISITOR_H
