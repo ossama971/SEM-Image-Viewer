@@ -68,6 +68,8 @@ set(PROJECT_SOURCES
     core/engines/Logger.h
     core/engines/Workspace.cpp
     core/engines/Workspace.h
+    core/engines/ThreadPool.cpp
+    core/engines/ThreadPool.h
     core/filters/EdgeDetectionFilter.cpp
     core/filters/EdgeDetectionFilter.h
     core/filters/GrayScaleFilter.cpp
