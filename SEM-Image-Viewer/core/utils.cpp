@@ -57,6 +57,7 @@ bool Utils::createDirectory(const std::string &path) {
   }
   else {
     // create the directory
+    qDebug() << "Creating directory: " << path;
     if (std::filesystem::create_directory(path)) {
       return true;
     }

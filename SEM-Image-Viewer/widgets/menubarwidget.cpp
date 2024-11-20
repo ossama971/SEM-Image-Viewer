@@ -309,21 +309,16 @@ void MenuBarWidget::saveSession() {
     auto directoryPath = dialog.getDirectoryPath();
     auto jsonFilePath = dialog.getJsonFilePath();
 
-    qDebug() << "Directory Path:" << directoryPath;
-    qDebug() << "JSON File Path:" << jsonFilePath;
-
     saveThread = new QThread;
 
     QObject *worker = new QObject();
     worker->moveToThread(saveThread);
 
     connect(saveThread, &QThread::started, [worker, directoryPath, jsonFilePath]() {
-      JsonVisitor visitor;
-      visitor.set_session_datapath(directoryPath);
-      visitor.set_json_filepath(jsonFilePath);
+
+      JsonVisitor visitor(directoryPath.string(), jsonFilePath.string());
       Workspace::Instance()->getActiveSession().accept(visitor);
       visitor.write_json();
-                         
 
       emit worker->destroyed();
     });

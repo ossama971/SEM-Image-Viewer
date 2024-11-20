@@ -163,20 +163,15 @@ void MainWindow::onSaveChangesClicked() {
     SaveSessionDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
 
-      auto directoryPath = dialog.getDirectoryPath();
-      auto jsonFilePath = dialog.getJsonFilePath();
-
-      qDebug() << "Directory Path:" << directoryPath;
-      qDebug() << "JSON File Path:" << jsonFilePath;
+      auto directoryPath = dialog.getDirectoryPath().string();
+      auto jsonFilePath = dialog.getJsonFilePath().string();
 
       saveThread = new QThread(this);
       QObject *worker = new QObject();
       worker->moveToThread(saveThread);
 
       connect(saveThread, &QThread::started, worker, [worker, directoryPath, jsonFilePath]() {
-          JsonVisitor visitor;
-          visitor.set_session_datapath(directoryPath);
-          visitor.set_json_filepath(jsonFilePath);
+          JsonVisitor visitor(directoryPath, jsonFilePath);
           Workspace::Instance()->getActiveSession().accept(visitor);
           visitor.write_json();
           });

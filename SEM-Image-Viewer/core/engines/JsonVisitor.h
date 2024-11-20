@@ -22,6 +22,7 @@ public:
   void write_json() const;
 
   JsonVisitor() = default;
+  JsonVisitor(std::string session_datapath, std::string json_filepath);
   ~JsonVisitor() override = default;
 
   // TODO: should have a better way to enforce setting these paths
@@ -30,8 +31,8 @@ public:
 
 private:
     boost::property_tree::ptree json_tree;
-    std::filesystem::path session_datapath;
-    std::filesystem::path json_filepath;
+    std::string session_datapath;
+    std::string json_filepath;
 };
 
 #endif // JSON_VISITOR_H
