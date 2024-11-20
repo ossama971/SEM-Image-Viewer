@@ -33,6 +33,7 @@ public:
 
     Image* getImage();
     Image* getImage(const std::filesystem::path &path);
+    Image* getImage(const std::size_t index);
 
     std::vector<Image*> getImages() const;
     std::vector<Image*> getImages(std::vector<int> indices) const;

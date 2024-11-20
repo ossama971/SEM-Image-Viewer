@@ -15,6 +15,7 @@
 
 #include "widgets/SaveSessionDialog.h"
 #include "core/engines/JsonVisitor.h"
+#include "core/engines/Workspace.h"
 
 
 MainWindow::MainWindow(QWidget *parent)

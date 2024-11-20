@@ -1,10 +1,11 @@
 #include "../core/engines/JsonVisitor.h"
 #include "../core/engines/Workspace.h"
+#include "../core/engines/ThreadPool.h"
 #include "../core/utils.h"
 
 #include "ImageDialog.h"
-#include "SaveSessionDialog.h"
 #include "LoadSessionDialog.h"
+#include "SaveSessionDialog.h"
 #include "menubarwidget.h"
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
@@ -90,8 +91,6 @@ void MenuBarWidget::fileMenu() {
 }
 
 void MenuBarWidget::exportSelectedImage(QString format) {
-  qDebug("-------------------------------------------------exportSelctedImage "
-         "called-------------------------------------------------");
   Image *image =
       Workspace::Instance()->getActiveSession().getImageRepo().getImage();
 
@@ -126,88 +125,49 @@ void MenuBarWidget::exportSelectedImage(QString format) {
 }
 
 void MenuBarWidget::exportImages(QString format) {
-  qDebug("-------------------------------------------------exportAllImage "
-         "called-------------------------------------------------");
-
-  // Collect necessary data
-  vector<Image *> images =
-      Workspace::Instance()->getActiveSession().getImageRepo().getImages();
 
   QString directoryPath = QFileDialog::getExistingDirectory(
       this, tr("Select Directory to Save Images"));
 
   if (directoryPath.isEmpty()) {
-    return; // Return early if no folder is chosen
+    return;
   }
 
   QFileInfo fileInfo(directoryPath);
   QString extension = format;
 
-  // Create a new thread for exporting images
-  QThread *exportThread = new QThread;
+  auto saveImagesSubset = [this, directoryPath, extension](size_t start, size_t end) {
+    for (size_t i = start; i < end; ++i) {
+      auto image = Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
+      std::string fileName = image->getPath().filename().string();
+      size_t lastDot = fileName.find_last_of('.');
+      if (lastDot != std::string::npos) {
+        fileName = fileName.substr(0, lastDot); // Remove the extension
+      }
+      QString baseName = QString::fromStdString(fileName);
+      cv::Mat matImg = image->getImageMat();
+      QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
+      QString numberedFileName = QString("%1/%2.%3").arg(directoryPath).arg(baseName).arg(extension);
+      qImg.save(numberedFileName);
+      // Emit progress update signal from the main thread
+      QMetaObject::invokeMethod(this, "exportProgressUpdated", Qt::QueuedConnection);
+    }
+  };
 
-  // Move the export logic to the new thread
-  connect(
-      exportThread, &QThread::started,
-      [this, directoryPath, extension, images]() {
-        unsigned int numCores = std::thread::hardware_concurrency();
-        unsigned int imagesPerThread = images.size() / numCores;
+  auto images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
+  emit exportStarted(images.size());
 
-        emit exportStarted(images.size());
+  const std::size_t BATCH_SIZE = 10;
 
-        auto saveImagesSubset = [&](size_t start, size_t end) {
-          for (size_t i = start; i < end; ++i) {
+  for (std::size_t i = 0; i < images.size(); i += BATCH_SIZE) {
+    std::size_t startIdx = i;
+    std::size_t endIdx = std::min(i + BATCH_SIZE, images.size());
+    qDebug() << "Exporting images from " << startIdx << " to " << endIdx;
+    post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(saveImagesSubset, startIdx, endIdx)));
+  }
 
-            std::string fileName = images[i]->getPath().filename().string();
-            size_t lastDot = fileName.find_last_of('.');
-
-            if (lastDot != std::string::npos) {
-              fileName = fileName.substr(0, lastDot); // Remove the extension
-            }
-
-            QString baseName = QString::fromStdString(fileName);
-            cv::Mat matImg = images[i]->getImageMat();
-            QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows,
-                                 matImg.step[0], QImage::Format_RGB888)
-                              .rgbSwapped();
-            QString numberedFileName = QString("%1/%2.%3")
-                                           .arg(directoryPath)
-                                           .arg(baseName)
-                                           .arg(extension);
-
-            qImg.save(numberedFileName);
-
-            // Emit progress update signal from the main thread
-            QMetaObject::invokeMethod(this, "exportProgressUpdated",
-                                      Qt::QueuedConnection);
-          }
-        };
-
-        std::vector<std::thread> threads;
-        for (unsigned int i = 0; i < numCores; ++i) {
-          size_t startIdx = i * imagesPerThread;
-          size_t endIdx = (i == numCores - 1) ? images.size()
-                                              : (startIdx + imagesPerThread);
-          threads.emplace_back(saveImagesSubset, startIdx, endIdx);
-          std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        }
-
-        for (auto &thread : threads) {
-          if (thread.joinable()) {
-            thread.join();
-          }
-        }
-
-        // Emit exportFinished() from the main thread
-        QMetaObject::invokeMethod(this, "exportFinished", Qt::QueuedConnection);
-      });
-
-  // Connect the thread's finished signal to clean up
-  connect(exportThread, &QThread::finished, exportThread,
-          &QThread::deleteLater);
-
-  // Start the thread
-  exportThread->start();
+  // Emit exportFinished() from the main thread
+  QMetaObject::invokeMethod(this, "exportFinished", Qt::QueuedConnection);
 }
 
 void MenuBarWidget::editMenu() {
@@ -316,14 +276,14 @@ void MenuBarWidget::saveSession() {
     QObject *worker = new QObject();
     worker->moveToThread(saveThread);
 
-    connect(saveThread, &QThread::started, [worker, directoryPath, jsonFilePath]() {
+    connect(
+        saveThread, &QThread::started, [worker, directoryPath, jsonFilePath]() {
+          JsonVisitor visitor(directoryPath.string(), jsonFilePath.string());
+          Workspace::Instance()->getActiveSession().accept(visitor);
+          visitor.write_json();
 
-      JsonVisitor visitor(directoryPath.string(), jsonFilePath.string());
-      Workspace::Instance()->getActiveSession().accept(visitor);
-      visitor.write_json();
-
-      emit worker->destroyed();
-    });
+          emit worker->destroyed();
+        });
 
     connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
     connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
@@ -354,21 +314,3 @@ void MenuBarWidget::loadSession() {
     loadThread->start();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

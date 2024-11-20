@@ -9,22 +9,12 @@
 #include <QObject>
 #include <QImage>
 #include <QFileDialog>
-#include <iostream>
-#include <thread>
-#include <vector>
 #include <QMetaObject>
 #include <QThread>
 
-#include "../core/engines/Workspace.h"
-#include "../core/data/Image.h"
-#include "../core/data/ImageFormat.h"
 #include "ImageDialog.h"
 
-#include<iostream>
-
 using namespace std;
-
-
 
 class MenuBarWidget : public QMenuBar
 {
@@ -52,7 +42,6 @@ signals:
 private slots:
     void exportImages(QString format);
     void onThemeActionTriggered();
-    // void exportAll();
 
 public slots:
     void onLeftSidebarViewChanged(bool state);

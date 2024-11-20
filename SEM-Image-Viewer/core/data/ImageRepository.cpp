@@ -177,6 +177,14 @@ Image *ImageRepository::getImage(const std::filesystem::path &path)
     return nullptr;
 }
 
+Image *ImageRepository::getImage(const std::size_t index)
+{
+    if (index < _images.size())
+        return _images[index].get();
+
+    return nullptr;
+}
+
 std::vector<Image*> ImageRepository::getImages() const {
     std::vector<Image*> images(_images.size());
 
