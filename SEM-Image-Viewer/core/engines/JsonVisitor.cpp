@@ -28,7 +28,7 @@ void JsonVisitor::visit(const ImageState &state) {
   const std::string image_filepath = Utils::generateString(11) + state.ImageExtension;
   // TODO: prepend the image_name with the applied filter name before this random string
   const std::filesystem::path image_path(this->session_datapath + "/" + image_filepath);
-  if (state.save(image_path)) {
+  if (state.save(image_path.string())) {
     state_tree.put("state", imageStateSourceToString(state.State));
     state_tree.put("image", image_path.string());
     json_tree.add_child("state", state_tree);
@@ -98,11 +98,11 @@ void JsonVisitor::visit(const SessionData &session) {
 }
 
 void JsonVisitor::set_session_datapath(const std::filesystem::path& path) {
-  session_datapath = path;
+  session_datapath = path.string();
 }
 
 void JsonVisitor::set_json_filepath(const std::filesystem::path& path) {
-  json_filepath = path;
+  json_filepath = path.string();
 }
 
 void JsonVisitor::write_json() const {
