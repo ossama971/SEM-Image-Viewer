@@ -9,7 +9,7 @@
 #include "widgets/rightsidebarwidget.h"
 #include "widgets/topmiddlewidget.h"
 #include "widgets/menubarwidget.h"
-#include "widgets/savedialogwidget.h"
+#include "widgets/ExitDialogWidget.h"
 #include "widgets/MiniGrid.h"
 // #include "core/engines/JsonVisitor.h"
 

@@ -125,8 +125,8 @@ set(PROJECT_SOURCES
     widgets/progressbar.cpp
     widgets/rightsidebarwidget.cpp
     widgets/rightsidebarwidget.h
-    widgets/savedialogwidget.cpp
-    widgets/savedialogwidget.h
+    widgets/ExitDialogWidget.cpp
+    widgets/ExitDialogWidget.h
     widgets/grayscalewidget.cpp
     widgets/grayscalewidget.h
     widgets/noisereductionwidget.cpp

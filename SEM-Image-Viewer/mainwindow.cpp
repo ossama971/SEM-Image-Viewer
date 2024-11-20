@@ -142,12 +142,12 @@ void MainWindow::onShowImageClicked(bool isChecked) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    SaveDialogWidget saveDialog(this);
+    ExitDialogWidget exitDialog(this);
 
-    connect(&saveDialog, &SaveDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
-    connect(&saveDialog, &SaveDialogWidget::dontSaveRequested, this, &QApplication::quit);
+    connect(&exitDialog, &ExitDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
+    connect(&exitDialog, &ExitDialogWidget::dontSaveRequested, this, &QApplication::quit);
 
-    if (saveDialog.exec() == QDialog::Rejected) {
+    if (exitDialog.exec() == QDialog::Rejected) {
         event->ignore();  // Keep the application open if the user clicked "Cancel"
     } else {
         event->accept();  // Close the application if the user clicked "Save" or "Don't Save"

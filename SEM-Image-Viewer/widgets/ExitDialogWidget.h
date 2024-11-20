@@ -1,15 +1,15 @@
-#ifndef SAVEDIALOGWIDGET_H
-#define SAVEDIALOGWIDGET_H
+#ifndef ExitDialogWidget_H
+#define ExitDialogWidget_H
 
 #include <QDialog>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
 
-class SaveDialogWidget : public QDialog {
+class ExitDialogWidget : public QDialog {
     Q_OBJECT
 public:
-    explicit SaveDialogWidget(QWidget *parent = nullptr);
+    explicit ExitDialogWidget(QWidget *parent = nullptr);
 
 signals:
     void saveRequested();
@@ -22,4 +22,4 @@ private slots:
 
 };
 
-#endif // SAVEDIALOGWIDGET_H
+#endif // ExitDialogWidget_H
