@@ -44,15 +44,16 @@ void ImageWidgetCore::showEvent(QShowEvent *event) {
   scene->installEventFilter(this);
 }
 
-void ImageWidgetCore::drawIntensityPlot(int y) {
+void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     if (currentImage.empty() || currentImage.type() != CV_8UC1) {
         qDebug() << "Image is not grayscale or is empty.";
+        // TODO: Converrt to Grayscale temporarely and plot the converted intensity
         return;
     }
 
     // Extract the intensity values along the specified row (horizontal line)
     std::vector<int> intensities;
-    for (int x = 0; x < currentImage.cols; ++x) {
+    for (int x = xStart; x <= xEnd; ++x) {
         intensities.push_back(currentImage.at<uchar>(y, x));
     }
 
@@ -79,7 +80,7 @@ void ImageWidgetCore::drawIntensityPlot(int y) {
 
     // Customize axes
     QValueAxis *axisX = new QValueAxis();
-    axisX->setRange(0, intensities.size() - 1);
+    axisX->setRange(xStart, intensities.size() - 1);
     axisX->setTitleText("X-axis (Pixel)");
 
     QValueAxis *axisY = new QValueAxis();
@@ -107,22 +108,80 @@ void ImageWidgetCore::drawIntensityPlot(int y) {
 
 bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
     if (obj == scene) {
-        if (event->type() == QEvent::GraphicsSceneMousePress) {
-            QGraphicsSceneMouseEvent *mouseEvent =
-                dynamic_cast<QGraphicsSceneMouseEvent *>(event);
-            if (mouseEvent) {
-                QPointF clickPos = mouseEvent->scenePos();
-                int y = static_cast<int>(clickPos.y());
-                if (intensityPlotMode) {
-                    // Draw horizontal line
-                    QGraphicsLineItem *line = scene->addLine(0, y, currentImage.cols, y, QPen(Qt::red, 2));
-                    line->setZValue(1); // Bring line to the top
-                    // Plot the intensity
-                    drawIntensityPlot(y);
+        if (intensityPlotMode) {
+            graphicsView->setDragMode(QGraphicsView::NoDrag); // Disable drag in intensity plot mode
+            static bool customCursorSet = false;
+            if (!customCursorSet) {
+                QPixmap cursorPixmap(":/icons/pen-icon.svg");
+                QSize cursorSize(32, 32); // Adjust size as needed
+                QPixmap scaledCursor = cursorPixmap.scaled(cursorSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                graphicsView->setCursor(QCursor(scaledCursor));
+                customCursorSet = true;
+            }
+
+
+            if (event->type() == QEvent::GraphicsSceneMousePress) {
+                auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
+                if (mouseEvent) {
+                    // Capture starting point for the line
+                    lineStart = mouseEvent->scenePos();
+                    qDebug() << "Mouse Press at:" << lineStart;
+
+                    // Create a temporary line item if it doesn't exist
+                    if (!intensityLine) {
+                        intensityLine = new QGraphicsLineItem();
+                        intensityLine->setPen(QPen(Qt::red, 2));
+                        scene->addItem(intensityLine);
+                    }
+
+                    // Initialize the line position
+                    intensityLine->setLine(lineStart.x(), lineStart.y(), lineStart.x(), lineStart.y());
+                    return true;
+                }
+            } else if (event->type() == QEvent::GraphicsSceneMouseMove) {
+                auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
+                if (mouseEvent && intensityLine) {
+                    // Update the line's endpoint in real-time, keeping the Y-coordinate fixed
+                    QPointF scenePos = mouseEvent->scenePos();
+                    intensityLine->setLine(lineStart.x(), lineStart.y(), scenePos.x(), lineStart.y());
+
+                    // Update mouse position on the info bar
+                    infoBar->setMousePosition(static_cast<int>(scenePos.x()),
+                                              static_cast<int>(scenePos.y()));
+                    return true;
+                }
+            } else if (event->type() == QEvent::GraphicsSceneMouseRelease) {
+                auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
+                if (mouseEvent && intensityLine) {
+                    // Finalize the line
+                    lineEnd = mouseEvent->scenePos();
+                    qDebug() << "Mouse Release at:" << lineEnd;
+
+                    // Set the final line position
+
+                    intensityLine->setLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineStart.y());
+
+                    // Trigger intensity plot drawing
+                    qreal xStart = lineStart.x();
+                    qreal xEnd = lineEnd.x();
+                    if (xStart > xEnd) {
+                        std::swap(xStart, xEnd);
+                    }
+                    drawIntensityPlot(static_cast<int>(lineStart.y()),
+                                      static_cast<int>(xStart),
+                                      static_cast<int>(xEnd));
+
+                    // Optional: Clear the temporary line if not needed after plotting
+                    intensityLine = nullptr;
+                    graphicsView->unsetCursor();
+                    customCursorSet = false;
+
+
+                    return true;
                 }
             }
-            return true;
         }
+
 
 
     if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
@@ -133,32 +192,6 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
       infoBar->setMousePosition(static_cast<int>(scenePos.x()),
                                 static_cast<int>(scenePos.y()));
 
-#if 0
-      Image *image =
-          Workspace::Instance()->getActiveSession().getImageRepo().getImage();
-      if (image) {
-        Mat img = image->getImageMat();
-        int x = scenePos.x();
-        int y = scenePos.y();
-        if (img.type() == CV_8UC3) {
-          cv::Vec3b intensity = img.at<cv::Vec3b>(y, x);
-          uchar blue = intensity[0];
-          uchar green = intensity[1];
-          uchar red = intensity[2];
-
-          // Use qDebug to print BGR intensity values with proper formatting
-          qDebug() << "BGR intensity at (" << x << "," << y << "): "
-                   << "B=" << blue << "G=" << green << "R=" << red;
-        } else if (img.type() == CV_8UC1) {
-          // Grayscale image (8-bit single channel)
-          uchar intensity = img.at<uchar>(y, x);
-          qDebug() << "Grayscale intensity (float) at (" << x << ", " << y
-                   << "): " << intensity;
-        }
-
-        return true;
-      }
-#endif
     }
   }
   return QWidget::eventFilter(obj, event);
@@ -220,93 +253,9 @@ void ImageWidgetCore::resizeEvent(QResizeEvent *event) {
   }
 }
 
-void ImageWidgetCore::mousePressEvent(QMouseEvent *event) {
-    if (intensityPlotMode && event->button() == Qt::LeftButton) {
-        QPointF scenePos = graphicsView->mapToScene(event->pos());
-        lineStart = scenePos;
-        if (!intensityLine) {
-            intensityLine = new QGraphicsLineItem();
-            scene->addItem(intensityLine);
-        }
-        intensityLine->setLine(scenePos.x(), scenePos.y(), scenePos.x(), scenePos.y());
-        event->accept();
-        return;
-    }
-      if (event->button() == Qt::LeftButton) {
-        isPanning = true;
-        lastMousePosition = event->pos();
-        setCursor(Qt::ClosedHandCursor);
-        event->accept();
-        return;
-      }
-      event->ignore();
-    QWidget::mousePressEvent(event);
-}
-
-void ImageWidgetCore::mouseMoveEvent(QMouseEvent *event) {
-    event->accept();
-    if (intensityPlotMode && intensityLine) {
-        QPointF scenePos = graphicsView->mapToScene(event->pos());
-        intensityLine->setLine(lineStart.x(), lineStart.y(), scenePos.x(), lineStart.y());
-        event->accept();
-        return;
-    }
-      if (isPanning) {
-        QPoint delta = lastMousePosition - event->pos();
-        graphicsView->horizontalScrollBar()->setValue(
-            graphicsView->horizontalScrollBar()->value() + delta.x());
-        graphicsView->verticalScrollBar()->setValue(
-            graphicsView->verticalScrollBar()->value() + delta.y());
-        lastMousePosition = event->pos();
-        event->accept();
-        return;
-    }
-    event->ignore();
-    QWidget::mouseMoveEvent(event);
-}
-
-void ImageWidgetCore::mouseReleaseEvent(QMouseEvent *event) {
-    if (intensityPlotMode && event->button() == Qt::LeftButton) {
-        QPointF scenePos = graphicsView->mapToScene(event->pos());
-        lineEnd = scenePos;
-
-        // Ensure the line is horizontal
-        intensityLine->setLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineStart.y());
-
-        // Extract intensity values
-        if (!currentImage.empty() && currentImage.channels() == 1) {
-            int y = static_cast<int>(lineStart.y());
-            int xStart = static_cast<int>(std::min(lineStart.x(), lineEnd.x()));
-            int xEnd = static_cast<int>(std::max(lineStart.x(), lineEnd.x()));
-
-            std::vector<uchar> intensities;
-            for (int x = xStart; x <= xEnd; ++x) {
-                if (x >= 0 && x < currentImage.cols && y >= 0 && y < currentImage.rows) {
-                    intensities.push_back(currentImage.at<uchar>(y, x));
-                }
-            }
-
-            qDebug() << "Intensity values along the line:" << intensities;
-
-            // Signal or method call to plot the intensity values
-            // emit intensityPlotGenerated(intensities);
-        }
-        event->accept();
-        return;
-    }
-    if (event->button() == Qt::LeftButton) {
-        isPanning = false;
-        setCursor(Qt::ArrowCursor);
-        event->accept();
-        return;
-    }
-    event->ignore();
-    QWidget::mouseReleaseEvent(event);
-}
-
-
 void ImageWidgetCore::wheelEvent(QWheelEvent *event) {
   if (event->modifiers() & Qt::ControlModifier) {
+
     const qreal zoomIncrement = 1.1;
     qreal factor =
         event->angleDelta().y() > 0 ? zoomIncrement : 1 / zoomIncrement;
@@ -322,7 +271,9 @@ void ImageWidgetCore::wheelEvent(QWheelEvent *event) {
     event->accept();
   } else {
     event->ignore();
+
   }
+
 }
 
 void ImageWidgetCore::zoomIn() {

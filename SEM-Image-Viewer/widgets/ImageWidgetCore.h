@@ -33,9 +33,6 @@ protected:
   void resizeEvent(QResizeEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
 
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseMoveEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
 
   bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -60,7 +57,7 @@ private:
   QPointF lineEnd;
   int xStart;
   int xEnd;
-  void drawIntensityPlot(int y);
+  void drawIntensityPlot(int y,int xStart, int xEnd);
 
 private slots:
   void zoomIn();
