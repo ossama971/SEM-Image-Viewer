@@ -132,8 +132,17 @@ void ImageWidgetCore::setImage(const QPixmap &pixmap) {
                   QGraphicsItem::ItemIsMovable);
   image->setAcceptHoverEvents(true);
   image->setAcceptedMouseButtons(Qt::LeftButton);
-  // graphicsView->fitInView(image, Qt::KeepAspectRatio);
-  graphicsView->setSceneRect(image->boundingRect());
+  const int margin = 50; // Set the desired margin value
+  QRectF imageBounds = image->boundingRect();
+  QRectF sceneBounds = imageBounds.adjusted(-margin, -margin, margin, margin);
+  scene->setSceneRect(sceneBounds);
+  graphicsView->fitInView(image, Qt::KeepAspectRatio);
+  //graphicsView->setSceneRect(image->boundingRect());
+  QSizeF viewSize = graphicsView->viewport()->size();
+  qreal scaleX = viewSize.width() / sceneBounds.width();
+  qreal scaleY = viewSize.height() / sceneBounds.height();
+  zoomFactor = qMin(scaleX, scaleY);
+  infoBar->setZoomPercentage(zoomFactor);
   infoBar->setImageSize(pixmap.width(), pixmap.height());
 }
 
