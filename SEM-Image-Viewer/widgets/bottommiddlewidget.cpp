@@ -13,6 +13,7 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     Controller &controller = Controller::instance();
 
     LoggerWidget * logger = new LoggerWidget();
+    connect(logger, &LoggerWidget::layoutSwitched, this, &BottomMiddleWidget::adjustSizeBasedOnLayout);
     bottomMiddleLayout->addWidget(logger, 1);
     bottomMiddleLayout->setContentsMargins(0, 0, 0, 0);
     bottomMiddleLayout->setSpacing(0);
@@ -31,3 +32,13 @@ void BottomMiddleWidget::setMaxMinHeight(int mn, int mx){
     setMinimumHeight(mn);
     setMaximumHeight(mx);
 }
+
+void BottomMiddleWidget::adjustSizeBasedOnLayout(bool isExpanded)
+{
+    if (isExpanded) {
+        setMaxMinHeight(200, 400);
+    } else {
+        setMaxMinHeight(40, 40);
+    }
+}
+

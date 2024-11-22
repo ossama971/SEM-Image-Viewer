@@ -131,7 +131,7 @@ void LoggerWidget::createLayouts()
     topLayoutCompact->addWidget(new QLabel("Error : 1 Warnings : 2 Info : 3", this));
     topLayoutCompact->addStretch(9);
     topLayoutCompact->addWidget(switchLayoutButtonCompact);
-    topLayoutCompact->addStretch(1);
+    topLayoutCompact->addStretch(0);
 
     QHBoxLayout *topLayoutFull = new QHBoxLayout;
     topLayoutFull->addWidget(allShowButton);
@@ -206,4 +206,5 @@ void LoggerWidget::switchLayout()
     }
 
     isExpanded = !isExpanded; // Toggle state
+    emit layoutSwitched(isExpanded); // Notify the state change
 }

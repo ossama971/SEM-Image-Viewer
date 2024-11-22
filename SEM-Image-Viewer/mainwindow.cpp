@@ -42,7 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
     miniGrid = new MiniGrid(this);
-    miniGrid->setMaximumHeight(110);
+    miniGrid->setMinimumHeight(100);
+    miniGrid->setMaximumHeight(120);
 
     menuBarWidget = new MenuBarWidget(this);
 
