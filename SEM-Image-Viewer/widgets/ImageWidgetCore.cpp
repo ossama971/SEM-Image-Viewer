@@ -45,16 +45,20 @@ void ImageWidgetCore::showEvent(QShowEvent *event) {
 }
 
 void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
-    if (currentImage.empty() || currentImage.type() != CV_8UC1) {
-        qDebug() << "Image is not grayscale or is empty.";
-        // TODO: Converrt to Grayscale temporarely and plot the converted intensity
+    if (currentImage.empty()) {
+        // qDebug() << "Image is not grayscale or is empty.";
         return;
+    }
+    Mat image = currentImage;
+    if (currentImage.type() != CV_8UC1)
+    {
+        cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     }
 
     // Extract the intensity values along the specified row (horizontal line)
     std::vector<int> intensities;
     for (int x = xStart; x <= xEnd; ++x) {
-        intensities.push_back(currentImage.at<uchar>(y, x));
+        intensities.push_back(image.at<uchar>(y, x));
     }
 
     // Create a QtCharts series for plotting the intensity values
@@ -113,7 +117,7 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
             static bool customCursorSet = false;
             if (!customCursorSet) {
                 QPixmap cursorPixmap(":/icons/pen-icon.svg");
-                QSize cursorSize(32, 32); // Adjust size as needed
+                QSize cursorSize(20, 20); // Adjust size as needed
                 QPixmap scaledCursor = cursorPixmap.scaled(cursorSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                 graphicsView->setCursor(QCursor(scaledCursor));
                 customCursorSet = true;
@@ -127,6 +131,12 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
                     lineStart = mouseEvent->scenePos();
                     qDebug() << "Mouse Press at:" << lineStart;
 
+                    // Delete the previous line from the scene
+                    if (intensityLine) {
+                        scene->removeItem(intensityLine);
+                        delete intensityLine;
+                        intensityLine = nullptr;
+                    }
                     // Create a temporary line item if it doesn't exist
                     if (!intensityLine) {
                         intensityLine = new QGraphicsLineItem();
@@ -172,6 +182,7 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
                                       static_cast<int>(xEnd));
 
                     // Optional: Clear the temporary line if not needed after plotting
+                    // delete intensityLine;
                     intensityLine = nullptr;
                     graphicsView->unsetCursor();
                     customCursorSet = false;
