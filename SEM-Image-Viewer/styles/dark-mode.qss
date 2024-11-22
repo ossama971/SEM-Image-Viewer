@@ -330,3 +330,7 @@ QToolButton#closelog {
     qproperty-icon: url(:/icons/close-logger-dark.svg);
     qproperty-iconSize: 18px 18px;
 }
+
+ThumbnailDelegate {
+    highlightColor: rgba(90, 90, 90, 70); /* Light transparent gray */
+}

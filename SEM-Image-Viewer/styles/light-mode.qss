@@ -298,3 +298,7 @@ QToolButton#closelog{
 QCheckBox {
     color: #000000;  /* Black text */
 }
+
+ThumbnailDelegate {
+    highlightColor: rgba(100, 100, 100, 50); /* Darker transparent gray */
+}
