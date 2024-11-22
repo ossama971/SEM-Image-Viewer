@@ -149,15 +149,14 @@ void MenuBarWidget::exportImages(QString format) {
       QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
       QString numberedFileName = QString("%1/%2.%3").arg(directoryPath).arg(baseName).arg(extension);
       qImg.save(numberedFileName);
-      // Emit progress update signal from the main thread
-      QMetaObject::invokeMethod(this, "exportProgressUpdated", Qt::QueuedConnection);
+      emit exportProgressUpdated();
     }
   };
 
   auto images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
   emit exportStarted(images.size());
 
-  const std::size_t BATCH_SIZE = 10;
+  const std::size_t BATCH_SIZE = 17;
 
   for (std::size_t i = 0; i < images.size(); i += BATCH_SIZE) {
     std::size_t startIdx = i;
@@ -165,9 +164,6 @@ void MenuBarWidget::exportImages(QString format) {
     qDebug() << "Exporting images from " << startIdx << " to " << endIdx;
     post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(saveImagesSubset, startIdx, endIdx)));
   }
-
-  // Emit exportFinished() from the main thread
-  QMetaObject::invokeMethod(this, "exportFinished", Qt::QueuedConnection);
 }
 
 void MenuBarWidget::editMenu() {
