@@ -46,22 +46,6 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
     Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Edge Detection Filter").toStdString())));
 
     return detected_edges;
-    // cv::Vec3b tint(50, 0, 0);
-    // cv::Mat output = inputImage.getImageMat().clone();
-
-    // // Loop through each pixel and apply the tint
-    // for (int y = 0; y < output.rows; ++y) {
-    //     for (int x = 0; x < output.cols; ++x) {
-    //         cv::Vec3b &pixel = output.at<cv::Vec3b>(y, x);
-
-    //         // Apply the tint to each channel
-    //         pixel[0] = cv::saturate_cast<uchar>(pixel[0] + tint[0]); // Blue channel
-    //         pixel[1] = cv::saturate_cast<uchar>(pixel[1] + tint[1]); // Green channel
-    //         pixel[2] = cv::saturate_cast<uchar>(pixel[2] + tint[2]); // Red channel
-    //     }
-    // }
-
-    // return output;
 }
 
 ImageStateSource EdgeDetectionFilter::getImageSource() const
