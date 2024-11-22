@@ -48,7 +48,7 @@ public slots:
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
     void onLoggerViewChanged(bool state);
-    void exportSelectedImage(QString format);
+    void exportSelectedImage(const QString format);
 
 private:
     QAction *explorerAction;

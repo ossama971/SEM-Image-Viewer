@@ -1,6 +1,6 @@
 #include "../core/engines/JsonVisitor.h"
-#include "../core/engines/Workspace.h"
 #include "../core/engines/ThreadPool.h"
+#include "../core/engines/Workspace.h"
 #include "../core/utils.h"
 
 #include "ImageDialog.h"
@@ -70,19 +70,19 @@ void MenuBarWidget::fileMenu() {
   });
 
   connect(JPGAllAction, &QAction::triggered, this,
-          [=]() { exportImages("*.jpg"); });
+          [=]() { exportImages("jpg"); });
   connect(PNGAllAction, &QAction::triggered, this,
-          [=]() { exportImages("*.png"); });
+          [=]() { exportImages("png"); });
   connect(BMPAllAction, &QAction::triggered, this,
-          [=]() { exportImages("*.bmp"); });
+          [=]() { exportImages("bmp"); });
 
   // selected image
   connect(JPGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("*.jpg"); });
+          [=]() { exportSelectedImage("jpg"); });
   connect(PNGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("*.png"); });
+          [=]() { exportSelectedImage("png"); });
   connect(BMPAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("*.bmp"); });
+          [=]() { exportSelectedImage("bmp"); });
 
   connect(saveSessionAction, &QAction::triggered, this,
           [=]() { saveSession(); });
@@ -90,42 +90,38 @@ void MenuBarWidget::fileMenu() {
           [=]() { loadSession(); });
 }
 
-void MenuBarWidget::exportSelectedImage(QString format) {
+void MenuBarWidget::exportSelectedImage(const QString format) {
   Image *image =
       Workspace::Instance()->getActiveSession().getImageRepo().getImage();
-
-  string fileName = image->getPath().filename().string();
-  size_t lastDot = fileName.find_last_of('.');
-
-  if (lastDot != string::npos) {
-    fileName = fileName.substr(0, lastDot); // Remove the extension
+  if (!image) {
+    qDebug() << "No active image found.";
+    return;
   }
 
-  QString baseName = QString::fromStdString(fileName);
+  QString directoryPath = QFileDialog::getSaveFileName(
+      this, tr("Save Image File"),
+      QString::fromStdString(image->getPath().filename().stem().string()),
+      tr("Images (*.%1)").arg(format));
 
-  QString baseFileName = QFileDialog::getSaveFileName(
-      this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
-
-  if (!baseFileName.isEmpty()) {
-    QFileInfo fileInfo(baseFileName);
-    QString extension = fileInfo.completeSuffix();
-    QString filePath = fileInfo.path();
-
-    cv::Mat matImg = image->getImageMat();
-
-    QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0],
-                         QImage::Format_RGB888)
-                      .rgbSwapped();
-
-    QString numberedFileName =
-        QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
-
-    qImg.save(numberedFileName);
+  if (directoryPath.isEmpty()) {
+    return;
   }
+
+  auto result = Utils::prepareImageForExport(
+      image, QFileInfo(directoryPath).path(), format);
+  if (!result) {
+    qDebug() << "Failed to prepare image for export.";
+    return;
+  }
+
+  const auto qImg = result->first;
+  const auto numberedFileName = result->second;
+  post(ThreadPool::instance(),
+       std::packaged_task<void()>(
+           [qImg, numberedFileName]() { qImg.save(numberedFileName); }));
 }
 
-void MenuBarWidget::exportImages(QString format) {
-
+void MenuBarWidget::exportImages(const QString format) {
   QString directoryPath = QFileDialog::getExistingDirectory(
       this, tr("Select Directory to Save Images"));
 
@@ -133,27 +129,25 @@ void MenuBarWidget::exportImages(QString format) {
     return;
   }
 
-  QFileInfo fileInfo(directoryPath);
-  QString extension = format;
-
-  auto saveImagesSubset = [this, directoryPath, extension](size_t start, size_t end) {
+  auto saveImagesSubset = [this, directoryPath, format](size_t start,
+                                                        size_t end) {
     for (size_t i = start; i < end; ++i) {
-      auto image = Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
-      std::string fileName = image->getPath().filename().string();
-      size_t lastDot = fileName.find_last_of('.');
-      if (lastDot != std::string::npos) {
-        fileName = fileName.substr(0, lastDot); // Remove the extension
+      auto image =
+          Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
+      auto result = Utils::prepareImageForExport(image, directoryPath, format);
+      if (!result) {
+        qDebug() << "Failed to prepare image for export at index:" << i;
+        continue;
       }
-      QString baseName = QString::fromStdString(fileName);
-      cv::Mat matImg = image->getImageMat();
-      QImage qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0], QImage::Format_RGB888).rgbSwapped();
-      QString numberedFileName = QString("%1/%2.%3").arg(directoryPath).arg(baseName).arg(extension);
+
+      const auto &[qImg, numberedFileName] = *result;
       qImg.save(numberedFileName);
       emit exportProgressUpdated();
     }
   };
 
-  auto images = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
+  auto images =
+      Workspace::Instance()->getActiveSession().getImageRepo().getImages();
   emit exportStarted(images.size());
 
   const std::size_t BATCH_SIZE = 17;
@@ -162,7 +156,8 @@ void MenuBarWidget::exportImages(QString format) {
     std::size_t startIdx = i;
     std::size_t endIdx = std::min(i + BATCH_SIZE, images.size());
     qDebug() << "Exporting images from " << startIdx << " to " << endIdx;
-    post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(saveImagesSubset, startIdx, endIdx)));
+    post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(
+                                     saveImagesSubset, startIdx, endIdx)));
   }
 }
 

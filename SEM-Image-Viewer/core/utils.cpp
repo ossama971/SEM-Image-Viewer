@@ -54,14 +54,12 @@ std::string Utils::generateString(size_t length) {
 bool Utils::createDirectory(const std::string &path) {
   if (std::filesystem::exists(path)) {
     return true;
-  }
-  else {
+  } else {
     // create the directory
     qDebug() << "Creating directory: " << path;
     if (std::filesystem::create_directory(path)) {
       return true;
-    }
-    else {
+    } else {
       Logger::instance()->log(std::make_unique<ErrorMessage>(
           1, boost::format("Error creating directory: %1%") % path));
       return false;
@@ -121,4 +119,41 @@ void Utils::loadSessionJson(const std::string &filename) {
     Logger::instance()->log(std::make_unique<ErrorMessage>(
         1, boost::format("Error parsing JSON: %1%") % e.what()));
   }
+}
+
+std::optional<std::pair<QImage, QString>> Utils::prepareImageForExport(
+    const Image *image, const QString &directoryPath, const QString &format) {
+  if (!image) {
+    qDebug() << "Invalid image.";
+    return std::nullopt;
+  }
+
+  // Extract base name
+  std::string fileName = image->getPath().filename().string();
+  size_t lastDot = fileName.find_last_of('.');
+  if (lastDot != std::string::npos) {
+    fileName = fileName.substr(0, lastDot); // Remove the extension
+  }
+  QString baseName = QString::fromStdString(fileName);
+
+  // Convert cv::Mat to QImage
+  cv::Mat matImg = image->getImageMat();
+  QImage qImg;
+  if (matImg.channels() == 3) {
+    qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0],
+                  QImage::Format_RGB888)
+               .rgbSwapped();
+  } else if (matImg.channels() == 1) {
+    qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0],
+                  QImage::Format_Grayscale8);
+  } else {
+    qDebug() << "Unsupported image format.";
+    return std::nullopt;
+  }
+
+  // Construct full file path
+  QString numberedFileName =
+      QString("%1/%2.%3").arg(directoryPath, baseName, format);
+
+  return std::make_pair(qImg, numberedFileName);
 }
