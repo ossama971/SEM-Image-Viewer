@@ -13,7 +13,7 @@ public:
     }
 
     void setHighlightedPadding(int p) {
-        highlightedPadding = p;  // Set how much padding to highlight
+        highlightedPadding = p;
     }
 
     void setCornerRadius(int radius) {
@@ -37,10 +37,10 @@ public:
             // Adjust the padding area to highlight only a part of the padding
             paddingArea.adjust(highlightPadding, highlightPadding, -highlightPadding, -highlightPadding);
 
-            QColor highlightColor(120, 120, 120, 100);  // Light transparent color
-            painter->setBrush(highlightColor);  // Set the highlight color
-            painter->setPen(Qt::NoPen);         // No border
-            painter->drawRoundedRect(paddingArea, cornerRadius, cornerRadius);  // Draw the rounded highlight
+            QColor highlightColor(120, 120, 120, 100);
+            painter->setBrush(highlightColor);
+            painter->setPen(Qt::NoPen);
+            painter->drawRoundedRect(paddingArea, cornerRadius, cornerRadius);
         }
 
         // Retrieve the pixmap from the model

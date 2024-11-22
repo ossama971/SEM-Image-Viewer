@@ -36,7 +36,7 @@ void BottomMiddleWidget::setMaxMinHeight(int mn, int mx){
 void BottomMiddleWidget::adjustSizeBasedOnLayout(bool isExpanded)
 {
     if (isExpanded) {
-        setMaxMinHeight(200, 400);
+        setMaxMinHeight(80, 400);
     } else {
         setMaxMinHeight(40, 40);
     }

@@ -62,7 +62,7 @@ void MiniGrid::initializeMiniGrid() {
     listView->PositionAtCenter;
     listView->itemAlignment();
     auto* thumbnailDelegate = new ThumbnailDelegate(this);
-    thumbnailDelegate->setPadding(7);
+    thumbnailDelegate->setPadding(6);
     listView->setItemDelegate(thumbnailDelegate);
 }
 
