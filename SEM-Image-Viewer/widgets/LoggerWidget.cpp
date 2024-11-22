@@ -169,6 +169,8 @@ void LoggerWidget::createLayouts()
     // Set stackedWidget as the main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(stackedWidget);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
 

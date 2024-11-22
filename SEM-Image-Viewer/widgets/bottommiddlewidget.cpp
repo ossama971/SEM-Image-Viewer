@@ -12,11 +12,10 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
 
     Controller &controller = Controller::instance();
 
-    QWidget *bottomMiddleContent = new QWidget(parent);
-    //bottomMiddleContent->setStyleSheet("background-color: #627e7c;");
-    bottomMiddleLayout->addWidget(bottomMiddleContent);
     LoggerWidget * logger = new LoggerWidget();
-    bottomMiddleLayout->addWidget(logger);
+    bottomMiddleLayout->addWidget(logger, 1);
+    bottomMiddleLayout->setContentsMargins(0, 0, 0, 0);
+    bottomMiddleLayout->setSpacing(0);
 
     controller.setLoggerWidget(logger);
     this->setLayout(bottomMiddleLayout);

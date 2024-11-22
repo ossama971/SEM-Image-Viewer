@@ -14,15 +14,13 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     diffView = new DiffViewWidget();
     topMiddleLayout = new QVBoxLayout();
     toolbar = new ToolbarWidget();
+    topMiddleLayout->addWidget(image, 1);
+    topMiddleLayout->setContentsMargins(0, 0, 0, 0);
+    topMiddleLayout->setSpacing(0);
 
-    QWidget *topMiddleContent = new QWidget(parent);
     connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
     
-
-    topMiddleLayout->addWidget(topMiddleContent);
-    topMiddleLayout->addWidget(image);
-
     Controller::instance().setImageWidget(image);
     this->setLayout(topMiddleLayout);
 
