@@ -6,7 +6,9 @@ ImageWidget::ImageWidget(QWidget *parent)
 {
    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(core);
-    setLayout(layout); 
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    setLayout(layout);
 
     connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &ImageWidget::reload);
 }

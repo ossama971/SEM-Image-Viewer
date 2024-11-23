@@ -42,7 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
     miniGrid = new MiniGrid(this);
-    miniGrid->setMaximumHeight(90);
+    miniGrid->setMinimumHeight(90);
+    miniGrid->setMaximumHeight(120);
 
     menuBarWidget = new MenuBarWidget(this);
 
@@ -58,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     horizontalSplitter->setStretchFactor(0, 3);  // topMiddleWidget takes more space
     horizontalSplitter->setStretchFactor(1, 1);  // miniGrid remains small
     horizontalSplitter->setStretchFactor(2, 1);
-    //horizontalSplitter->setSizes({600, 90, 200});
+    horizontalSplitter->setSizes({400, 110, 250});
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(toolbarWidget);

@@ -45,6 +45,9 @@ private:
     QListView *logListWidget;
     QHBoxLayout *layout;
     std::shared_ptr<MessageDataModel> m_dataModel;
+
+signals:
+    void layoutSwitched(bool isExpanded);
 };
 
 #endif // LOGGERWIDGET_H
