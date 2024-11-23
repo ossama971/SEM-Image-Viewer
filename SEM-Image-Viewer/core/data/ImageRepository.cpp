@@ -3,6 +3,7 @@
 #include <string>
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include<QDebug>
 #include "../engines/Logger.h"
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
@@ -153,10 +154,8 @@ void ImageRepository::selectImage(const std::string& path)
             break;
         }
     }
-
-    if (image_index == -1)
-        return;
-
+    // if (image_index == -1)
+    //     return;
     selectImage(image_index);
 
 }

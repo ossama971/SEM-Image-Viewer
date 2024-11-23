@@ -17,6 +17,7 @@ void ImageDialog::openFolder(ImageRepository* imageRepo, QWidget* parent) {
 
     connect(thread, &QThread::started, [imageRepo, folderPath]() {
         imageRepo->load_directory(folderPath.toStdString());
+        imageRepo->selectImage(-1);
     });
 
     thread->start();
@@ -32,4 +33,5 @@ void ImageDialog::openFile(ImageRepository* imageRepo, QWidget* parent) {
         );
 
     imageRepo->load_image(fileName.toStdString());
+    imageRepo->selectImage(fileName.toStdString());
 }

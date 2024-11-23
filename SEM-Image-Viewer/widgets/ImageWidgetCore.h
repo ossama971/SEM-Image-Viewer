@@ -28,7 +28,7 @@ public:
   cv::Mat getImage() const;
   void setIntensityPlotMode(bool enabled);
   void handleHeatmap(const cv::Mat heatmap,bool checked);
-
+  void resetView();
 protected:
   void showEvent(QShowEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
@@ -47,7 +47,7 @@ private:
                                              const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
   QPixmap matToQPixmap(cv::Mat image);
-
+  void clearSceneToDefault();
   ImageInfoBar *infoBar;
   cv::Mat currentImage;
   QPoint lastMousePosition;

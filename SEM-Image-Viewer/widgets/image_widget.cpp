@@ -16,8 +16,10 @@ ImageWidget::ImageWidget(QWidget *parent)
 void ImageWidget::reload()
 {
     Image* image = Workspace::Instance()->getActiveSession().getImageRepo().getImage();
-    if (!image)
+    if (!image){
+        this->core->resetView();
         return;
+    }
     connect(image, &Image::onImageStateUpdated, core, &ImageWidgetCore::onupdateImageState, Qt::UniqueConnection);
     this->core->loadAndDisplayImage(*image);
 }

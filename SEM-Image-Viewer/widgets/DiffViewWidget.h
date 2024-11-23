@@ -18,6 +18,7 @@ private slots:
 
 public slots:
   void setImages(Image *upperImage, Image *lowerImage);
+  void resetDiff();
 
 private:
   ImageWidgetCore *upperImageWidget;

@@ -19,6 +19,7 @@ void ImageDataModel::updateImages(const std::string newDir, std::vector<Image*> 
     images = QList<Image*>(newImages.begin(), newImages.end());
     endResetModel();
     loadImages(0, 20);
+
 }
 
 int ImageDataModel::rowCount(const QModelIndex &parent) const {

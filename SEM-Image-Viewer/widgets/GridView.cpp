@@ -7,7 +7,7 @@
 #include <QMenu>
 #include <QCheckBox>
 #include <QStyle>
-
+#include <QDebug>
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);

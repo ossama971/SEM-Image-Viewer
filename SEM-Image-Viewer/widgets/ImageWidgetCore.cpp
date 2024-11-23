@@ -258,6 +258,7 @@ void ImageWidgetCore::loadAndDisplayImage(const Image &image) {
     emit imageLoadFailed();
   }
   emit imageUpdated(currentImage);
+
 }
 
 optional<QPixmap>
@@ -437,3 +438,14 @@ QPixmap ImageWidgetCore::matToQPixmap(cv::Mat image)
     return pixmap;
 }
 
+void ImageWidgetCore::clearSceneToDefault() {
+    // Clear all items from the scene
+    scene->clear();
+}
+
+void ImageWidgetCore::resetView() {
+    clearSceneToDefault(); // Clear the scene and set the default placeholder
+    infoBar-> setDimensions(0, 0);
+    infoBar->setZoomPercentage(1.0);
+    infoBar->setMousePosition(0, 0);
+}
