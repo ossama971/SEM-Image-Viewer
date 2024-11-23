@@ -21,16 +21,7 @@ void SessionData::loadImage(const std::string path) {
     emit loadActionList(selectedImage->getHistory());
 }
 
-void SessionData::saveImage(const std::string path, ImageFormat format) {
-    Image* selectedImage = _imageRepo.getImage();
-    if (!selectedImage)
-        return;
-
-    _imageRepo.save(*selectedImage, format, path);
-}
-
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
-
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;

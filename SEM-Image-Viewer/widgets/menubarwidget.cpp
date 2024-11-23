@@ -1,6 +1,7 @@
 #include "../core/engines/JsonVisitor.h"
 #include "../core/engines/ThreadPool.h"
 #include "../core/engines/Workspace.h"
+#include "../core/engines/Logger.h"
 #include "../core/utils.h"
 
 #include "ImageDialog.h"
@@ -129,7 +130,20 @@ void MenuBarWidget::exportImages(const QString format) {
     return;
   }
 
-  auto saveImagesSubset = [this, directoryPath, format](size_t start,
+  auto images =
+      Workspace::Instance()->getActiveSession().getImageRepo().getImages();
+
+  int progressbarID = Logger::instance()->logMessageWithProgressBar(
+      Logger::MessageTypes::INFO,
+      Logger::MessageID::EXPORTING_IMAGES,
+      Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+      { directoryPath },
+      images.size(),
+      "Loading .... ",
+      QString("file:///%1").arg(directoryPath)
+  );
+
+  auto saveImagesSubset = [this, directoryPath, format, progressbarID](size_t start,
                                                         size_t end) {
     for (size_t i = start; i < end; ++i) {
       auto image =
@@ -142,20 +156,15 @@ void MenuBarWidget::exportImages(const QString format) {
 
       const auto &[qImg, numberedFileName] = *result;
       qImg.save(numberedFileName);
-      emit exportProgressUpdated();
+      Logger::instance()->updateProgressBar(progressbarID, 1);
     }
   };
-
-  auto images =
-      Workspace::Instance()->getActiveSession().getImageRepo().getImages();
-  emit exportStarted(images.size());
 
   const std::size_t BATCH_SIZE = 17;
 
   for (std::size_t i = 0; i < images.size(); i += BATCH_SIZE) {
     std::size_t startIdx = i;
     std::size_t endIdx = std::min(i + BATCH_SIZE, images.size());
-    qDebug() << "Exporting images from " << startIdx << " to " << endIdx;
     post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(
                                      saveImagesSubset, startIdx, endIdx)));
   }

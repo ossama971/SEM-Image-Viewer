@@ -17,7 +17,6 @@ public:
         WRANING,
         INFO
     };
-
     enum class MessageOptian{
         WITH_DETAILS_AND_PATH,
         WITH_DETAILS,
@@ -31,6 +30,7 @@ public:
         REDO_APPLIED,
         UNDO_STACK_IS_EMPTY,
         REDO_STACK_IS_EMPTY,
+        EXPORTING_IMAGES,
     };
 
     static QMap<MessageID,QString> LoggerMap;
@@ -60,7 +60,7 @@ private:
     QString CreateMessage(MessageID msgCode,QVector<QString> &args);
 
     static Logger* m_instance;
-    static std::mutex m_mutex;
+    static std::recursive_mutex m_mutex;
     static std::atomic<int> m_nextMessageId;
     static QList<QWidget*> m_widgets;
     std::atomic<int> m_messageIdCounter{0};
