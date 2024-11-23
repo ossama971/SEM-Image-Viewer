@@ -27,7 +27,7 @@ void LoggerWidget::createButtons()
                            "font-family: 'Roboto';"
                            "padding:5px;"
                            "padding-right: 20px;"
-                           "font:  14px;"
+                           "font:  12px;"
                            "text-align: center;"
                            "}";
 
