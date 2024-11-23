@@ -3,8 +3,8 @@
 
 #include "ImageFilter.h"
 #include "../engines/Logger.h"
-#include "../data/InfoMessage.h"
-#include "../data/logMessageMapper.h"
+
+
 class NoiseReductionFilter : public ImageFilter {
 public:
     NoiseReductionFilter(double intensity);

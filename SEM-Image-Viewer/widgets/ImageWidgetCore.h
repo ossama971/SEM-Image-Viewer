@@ -14,7 +14,7 @@
 #include <QWidget>
 #include <opencv2/opencv.hpp>
 #include <optional>
-
+#include <QtCharts/QChartView>
 #include "../core/data/Image.h"
 #include "image_info_bar.h"
 #include "zoom_widget.h"
@@ -26,15 +26,14 @@ public:
   explicit ImageWidgetCore(QWidget *parent = nullptr);
   void loadAndDisplayImage(const Image &image);
   cv::Mat getImage() const;
+  void setIntensityPlotMode(bool enabled);
+  void handleHeatmap(const cv::Mat heatmap,bool checked);
 
 protected:
   void showEvent(QShowEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
 
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseMoveEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
 
   bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -43,15 +42,26 @@ private:
   QGraphicsScene *scene;
   ZoomWidget *zoomWidget;
 
+  QChartView *chartView;
   std::optional<QPixmap> loadAndPrepareImage(const Image &image,
                                              const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
+  QPixmap matToQPixmap(cv::Mat image);
 
   ImageInfoBar *infoBar;
   cv::Mat currentImage;
   QPoint lastMousePosition;
   bool isPanning = false;
   double zoomFactor = 1.0;
+  QGraphicsPixmapItem *heatmap = nullptr;
+
+  bool intensityPlotMode = false;
+  QGraphicsLineItem* intensityLine = nullptr;
+  QPointF lineStart;
+  QPointF lineEnd;
+  int xStart;
+  int xEnd;
+  void drawIntensityPlot(int y,int xStart, int xEnd);
 
 private slots:
   void zoomIn();
@@ -65,5 +75,7 @@ public slots:
   void updateImage(const cv::Mat &image);
   void onupdateImageState(std::vector<std::unique_ptr<ImageState>> &states);
 };
+
+
 
 #endif // IMAGEWIDGETCORE_H

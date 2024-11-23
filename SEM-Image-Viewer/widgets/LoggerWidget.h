@@ -10,23 +10,30 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QListWidget>
 
-#include "../models/MessageDataModel.h"
+#include <QListWidgetItem>
+
 #include "../core/engines/Logger.h"
-
+#include "logCardWidget.h"
 class LoggerWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LoggerWidget(QWidget *parent = nullptr, std::shared_ptr<MessageDataModel> dataModel = nullptr);
+    explicit LoggerWidget(QWidget *parent = nullptr);
 
+    void addLogCard(LogCard *card);
+    void clearLogCards();
 private slots:
     void filterLogs();
     void switchLayout();
     void createConnections();
     void createLayouts();
     void createButtons();
+
+signals:
+    void showSelectedType(QString type, QString _searchText);
 
 private:
     QPushButton *allShowButton;
@@ -42,9 +49,14 @@ private:
     bool isExpanded;
 
     QLineEdit *searchLineEdit;
-    QListView *logListWidget;
     QHBoxLayout *layout;
-    std::shared_ptr<MessageDataModel> m_dataModel;
+
+    QListWidget *logListLayout;
+
+
+
+signals:
+    void layoutSwitched(bool isExpanded);
 };
 
 #endif // LOGGERWIDGET_H

@@ -10,5 +10,5 @@ namespace Utils {
     bool createDirectory(const std::string &path);
     void loadSessionJson(const std::string &filename);
     std::optional<std::pair<QImage, QString>> prepareImageForExport(const Image *image, const QString &directoryPath, const QString &format);
-
+    cv::Mat heatmap(const cv::Mat& image);
 };

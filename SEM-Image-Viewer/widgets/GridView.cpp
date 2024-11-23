@@ -8,8 +8,6 @@
 #include <QCheckBox>
 #include <QStyle>
 
-#include <QDebug>
-
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -74,11 +72,14 @@ void GridView::setModel(ImageDataModel *model) {
 void GridView::initializeGrid() {
     listView->setContentsMargins(2, 2, 2, 2);
     listView->setViewMode(QListView::IconMode);
-    listView->setSpacing(50);
+    //listView->setSpacing(15);
     listView->setResizeMode(QListView::Adjust);
     listView->setFlow(QListView::LeftToRight);
     listView->setUniformItemSizes(true);
     listView->setGridSize(QSize(120, 120));
+    auto* thumbnailDelegate = new ThumbnailDelegate(this);
+    thumbnailDelegate->setPadding(10); // Set padding size
+    listView->setItemDelegate(thumbnailDelegate);
 }
 
 void GridView::onImageChanged(Image* newImage) {

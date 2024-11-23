@@ -6,7 +6,7 @@
 #include <regex>
 
 #include <boost/algorithm/string.hpp>
-
+#include "../engines/Logger.h"
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
 
@@ -38,7 +38,7 @@ bool ImageRepository::load_directory(const std::string& path) {
         int images_count = image_paths.size();
         if (images_count == 0) return false;
 
-        emit onImageLoadStarted(images_count);
+        // emit onImageLoadStarted(images_count);
 
         // Prepare for new data
         selectImage(-1);
@@ -72,7 +72,6 @@ bool ImageRepository::load_directory(const std::string& path) {
             auto local_images = future.get();
             for (auto& image : local_images) {
                 _images.push_back(std::move(image));
-                emit onImageLoaded(_images.back().get());
             }
         }
 
@@ -102,7 +101,7 @@ bool ImageRepository::load_image(const std::string &path)
 
     selectImage(-1);
     _images.clear();
-    emit onImageLoadStarted(1);
+
 
     std::unique_ptr<Image> img = std::make_unique<Image>();
     load_image_core(std::move(img), path, &_images);
@@ -117,7 +116,6 @@ void ImageRepository::load_image_core(std::unique_ptr<Image> image, const std::s
 
     container->push_back(std::move(image));
 
-    emit onImageLoaded(image.get());
 }
 
 int ImageRepository::count_images(const std::string &dir) {

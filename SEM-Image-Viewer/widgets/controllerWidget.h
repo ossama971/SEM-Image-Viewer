@@ -25,7 +25,7 @@ public:
         return instance;
     }
 
-    void setLoggerWidget(LoggerWidget *widget);
+
     void setImageWidget(ImageWidget *widget);
     void setSharpenWidget(SharpenWidget *widget);
     void setEdgeExtractionWidget(EdgeExtractionWidget *widget);
@@ -45,11 +45,9 @@ private:
     Controller();
     Controller(const Controller &) = delete;
     Controller &operator=(const Controller &) = delete;
-    void printMat(const cv::Mat &mat);
+
 
     SessionData &SessionData_;
-
-    LoggerWidget *loggerWidget = nullptr;
     HistoryWidget* historyWidget=nullptr;
     ImageWidget *imageWidget = nullptr;
     SharpenWidget *sharpenWidget = nullptr;

@@ -3,7 +3,7 @@
 #include <random>
 #include <string>
 
-#include "./data/ErrorMessage.h"
+
 #include "./data/Image.h"
 #include "./data/ImageRepository.h"
 #include "./data/ImageState.h"
@@ -51,17 +51,29 @@ std::string Utils::generateString(size_t length) {
   return out;
 }
 
+cv::Mat Utils::heatmap(const cv::Mat &image)
+{
+    cv::Mat gray = image;
+    if(image.channels()!=1)
+    {
+        cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    }
+    cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
+    return gray;
+}
+
 bool Utils::createDirectory(const std::string &path) {
   if (std::filesystem::exists(path)) {
     return true;
   } else {
     // create the directory
-    qDebug() << "Creating directory: " << path;
+    qDebug() << "Creating directory: " << path.c_str();
     if (std::filesystem::create_directory(path)) {
       return true;
-    } else {
-      Logger::instance()->log(std::make_unique<ErrorMessage>(
-          1, boost::format("Error creating directory: %1%") % path));
+    }
+    else {
+      // Logger::instance()->log(std::make_unique<ErrorMessage>(
+      //     1, boost::format("Error creating directory: %1%") % path));
       return false;
     }
   }
@@ -72,8 +84,8 @@ void Utils::loadSessionJson(const std::string &filename) {
   try {
     boost::property_tree::read_json(filename, root);
   } catch (const boost::property_tree::json_parser_error &e) {
-    Logger::instance()->log(
-        std::make_unique<ErrorMessage>(1, boost::format("Sharpening image")));
+    // Logger::instance()->log(
+    //     std::make_unique<ErrorMessage>(1, boost::format("Sharpening image")));
     return;
   }
 
@@ -94,10 +106,10 @@ void Utils::loadSessionJson(const std::string &filename) {
           Workspace::Instance()->getActiveSession().getImageRepo().getImage(
               imagePath);
       if (image == nullptr) {
-        Logger::instance()->log(std::make_unique<ErrorMessage>(
-            1, boost::format(
-                   "Image(%1%) not found in the ImageRepo(%2%) anymore") %
-                   imagePath % folderPath));
+        // Logger::instance()->log(std::make_unique<ErrorMessage>(
+        //     1, boost::format(
+        //            "Image(%1%) not found in the ImageRepo(%2%) anymore") %
+        //            imagePath % folderPath));
         continue;
       }
 
@@ -116,8 +128,8 @@ void Utils::loadSessionJson(const std::string &filename) {
       }
     }
   } catch (const boost::property_tree::ptree_error &e) {
-    Logger::instance()->log(std::make_unique<ErrorMessage>(
-        1, boost::format("Error parsing JSON: %1%") % e.what()));
+    // Logger::instance()->log(std::make_unique<ErrorMessage>(
+    //     1, boost::format("Error parsing JSON: %1%") % e.what()));
   }
 }
 

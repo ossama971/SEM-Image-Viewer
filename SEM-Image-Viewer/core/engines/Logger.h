@@ -2,26 +2,68 @@
 #define LOGGER_H
 
 #include "../data/IMessage.h"
-#include "../../models/MessageDataModel.h"
 
-#include <memory>
+#include <QObject>
 #include <mutex>
-
-class Logger
+#include <atomic>
+#include <QMap>
+class Logger : public QObject
 {
+    Q_OBJECT
 public:
-    virtual ~Logger() = default;
-    void log(std::unique_ptr<IMessage> msg);
-    void setModel(std::shared_ptr<MessageDataModel> model);
-    static std::unique_ptr<Logger>& instance();
+
+    enum class MessageTypes {
+        ERROR,
+        WRANING,
+        INFO
+    };
+
+    enum class MessageOptian{
+        WITH_DETAILS_AND_PATH,
+        WITH_DETAILS,
+        WITHOUT_DETIALS
+    };
+    enum class MessageID{
+        FILTER_APPLIED,
+        IMAGES_LOADING_STARTED,
+        IMAGES_LOADING_FINISHED,
+        UNDO_APPLIED,
+        REDO_APPLIED,
+        UNDO_STACK_IS_EMPTY,
+        REDO_STACK_IS_EMPTY,
+    };
+
+    static QMap<MessageID,QString> LoggerMap;
+
+    ~Logger();
+
+    // Singleton access method
+    static Logger* instance();
+
+    void logMessage(Logger::MessageTypes msgtype,Logger::MessageID msgID,Logger::MessageOptian msgOptians,QVector<QString> args,QString details="",QString path="");
+    int logMessageWithProgressBar(Logger::MessageTypes,Logger::MessageID,Logger::MessageOptian,QVector<QString> args,int itemCount,QString details="",QString path="");
+    void updateProgressBar(int id, int value);
+
+signals:
+    void onCreateLogMessage( IMessage* msg);
+    void onCreateLogMessageWithProgressBar( IMessage* msg,int itemCount);
+    void onupdateProgressBar(int id, int value);
 
 private:
-    Logger() = default;
+    Logger();
 
-private:
-    std::shared_ptr<MessageDataModel> m_dataModel;
-    static std::unique_ptr<Logger> m_instance;
+    static void destroyInstance();
+
+
+    int getNextMessageId();
+
+    QString CreateMessage(MessageID msgCode,QVector<QString> &args);
+
+    static Logger* m_instance;
     static std::mutex m_mutex;
+    static std::atomic<int> m_nextMessageId;
+    static QList<QWidget*> m_widgets;
+    std::atomic<int> m_messageIdCounter{0};
 };
 
 #endif // LOGGER_H

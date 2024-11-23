@@ -1,6 +1,6 @@
 #include "bottommiddlewidget.h"
 #include "LoggerWidget.h"
-#include "controllerWidget.h"
+#include "loggercontroller.h"
 BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -10,15 +10,15 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
 
     QVBoxLayout *bottomMiddleLayout = new QVBoxLayout();
 
-    Controller &controller = Controller::instance();
 
-    QWidget *bottomMiddleContent = new QWidget(parent);
-    //bottomMiddleContent->setStyleSheet("background-color: #627e7c;");
-    bottomMiddleLayout->addWidget(bottomMiddleContent);
+
     LoggerWidget * logger = new LoggerWidget();
-    bottomMiddleLayout->addWidget(logger);
+    connect(logger, &LoggerWidget::layoutSwitched, this, &BottomMiddleWidget::adjustSizeBasedOnLayout);
+    bottomMiddleLayout->addWidget(logger, 1);
+    bottomMiddleLayout->setContentsMargins(0, 0, 0, 0);
+    bottomMiddleLayout->setSpacing(0);
 
-    controller.setLoggerWidget(logger);
+    loggerController::instance().setLoggerWidget(logger);
     this->setLayout(bottomMiddleLayout);
 }
 
@@ -32,3 +32,13 @@ void BottomMiddleWidget::setMaxMinHeight(int mn, int mx){
     setMinimumHeight(mn);
     setMaximumHeight(mx);
 }
+
+void BottomMiddleWidget::adjustSizeBasedOnLayout(bool isExpanded)
+{
+    if (isExpanded) {
+        setMaxMinHeight(80, 400);
+    } else {
+        setMaxMinHeight(40, 40);
+    }
+}
+

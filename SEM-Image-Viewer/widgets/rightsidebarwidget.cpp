@@ -6,6 +6,7 @@
 #include "noisereductionwidget.h"
 #include "historywidget.h"
 #include "actionlistwidget.h"
+#include "otherListWidget.h"
 #include "../core/engines/Workspace.h"
 
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
@@ -35,6 +36,12 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
 
     rightSidebarLayout->addWidget(list);
 
+    HeatMapWidget *_heatmapWidget = new HeatMapWidget();
+
+    OtherListWidget *otherList = new OtherListWidget();
+    otherList->addWidget(_heatmapWidget);
+    rightSidebarLayout->addWidget(otherList);
+
     QWidget *progressBarContainer = new QWidget();
     QHBoxLayout *progressBarLayout = new QHBoxLayout();
     progressBarLayout->addWidget(_progressBar);
@@ -53,8 +60,6 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
 
     this->setLayout(rightSidebarLayout);
 
-    connect(_imageRepo, &ImageRepository::onImageLoadStarted, this, &RightSidebarWidget::onImageLoadStarted);
-    connect(_imageRepo, &ImageRepository::onImageLoaded, this, &RightSidebarWidget::onImageLoaded);
 }
 
 void RightSidebarWidget::setVisible(bool visible) {
@@ -69,41 +74,3 @@ void RightSidebarWidget::setMaxMinWidth(int mn, int mx)
     setMaximumWidth(mx);
 }
 
-void RightSidebarWidget::initializeProgress(int maxIterations)
-{
-    std::lock_guard<std::mutex> guard(_progressBarMtx);
-
-    _progressBar->setMaximum(maxIterations);
-    _progressBar->setValue(0);
-    _progressBar->show();
-}
-
-void RightSidebarWidget::updateProgress()
-{
-    std::unique_lock<std::mutex> guard(_progressBarMtx);
-
-    int new_value = _progressBar->value() + 1;
-    _progressBar->setValue(new_value);
-
-    if (new_value == _progressBar->maximum())
-    {
-        //guard.unlock();
-        //hideProgressBar();
-        _progressBar->hide();
-    }
-}
-
-void RightSidebarWidget::hideProgressBar()
-{
-    std::lock_guard<std::mutex> guard(_progressBarMtx);
-
-    _progressBar->hide();
-}
-
-void RightSidebarWidget::onImageLoadStarted(int image_count) {
-    initializeProgress(image_count);
-}
-
-void RightSidebarWidget::onImageLoaded(Image* newImage) {
-    updateProgress();
-}

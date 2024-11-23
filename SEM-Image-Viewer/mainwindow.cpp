@@ -25,6 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ui->setupUi(this);
 
+
+
+
+
+
     resize(1000, 800);  // Adjust this size as needed
 
     QWidget *centralWidget = new QWidget(this);
@@ -43,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
     miniGrid = new MiniGrid(this);
-    miniGrid->setMaximumHeight(90);
+    miniGrid->setMinimumHeight(90);
+    miniGrid->setMaximumHeight(120);
 
     menuBarWidget = new MenuBarWidget(this);
 
@@ -59,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     horizontalSplitter->setStretchFactor(0, 3);  // topMiddleWidget takes more space
     horizontalSplitter->setStretchFactor(1, 1);  // miniGrid remains small
     horizontalSplitter->setStretchFactor(2, 1);
-    //horizontalSplitter->setSizes({600, 90, 200});
+    horizontalSplitter->setSizes({400, 110, 250});
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(toolbarWidget);
@@ -93,9 +99,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuBarWidget, &MenuBarWidget::showRightSidebarClicked, this, &MainWindow::onShowRightSidebarClicked);
     connect(menuBarWidget, &MenuBarWidget::showLoggerClicked, this, &MainWindow::onShowLoggerClicked);
     connect(menuBarWidget, &MenuBarWidget::showImageClicked, this, &MainWindow::onShowImageClicked);
-    connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
-    connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
-    connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
+    // connect(menuBarWidget, &MenuBarWidget::exportStarted, rightSidebarWidget, &RightSidebarWidget::initializeProgress);
+    // connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
+    // connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
     connect(menuBarWidget, &MenuBarWidget::themeToggled, this, &MainWindow::applyTheme);
 
     // Connecting signals related to Toolbar
@@ -114,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(toolbarWidget->diffViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ondiffViewButtonClicked);
     connect(toolbarWidget->gridViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ongridViewButtonClicked);
 
+    connect(menuBarWidget,&MenuBarWidget::undoChecked,historyWidget,&HistoryWidget::undoAction);
+    connect(menuBarWidget,&MenuBarWidget::redoChecked,historyWidget,&HistoryWidget::redoAction);
     // Manually setting cursor for splitter handles
     for (int i = 0; i < finalSplitter->count(); ++i) {
         QSplitterHandle *handle = finalSplitter->handle(i);
@@ -127,6 +135,10 @@ MainWindow::MainWindow(QWidget *parent)
             handle->setCursor(Qt::ArrowCursor);
         }
     }
+
+    ImageWidget *imageWidget= topMiddleWidget->findChild<ImageWidget*>();
+    HeatMapWidget *heatmapWidget = rightSidebarWidget->findChild<HeatMapWidget*>();
+    connect(heatmapWidget,&HeatMapWidget::applyHeatMap,imageWidget,&ImageWidget::handleHeatmap);
 }
 
 
