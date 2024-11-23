@@ -114,6 +114,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(toolbarWidget->diffViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ondiffViewButtonClicked);
     connect(toolbarWidget->gridViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ongridViewButtonClicked);
 
+    connect(menuBarWidget,&MenuBarWidget::undoChecked,historyWidget,&HistoryWidget::undoAction);
+    connect(menuBarWidget,&MenuBarWidget::redoChecked,historyWidget,&HistoryWidget::redoAction);
     // Manually setting cursor for splitter handles
     for (int i = 0; i < finalSplitter->count(); ++i) {
         QSplitterHandle *handle = finalSplitter->handle(i);
@@ -127,6 +129,10 @@ MainWindow::MainWindow(QWidget *parent)
             handle->setCursor(Qt::ArrowCursor);
         }
     }
+
+    ImageWidget *imageWidget= topMiddleWidget->findChild<ImageWidget*>();
+    HeatMapWidget *heatmapWidget = rightSidebarWidget->findChild<HeatMapWidget*>();
+    connect(heatmapWidget,&HeatMapWidget::applyHeatMap,imageWidget,&ImageWidget::handleHeatmap);
 }
 
 

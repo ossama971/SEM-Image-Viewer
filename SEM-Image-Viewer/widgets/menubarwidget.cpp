@@ -223,6 +223,9 @@ void MenuBarWidget::editMenu() {
   editMenu->addAction(saveAction);
   editMenu->addSeparator();
   editMenu->addAction(findAction);
+
+  connect(undoAction,&QAction::triggered,this,&MenuBarWidget::undoChecked);
+  connect(redoAction,&QAction::triggered,this,&MenuBarWidget::redoChecked);
 }
 
 void MenuBarWidget::viewMenu() {

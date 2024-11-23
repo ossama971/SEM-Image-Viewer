@@ -49,6 +49,8 @@ signals:
     void exportStarted(int maxIterations);
     void exportFinished();
     void themeToggled();
+    void undoChecked();
+    void redoChecked();
 private slots:
     void exportImages(QString format);
     void onThemeActionTriggered();

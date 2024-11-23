@@ -27,3 +27,7 @@ void ImageWidget::updateImage(const cv::Mat &image)
   this->core->updateImage(image);
 }
 
+void ImageWidget :: handleHeatmap(cv::Mat heatmap,bool checked)
+{
+    this->core->handleHeatmap(heatmap,checked);
+}

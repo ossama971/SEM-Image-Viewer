@@ -27,6 +27,7 @@ public:
   void loadAndDisplayImage(const Image &image);
   cv::Mat getImage() const;
   void setIntensityPlotMode(bool enabled);
+  void handleHeatmap(const cv::Mat heatmap,bool checked);
 
 protected:
   void showEvent(QShowEvent *event) override;
@@ -45,12 +46,14 @@ private:
   std::optional<QPixmap> loadAndPrepareImage(const Image &image,
                                              const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
+  QPixmap matToQPixmap(cv::Mat image);
 
   ImageInfoBar *infoBar;
   cv::Mat currentImage;
   QPoint lastMousePosition;
   bool isPanning = false;
   double zoomFactor = 1.0;
+  QGraphicsPixmapItem *heatmap = nullptr;
 
   bool intensityPlotMode = false;
   QGraphicsLineItem* intensityLine = nullptr;

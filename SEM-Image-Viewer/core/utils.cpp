@@ -50,6 +50,16 @@ std::string Utils::generateString(size_t length) {
   }
   return out;
 }
+cv::Mat Utils::heatmap(const cv::Mat &image)
+{
+    cv::Mat gray = image;
+    if(image.channels()!=1)
+    {
+        cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    }
+    cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
+    return gray;
+}
 
 bool Utils::createDirectory(const std::string &path) {
   if (std::filesystem::exists(path)) {

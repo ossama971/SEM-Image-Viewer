@@ -307,6 +307,8 @@ void ImageWidgetCore::setImage(const QPixmap &pixmap) {
   zoomFactor = qMin(scaleX, scaleY);
   infoBar->setZoomPercentage(zoomFactor);
   infoBar->setImageSize(pixmap.width(), pixmap.height());
+  //Intialize heatmap
+  heatmap = nullptr;
 }
 
 void ImageWidgetCore::resizeEvent(QResizeEvent *event) {
@@ -384,6 +386,24 @@ void ImageWidgetCore::onupdateImageState(
   updateImage(states.back()->Image);
 }
 
+void ImageWidgetCore::handleHeatmap(const cv::Mat image,bool checked)
+{
+    QPixmap pixmap=matToQPixmap(image);
+    if(!heatmap)
+    {
+        heatmap=scene->addPixmap(pixmap);
+        return;
+    }
+
+    // Toggle visibility of the heatmap
+    if (checked) {
+        heatmap->setVisible(true);
+    } else {
+        heatmap->setVisible(false);
+    }
+
+}
+
 cv::Mat ImageWidgetCore::getImage() const {
   return currentImage;
 }
@@ -399,3 +419,21 @@ void ImageWidgetCore::setIntensityPlotMode(bool enabled) {
         intensityLine = nullptr;
     }
 }
+
+QPixmap ImageWidgetCore::matToQPixmap(cv::Mat image)
+{
+    QImage qImage;
+    if (image.channels() == 1) {
+        // Grayscale image: Use QImage::Format_Grayscale8
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0],
+                        QImage::Format_Grayscale8);
+    } else if (image.channels() == 3) {
+        // RGB image: Use QImage::Format_RGB888 and swap if necessary
+        qImage = QImage(image.data, image.cols, image.rows, image.step[0],
+                        QImage::Format_RGB888)
+                     .rgbSwapped();
+    }
+    QPixmap pixmap = QPixmap::fromImage(qImage);
+    return pixmap;
+}
+

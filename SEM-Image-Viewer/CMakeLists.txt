@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if(PROJECT_IS_TOP_LEVEL AND UNIX)
   # Create symlink to compile_commands.json for IDE to pick it up
@@ -161,6 +161,10 @@ set(PROJECT_SOURCES
     resources.qrc
     widgets/logCardWidget.h
     widgets/logCardWidget.cpp
+    widgets/heatmapwidget.cpp
+    widgets/heatmapwidget.h
+    widgets/otherListWidget.h
+    widgets/otherListWidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -6,6 +6,7 @@
 #include "noisereductionwidget.h"
 #include "historywidget.h"
 #include "actionlistwidget.h"
+#include "otherListWidget.h"
 #include "../core/engines/Workspace.h"
 
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
@@ -34,6 +35,12 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     list->addWidget(_noiseReductionWidget);
 
     rightSidebarLayout->addWidget(list);
+
+    HeatMapWidget *_heatmapWidget = new HeatMapWidget();
+
+    OtherListWidget *otherList = new OtherListWidget();
+    otherList->addWidget(_heatmapWidget);
+    rightSidebarLayout->addWidget(otherList);
 
     QWidget *progressBarContainer = new QWidget();
     QHBoxLayout *progressBarLayout = new QHBoxLayout();
