@@ -20,6 +20,8 @@ LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent) {
 
     leftSidebarLayout->addWidget(_fileBrowser);
 
+    leftSidebarLayout->setContentsMargins(0, 0, 0, 0);
+    leftSidebarLayout->setSpacing(0);
 
     // Set layout for left sidebar
     setLayout(leftSidebarLayout);

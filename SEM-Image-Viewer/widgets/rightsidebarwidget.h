@@ -15,6 +15,7 @@
 #include <QScreen>
 #include "progressbar.h"
 #include "historywidget.h"
+#include "heatmapwidget.h"
 #include <mutex>
 
 class RightSidebarWidget : public QWidget

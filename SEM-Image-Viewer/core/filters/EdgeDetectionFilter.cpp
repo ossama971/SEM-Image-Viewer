@@ -32,20 +32,19 @@ cv::Mat EdgeDetectionFilter::ToGrayscale(const cv::Mat &image) const
 cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
 
-
     const cv::Mat image = inputImage.getImageMat();
 
     cv::Mat detected_edges = image;
-    if(image.channels() !=1){
+    if (image.channels() != 1)
+    {
 
         detected_edges = ToGrayscale(image);
     }
-    detected_edges=Denoise(detected_edges);
-    cv::Canny(detected_edges,detected_edges,threshold_low,threshold_high);
+    detected_edges = Denoise(detected_edges);
+    cv::Canny(detected_edges, detected_edges, threshold_low, threshold_high);
     //
-   // Logger::instance()->logMessage("F211",{"Edge Detection","Edge Detection finished "});
+    // Logger::instance()->logMessage("F211",{"Edge Detection","Edge Detection finished "});
     return detected_edges;
-
 }
 
 ImageStateSource EdgeDetectionFilter::getImageSource() const

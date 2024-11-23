@@ -23,7 +23,7 @@ class LoggerWidget : public QWidget
 public:
     explicit LoggerWidget(QWidget *parent = nullptr);
 
-    void addLogCard(LogCard * card);
+    void addLogCard(LogCard *card);
     void clearLogCards();
 private slots:
     void filterLogs();
@@ -33,7 +33,8 @@ private slots:
     void createButtons();
 
 signals:
-    void showSelectedType(QString type,QString _searchText);
+    void showSelectedType(QString type, QString _searchText);
+
 private:
     QPushButton *allShowButton;
     QPushButton *infoShowButton;
@@ -50,8 +51,12 @@ private:
     QLineEdit *searchLineEdit;
     QHBoxLayout *layout;
 
-    QListWidget  *logListLayout;
+    QListWidget *logListLayout;
 
+    std::shared_ptr<MessageDataModel> m_dataModel;
+
+signals:
+    void layoutSwitched(bool isExpanded);
 };
 
 #endif // LOGGERWIDGET_H

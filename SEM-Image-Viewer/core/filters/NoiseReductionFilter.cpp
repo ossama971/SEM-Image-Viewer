@@ -10,15 +10,16 @@ NoiseReductionFilter::NoiseReductionFilter(double intensity) {
 }
 
 cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
+    cv::Mat image = inputImage.getImageMat();
     cv::Mat res;
 
-    if (inputImage.getMetadata().getColorSpace() == ColorSpace::Gray)
+    if (image.channels() == 1)
     {
-        cv::fastNlMeansDenoising(cv::InputArray(inputImage.getImageMat()), cv::OutputArray(res), _intensity);
+        cv::fastNlMeansDenoising(cv::InputArray(image), cv::OutputArray(res), _intensity);
     }
     else
     {
-        cv::fastNlMeansDenoisingColored(cv::InputArray(inputImage.getImageMat()), cv::OutputArray(res), _intensity, _intensity);
+        cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(res), _intensity, _intensity);
     }
     //Logger::instance()->logMessage("F201",{"Noise Reduction "});
     return res;

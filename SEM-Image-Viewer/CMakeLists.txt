@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if(PROJECT_IS_TOP_LEVEL AND UNIX)
   # Create symlink to compile_commands.json for IDE to pick it up
@@ -38,6 +38,8 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 set(BOOST_ROOT $ENV{Boost})
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
+
+find_package(Qt6 REQUIRED COMPONENTS Charts)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -125,8 +127,10 @@ set(PROJECT_SOURCES
     widgets/progressbar.cpp
     widgets/rightsidebarwidget.cpp
     widgets/rightsidebarwidget.h
-    widgets/savedialogwidget.cpp
-    widgets/savedialogwidget.h
+    widgets/LoadSessionDialog.cpp
+    widgets/LoadSessionDialog.h
+    widgets/ExitDialogWidget.cpp
+    widgets/ExitDialogWidget.h
     widgets/grayscalewidget.cpp
     widgets/grayscalewidget.h
     widgets/noisereductionwidget.cpp
@@ -148,6 +152,8 @@ set(PROJECT_SOURCES
     widgets/ImageDialog.h
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
+    widgets/SaveSessionDialog.cpp
+    widgets/SaveSessionDialog.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
 
@@ -155,9 +161,16 @@ set(PROJECT_SOURCES
     resources.qrc
     widgets/logCardWidget.h
     widgets/logCardWidget.cpp
+
     widgets/loggercontroller.h
     widgets/loggercontroller.cpp
 
+
+
+    widgets/heatmapwidget.cpp
+    widgets/heatmapwidget.h
+    widgets/otherListWidget.h
+    widgets/otherListWidget.cpp
 
 )
 
@@ -183,7 +196,7 @@ else()
   endif()
 endif()
 
-target_link_libraries(SEM-Image-Viewer PRIVATE ${OpenCV_LIBS} ${Boost_LIBRARIES} Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(SEM-Image-Viewer PRIVATE Qt6::Charts ${OpenCV_LIBS} ${Boost_LIBRARIES} Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If you are developing for iOS or macOS you
 # should consider setting an explicit, fixed bundle identifier manually though.

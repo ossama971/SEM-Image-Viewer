@@ -36,8 +36,8 @@ void FileBrowserWidget::Initialize() {
         "    border-style: inset;"
         "}"
         );
-    newFolderBtn->setIconSize(QSize(24, 24));
-    newFolderBtn->resize(24, 24);
+    newFolderBtn->setIconSize(QSize(21, 21));
+    newFolderBtn->resize(21, 21);
     newFolderBtn->setToolTip("Open Folder");
 
     QPushButton* newFileBtn = new QPushButton();
@@ -53,8 +53,8 @@ void FileBrowserWidget::Initialize() {
         "    border-style: inset;"
         "}"
         );
-    newFileBtn->setIconSize(QSize(24, 24));
-    newFileBtn->resize(24, 24);
+    newFileBtn->setIconSize(QSize(21, 21));
+    newFileBtn->resize(21, 21);
     newFileBtn->setToolTip("Open File");
 
     QPushButton* collapseBtn = new QPushButton();
@@ -70,8 +70,8 @@ void FileBrowserWidget::Initialize() {
         "    border-style: inset;"
         "}"
         );
-    collapseBtn->setIconSize(QSize(24, 24));
-    collapseBtn->resize(24, 24);
+    collapseBtn->setIconSize(QSize(21, 21));
+    collapseBtn->resize(21, 21);
 
     connect(newFolderBtn, &QPushButton::clicked, this, &FileBrowserWidget::onOpenFolder);
     connect(newFileBtn, &QPushButton::clicked, this, &FileBrowserWidget::onOpenFile);
@@ -84,6 +84,7 @@ void FileBrowserWidget::Initialize() {
     searchBoxHolder->move(9, 47);
     searchBoxHolder->resize(239, 35);
 
+    searchBoxHolder->setFixedHeight(40);
     searchBox = new QLineEdit(searchBoxHolder);
     searchBox->setPlaceholderText("File Name");
 
@@ -134,7 +135,7 @@ void FileBrowserWidget::Initialize() {
     buttonsLayout->addWidget(newFolderBtn);
     buttonsLayout->addWidget(newFileBtn);
     buttonsLayout->addWidget(collapseBtn);
-    buttonsLayout->setContentsMargins(0, 13, 0, 0);
+    buttonsLayout->setContentsMargins(0, 0, 0, 0);
     buttonsLayout->setSpacing(0);
 
     QHBoxLayout *searchLayout = new QHBoxLayout();

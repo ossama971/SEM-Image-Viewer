@@ -1,14 +1,14 @@
-#include "savedialogwidget.h"
+#include "ExitDialogWidget.h"
 
-SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
+ExitDialogWidget::ExitDialogWidget(QWidget *parent) : QDialog(parent) {
     // setWindowTitle("Unsaved Changes");
 
     // auto *saveButton = new QPushButton("Save", this);
     // auto *cancelButton = new QPushButton("Cancel", this);
 
     // // Connect the buttons to their respective slots
-    // connect(saveButton, &QPushButton::clicked, this, &SaveDialogWidget::onSaveClicked);
-    // connect(cancelButton, &QPushButton::clicked, this, &SaveDialogWidget::onCancelClicked);
+    // connect(saveButton, &QPushButton::clicked, this, &ExitDialogWidget::onSaveClicked);
+    // connect(cancelButton, &QPushButton::clicked, this, &ExitDialogWidget::onCancelClicked);
 
     // auto *layout = new QVBoxLayout(this);
     // layout->addWidget(new QLabel("Do you want to save the changes?", this));
@@ -77,9 +77,9 @@ SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
     cancelButton->setMinimumHeight(30);
 
     // Connect the buttons to their respective slots
-    connect(saveButton, &QPushButton::clicked, this, &SaveDialogWidget::onSaveClicked);
-    connect(dontSaveButton, &QPushButton::clicked, this, &SaveDialogWidget::onDontSaveClicked);
-    connect(cancelButton, &QPushButton::clicked, this, &SaveDialogWidget::onCancelClicked);
+    connect(saveButton, &QPushButton::clicked, this, &ExitDialogWidget::onSaveClicked);
+    connect(dontSaveButton, &QPushButton::clicked, this, &ExitDialogWidget::onDontSaveClicked);
+    connect(cancelButton, &QPushButton::clicked, this, &ExitDialogWidget::onCancelClicked);
 
     // Set up the layout
     auto *buttonLayout = new QHBoxLayout;
@@ -101,17 +101,17 @@ SaveDialogWidget::SaveDialogWidget(QWidget *parent) : QDialog(parent) {
 
 }
 
-void SaveDialogWidget::onSaveClicked() {
+void ExitDialogWidget::onSaveClicked() {
     emit saveRequested();
     accept();  // Close the dialog with 'Accept' status
 }
 
-void SaveDialogWidget::onDontSaveClicked() {
+void ExitDialogWidget::onDontSaveClicked() {
     emit dontSaveRequested();
     accept();  // Close the dialog to proceed with application close without saving
 }
 
-void SaveDialogWidget::onCancelClicked() {
+void ExitDialogWidget::onCancelClicked() {
     reject();  // Close the dialog without closing the application
 }
 

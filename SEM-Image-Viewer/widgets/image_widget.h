@@ -26,6 +26,7 @@ private slots:
 
 public slots:
   void updateImage(const cv::Mat &image);
+  void handleHeatmap(cv::Mat heatmap,bool checked);
 
 };
 

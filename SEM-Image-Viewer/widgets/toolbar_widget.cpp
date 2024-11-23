@@ -6,8 +6,8 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     setObjectName("ToolbarWidget");
     setAttribute(Qt::WA_StyledBackground, true);
     QHBoxLayout *toolbarLayout = new QHBoxLayout(this);
-    toolbarLayout->setContentsMargins(0, 0, 0, 0);
-    toolbarLayout->setSpacing(0);
+    toolbarLayout->setContentsMargins(0, 2, 0, 2);
+
     // Create QToolButtons with icons
     imageViewButton = new QToolButton(this);
     diffViewButton = new QToolButton(this);
@@ -64,8 +64,11 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     buttonGroup->addButton(gridViewButton);
 
     // Add buttons to the toolbar layout
+    toolbarLayout->addSpacing(10);
     toolbarLayout->addWidget(imageViewButton);
+    toolbarLayout->addSpacing(1);
     toolbarLayout->addWidget(diffViewButton);
+    toolbarLayout->addSpacing(1);
     toolbarLayout->addWidget(gridViewButton);
     toolbarLayout->addWidget(seperatorIcon);
     toolbarLayout->addWidget(saveButton);
@@ -77,8 +80,10 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
 
     // Add right-aligned buttons
     toolbarLayout->addWidget(seperatorIcon2);
-    toolbarLayout->addWidget(minimizeLoggerButton);
     toolbarLayout->addWidget(minimizeToolbarButton);
+    toolbarLayout->addSpacing(5);
+    toolbarLayout->addWidget(minimizeLoggerButton);
+    toolbarLayout->addSpacing(10);
 
     setLayout(toolbarLayout);
 

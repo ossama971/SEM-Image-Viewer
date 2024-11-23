@@ -29,6 +29,7 @@ signals:
 
 public slots:
     void setMaxMinHeight(int mn, int mx);
+    void adjustSizeBasedOnLayout(bool isExpanded);
 };
 
 #endif // BOTTOMMIDDLEWIDGET_H

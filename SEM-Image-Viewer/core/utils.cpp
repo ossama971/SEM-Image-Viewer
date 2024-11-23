@@ -50,6 +50,34 @@ std::string Utils::generateString(size_t length) {
   }
   return out;
 }
+cv::Mat Utils::heatmap(const cv::Mat &image)
+{
+    cv::Mat gray = image;
+    if(image.channels()!=1)
+    {
+        cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    }
+    cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
+    return gray;
+}
+
+bool Utils::createDirectory(const std::string &path) {
+  if (std::filesystem::exists(path)) {
+    return true;
+  }
+  else {
+    // create the directory
+    qDebug() << "Creating directory: " << path.c_str();
+    if (std::filesystem::create_directory(path)) {
+      return true;
+    }
+    else {
+      Logger::instance()->log(std::make_unique<ErrorMessage>(
+          1, boost::format("Error creating directory: %1%") % path));
+      return false;
+    }
+  }
+}
 
 void Utils::loadSessionJson(const std::string &filename) {
   boost::property_tree::ptree root;

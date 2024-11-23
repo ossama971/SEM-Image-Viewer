@@ -29,8 +29,6 @@ signals:
 public slots:
     void setMaxMinHeight(int mn, int mx);
     void openDiffView();
-
-private slots:
     void onimageViewButtonClicked();
     void ondiffViewButtonClicked();
     void ongridViewButtonClicked();

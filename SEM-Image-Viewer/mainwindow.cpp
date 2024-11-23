@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <QAction>
 
+#include "widgets/SaveSessionDialog.h"
 #include "core/engines/JsonVisitor.h"
 
 
@@ -35,43 +36,40 @@ MainWindow::MainWindow(QWidget *parent)
 
     leftSidebarWidget = new LeftSidebarWidget(this);
     leftSidebarWidget->setMinimumWidth(160);
+
     rightSidebarWidget = new RightSidebarWidget(this);
     rightSidebarWidget->setMinimumWidth(190);
+
+    toolbarWidget = new ToolbarWidget(this);
 
     topMiddleWidget = new TopMiddleWidget(this);
 
     bottomMiddleWidget = new BottomMiddleWidget(this);
 
-    // Create the MiniGrid instance
     miniGrid = new MiniGrid(this);
-    // Create MenuBar instance
+    miniGrid->setMinimumHeight(90);
+    miniGrid->setMaximumHeight(120);
+
     menuBarWidget = new MenuBarWidget(this);
 
-    // Connecting signals sent from toolbar to history widget
-    ToolbarWidget* toolbarWidget = topMiddleWidget->findChild<ToolbarWidget*>();
-    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    // Fixed splitter below the menu bar
+    QWidget *fixedSplitter = new QWidget(this);
+    fixedSplitter->setFixedHeight(0);
+    fixedSplitter->setCursor(Qt::ArrowCursor);
 
-    // Connecting signals sent from Toolbar to History
-    connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
-    connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
-
-    // Connecting signals sent from Toolbar to MenuBar
-    connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
-        menuBarWidget->exportSelectedImage("*.jpg");});
-
-    // Connecting signals sent from Toolbar to show/hide Logger
-    connect(toolbarWidget, &ToolbarWidget::minimizeLoggerClicked, this, &MainWindow::onShowLoggerClicked);
-
-    // Connecting signals sent from Toolbar to show/hide Minigrid
-    connect(toolbarWidget, &ToolbarWidget::minimizeToolbarClicked, this, &MainWindow::showMiniGridClicked);
+    QSplitter *horizontalSplitter = new QSplitter(Qt::Vertical, this);
+    horizontalSplitter->addWidget(topMiddleWidget);
+    horizontalSplitter->addWidget(miniGrid);
+    horizontalSplitter->addWidget(bottomMiddleWidget);
+    horizontalSplitter->setStretchFactor(0, 3);  // topMiddleWidget takes more space
+    horizontalSplitter->setStretchFactor(1, 1);  // miniGrid remains small
+    horizontalSplitter->setStretchFactor(2, 1);
+    horizontalSplitter->setSizes({400, 110, 250});
 
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
-    middleSplitter->addWidget(topMiddleWidget);
-    middleSplitter->addWidget(miniGrid); // Add MiniGrid here
-    middleSplitter->addWidget(bottomMiddleWidget);
-    middleSplitter->setStretchFactor(0, 1);
-    middleSplitter->setStretchFactor(1, 1);
-
+    middleSplitter->addWidget(toolbarWidget);
+    middleSplitter->addWidget(fixedSplitter);
+    middleSplitter->addWidget(horizontalSplitter);
 
     QSplitter *mainSplitter = new QSplitter(Qt::Horizontal, this);
     mainSplitter->addWidget(leftSidebarWidget);
@@ -81,12 +79,16 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
 
+    QSplitter *finalSplitter = new QSplitter(Qt::Vertical, this);
+    finalSplitter->addWidget(fixedSplitter);
+    finalSplitter->addWidget(mainSplitter);
+
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(mainSplitter);
+    layout->addWidget(finalSplitter);
     layout->setContentsMargins(0, 0, 0, 0);
     centralWidget->setLayout(layout);
 
-
+    // Connecting Signals related to MenuBar
     setMenuBar(menuBarWidget);
     connect(leftSidebarWidget, &LeftSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onLeftSidebarViewChanged);
     connect(rightSidebarWidget, &RightSidebarWidget::onVisibilityChange, menuBarWidget, &MenuBarWidget::onRightSidebarViewChanged);
@@ -100,6 +102,42 @@ MainWindow::MainWindow(QWidget *parent)
     // connect(menuBarWidget, &MenuBarWidget::exportProgressUpdated, rightSidebarWidget, &RightSidebarWidget::updateProgress);
     // connect(menuBarWidget, &MenuBarWidget::exportFinished, rightSidebarWidget, &RightSidebarWidget::hideProgressBar);
     connect(menuBarWidget, &MenuBarWidget::themeToggled, this, &MainWindow::applyTheme);
+
+    // Connecting signals related to Toolbar
+    HistoryWidget* historyWidget = rightSidebarWidget->findChild<HistoryWidget*>();
+    // Connecting signals sent from Toolbar to History
+    connect(toolbarWidget, &ToolbarWidget::undoTriggered, historyWidget, &HistoryWidget::undoAction);
+    connect(toolbarWidget, &ToolbarWidget::redoTriggered, historyWidget, &HistoryWidget::redoAction);
+    // Connecting signals sent from Toolbar to MenuBar
+    connect(toolbarWidget, &ToolbarWidget::saveButtonClicked, menuBarWidget,[this]() {
+        menuBarWidget->exportSelectedImage("*.jpg");});
+    // Connecting signals sent from Toolbar to show/hide Logger
+    connect(toolbarWidget, &ToolbarWidget::minimizeLoggerClicked, this, &MainWindow::onShowLoggerClicked);
+    // Connecting signals sent from Toolbar to show/hide Minigrid
+    connect(toolbarWidget, &ToolbarWidget::minimizeToolbarClicked, this, &MainWindow::showMiniGridClicked);
+    connect(toolbarWidget->imageViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::onimageViewButtonClicked);
+    connect(toolbarWidget->diffViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ondiffViewButtonClicked);
+    connect(toolbarWidget->gridViewButton, &QToolButton::clicked, topMiddleWidget, &TopMiddleWidget::ongridViewButtonClicked);
+
+    connect(menuBarWidget,&MenuBarWidget::undoChecked,historyWidget,&HistoryWidget::undoAction);
+    connect(menuBarWidget,&MenuBarWidget::redoChecked,historyWidget,&HistoryWidget::redoAction);
+    // Manually setting cursor for splitter handles
+    for (int i = 0; i < finalSplitter->count(); ++i) {
+        QSplitterHandle *handle = finalSplitter->handle(i);
+        if (handle) {
+            handle->setCursor(Qt::ArrowCursor);  // Disable resizing cursor
+        }
+    }
+    for (int i = 0; i < middleSplitter->count(); ++i) {
+        QSplitterHandle *handle = middleSplitter->handle(i);
+        if (handle) {
+            handle->setCursor(Qt::ArrowCursor);
+        }
+    }
+
+    ImageWidget *imageWidget= topMiddleWidget->findChild<ImageWidget*>();
+    HeatMapWidget *heatmapWidget = rightSidebarWidget->findChild<HeatMapWidget*>();
+    connect(heatmapWidget,&HeatMapWidget::applyHeatMap,imageWidget,&ImageWidget::handleHeatmap);
 }
 
 
@@ -146,12 +184,12 @@ void MainWindow::onShowImageClicked(bool isChecked) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    SaveDialogWidget saveDialog(this);
+    ExitDialogWidget exitDialog(this);
 
-    connect(&saveDialog, &SaveDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
-    connect(&saveDialog, &SaveDialogWidget::dontSaveRequested, this, &QApplication::quit);
+    connect(&exitDialog, &ExitDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
+    connect(&exitDialog, &ExitDialogWidget::dontSaveRequested, this, &QApplication::quit);
 
-    if (saveDialog.exec() == QDialog::Rejected) {
+    if (exitDialog.exec() == QDialog::Rejected) {
         event->ignore();  // Keep the application open if the user clicked "Cancel"
     } else {
         event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
@@ -159,37 +197,38 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    // If a thread is already running, return early (optional)
     if (saveThread && saveThread->isRunning()) {
         QMessageBox::information(this, "Save", "A save operation is already in progress.");
         return;
     }
 
-    // Create the QThread and worker objects
-    saveThread = new QThread(this);  // Store the thread as a member variable
-    QObject *worker = new QObject();
-    worker->moveToThread(saveThread);
+    SaveSessionDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
 
-    // Start the save operation in the worker thread
-    connect(saveThread, &QThread::started, worker, [worker]() {
-        JsonVisitor visitor;
-        Workspace::Instance()->getActiveSession().accept(visitor);
-        visitor.write_json("session.json");
-    });
+      auto directoryPath = dialog.getDirectoryPath().string();
+      auto jsonFilePath = dialog.getJsonFilePath().string();
 
-    // When worker finishes, quit the thread and delete worker
-    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
-    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
-    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+      saveThread = new QThread(this);
+      QObject *worker = new QObject();
+      worker->moveToThread(saveThread);
 
-    // When the thread finishes, show a message and quit the application
-    connect(saveThread, &QThread::finished, this, [this]() {
-        QMessageBox::information(nullptr, "Save", "Changes have been saved.");
-        QApplication::quit();  // Exit the application after saving
-    });
+      connect(saveThread, &QThread::started, worker, [worker, directoryPath, jsonFilePath]() {
+          JsonVisitor visitor(directoryPath, jsonFilePath);
+          Workspace::Instance()->getActiveSession().accept(visitor);
+          visitor.write_json();
+          });
 
-    // Start the thread
-    saveThread->start();
+      connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
+      connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
+      connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
+
+      connect(saveThread, &QThread::finished, this, [this]() {
+          QMessageBox::information(nullptr, "Save", "Changes have been saved.");
+          QApplication::quit();
+          });
+
+      saveThread->start();
+    }
 }
 
 void MainWindow::applyTheme() {
