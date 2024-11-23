@@ -52,7 +52,7 @@ private:
   bool isPanning = false;
   double zoomFactor = 1.0;
 
-  bool intensityPlotMode = true;
+  bool intensityPlotMode = false;
   QGraphicsLineItem* intensityLine = nullptr;
   QPointF lineStart;
   QPointF lineEnd;
