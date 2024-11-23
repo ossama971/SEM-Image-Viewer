@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <QDebug>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 
@@ -40,6 +41,9 @@ public:
     std::string getFolderPath() const;
 
     void accept(Visitor &v) const override;
+    bool getHasUnsavedChanges();
+public slots:
+    void setUnsavedChanges();
 
 signals:
     void onImageLoadStarted(int image_count);
@@ -53,6 +57,7 @@ private:
     // TODO: this should be a map of path to image, to have faster lookups
     std::vector<std::unique_ptr<Image>> _images;
     Image* _selectedImage;
+    bool _hasUnsavedChanges = false; // Tracks whether there are unsaved changes
 };
 
 #endif // IMAGE_REPO_H

@@ -19,6 +19,7 @@ public:
 
 public slots:
     void updateImages(const std::string newDir, std::vector<Image*> newImages, bool image_load);  // Slot to receive images from ImageRepository
+    void updateImagesAfterFilter(std::vector<std::unique_ptr<ImageState>>& states);
 
 private:
     QList<Image*> images;

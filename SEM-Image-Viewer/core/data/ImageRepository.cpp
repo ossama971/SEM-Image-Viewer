@@ -3,6 +3,7 @@
 #include <string>
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include <iostream>
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
@@ -41,6 +42,9 @@ bool ImageRepository::load_directory(const std::string &path)
 
             std::unique_ptr<Image> img = std::make_unique<Image>();
             load_image_core(std::move(img), image_path, &_images);
+        }
+        for (const auto& image : _images) {
+            connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
         }
 
         emit onDirectoryChanged(path, getImages(), false);
@@ -179,7 +183,6 @@ Image *ImageRepository::getImage(const std::filesystem::path &path)
 
 std::vector<Image*> ImageRepository::getImages() const {
     std::vector<Image*> images(_images.size());
-
     for (int i = 0; i < _images.size(); ++i)
         images[i] = _images[i].get();
 
@@ -222,3 +225,13 @@ std::string ImageRepository::getFolderPath() const {
 void ImageRepository::accept(Visitor &v) const {
     v.visit(*this);
 }
+
+void ImageRepository::setUnsavedChanges() {
+    _hasUnsavedChanges = true; // Set to true when any image state changes
+}
+
+bool ImageRepository::getHasUnsavedChanges(){
+    return _hasUnsavedChanges;
+}
+
+

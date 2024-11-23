@@ -24,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ui->setupUi(this);
 
-    resize(1000, 800);  // Adjust this size as needed
+    // resize(1000, 800);  // Adjust this size as needed
+    this->setWindowState(Qt::WindowFullScreen);
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -172,15 +173,18 @@ void MainWindow::onShowImageClicked(bool isChecked) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    ExitDialogWidget exitDialog(this);
+    if (Workspace::Instance()->getActiveSession().getImageRepo().getHasUnsavedChanges()){
 
-    connect(&exitDialog, &ExitDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
-    connect(&exitDialog, &ExitDialogWidget::dontSaveRequested, this, &QApplication::quit);
+        ExitDialogWidget exitDialog(this);
 
-    if (exitDialog.exec() == QDialog::Rejected) {
-        event->ignore();  // Keep the application open if the user clicked "Cancel"
-    } else {
-        event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
+        connect(&exitDialog, &ExitDialogWidget::saveRequested, this, &MainWindow::onSaveChangesClicked);
+        connect(&exitDialog, &ExitDialogWidget::dontSaveRequested, this, &QApplication::quit);
+
+        if (exitDialog.exec() == QDialog::Rejected) {
+            event->ignore();  // Keep the application open if the user clicked "Cancel"
+        } else {
+            event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
+        }
     }
 }
 
@@ -216,6 +220,7 @@ void MainWindow::onSaveChangesClicked() {
           });
 
       saveThread->start();
+      QCoreApplication::quit();
     }
 }
 

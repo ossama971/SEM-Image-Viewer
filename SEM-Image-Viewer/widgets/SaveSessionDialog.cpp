@@ -40,7 +40,7 @@ SaveSessionDialog::SaveSessionDialog(QWidget *parent)
     buttonLayout->addWidget(cancelButton);
 
     connect(saveButton, &QPushButton::clicked, this, &SaveSessionDialog::save);
-    connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+    connect(cancelButton, &QPushButton::clicked, this, &SaveSessionDialog::cancel);
 
     mainLayout->addLayout(folderLayout);
     mainLayout->addLayout(fileLayout);
@@ -80,4 +80,8 @@ void SaveSessionDialog::save() {
     jsonFilePath = directoryPath / std::filesystem::path(fileName.toStdString());
 
     accept();
+}
+
+void SaveSessionDialog::cancel(){
+    reject();
 }
