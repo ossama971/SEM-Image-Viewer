@@ -9,10 +9,8 @@ cv::Mat SharpenFilter::applyFilter(const Image &inputImage) const
     cv::Mat kern = (cv::Mat_<double>(3, 3) << 0, -1, 0, -1, 5 * laplacianBoostFactor, -1, 0, -1, 0); // The filtering mask for Laplacian sharpening
     filter2D(image.clone(), outputImage, image.depth(), kern, cv::Point(-1, -1));                    // Applies the masking operator to the image
 
-    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Sharpen Filter").toStdString())));
+    Logger::instance()->logMessage(Logger::MessageTypes::INFO,Logger::MessageID::IMAGES_LOADING_FINISHED,Logger::MessageOptian::WITHOUT_DETIALS,{"HEllo22"});
     return outputImage;
-
-
 }
 
 ImageStateSource SharpenFilter::getImageSource() const

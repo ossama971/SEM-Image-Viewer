@@ -31,12 +31,8 @@ signals:
 
 public slots:
     void setMaxMinWidth(int mn, int mx);
-    void initializeProgress(int maxIterations);
-    void updateProgress();
-    void hideProgressBar();
-private slots:
-    void onImageLoadStarted(int image_count);
-    void onImageLoaded(Image* newImage);
+
+
 private:
     ImageRepository* _imageRepo;
     std::mutex _progressBarMtx;

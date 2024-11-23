@@ -1,7 +1,8 @@
 #include "LoggerWidget.h"
 
-LoggerWidget::LoggerWidget(QWidget *parent, std::shared_ptr<MessageDataModel> dataModel)
-    : QWidget(parent), m_dataModel(std::move(dataModel))
+#include <QScrollArea>
+LoggerWidget::LoggerWidget(QWidget *parent)
+    : QWidget(parent)
 {
 
     // Layout setup
@@ -13,12 +14,10 @@ LoggerWidget::LoggerWidget(QWidget *parent, std::shared_ptr<MessageDataModel> da
     isExpanded = true;
     stackedWidget->setCurrentIndex(0);
 
-    if (m_dataModel == nullptr) {
-        m_dataModel = std::make_shared<MessageDataModel>();
-    }
-    Logger::instance()->setModel(m_dataModel);
-    this->logListWidget->setModel(m_dataModel.get());
+    // LogCard *logCard = new LogCard("Hello", "World", false, this);
+    //
 
+    // logListWidget->addWidget(logCard);
 }
 
 void LoggerWidget::createButtons()
@@ -55,8 +54,8 @@ void LoggerWidget::createButtons()
 
     switchLayoutButtonCompact = new QPushButton("   ▲", this);
     switchLayoutButtonCompact->setStyleSheet(buttonsStyle);
-    //switchLayoutButtonCompact->setFixedWidth(50);
-    // Search line edit for filtering logs by text
+    // switchLayoutButtonCompact->setFixedWidth(50);
+    //  Search line edit for filtering logs by text
     QWidget *searchWidget = new QWidget(this);
     QHBoxLayout *searchContainerLayout = new QHBoxLayout(searchWidget);
     searchContainerLayout->setContentsMargins(5, 5, 5, 5); // Padding inside the border
@@ -66,7 +65,7 @@ void LoggerWidget::createButtons()
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Search log message");
     // Set a fixed width (e.g., 200 pixels)
-    //searchLineEdit->setFixedWidth(300);
+    // searchLineEdit->setFixedWidth(300);
     // Set the style sheet for rounded borders and other properties
     searchLineEdit->setStyleSheet(""
                                   "QLineEdit {"
@@ -95,16 +94,8 @@ void LoggerWidget::createButtons()
         "}"
         "QPushButton:pressed {"
         "    border-style: inset;"
-        "}"
-        );
-    layout->addWidget(searchWidget);
-    // Log list widget for displaying messages
-    logListWidget = new QListView(this);
-    logListWidget->setStyleSheet(
-        "QListWidget {"
-        "border: none;"
-        "background: transparent;"
         "}");
+    layout->addWidget(searchWidget);
 }
 
 void LoggerWidget::createConnections()
@@ -152,7 +143,14 @@ void LoggerWidget::createLayouts()
     fullLayout = new QVBoxLayout();
     fullLayout->addLayout(topLayoutFull);
     fullLayout->addWidget(line);
-    fullLayout->addWidget(logListWidget);
+
+    logListLayout = new QListWidget();
+
+
+    // logListLayout->setModel()
+
+    fullLayout->addWidget(logListLayout);
+    //fullLayout->addStretch(1);
 
     // Set the initial layout
     stackedWidget = new QStackedWidget(this);
@@ -178,17 +176,21 @@ void LoggerWidget::filterLogs()
     QString selectedType = "";
     QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
 
-    if (clickedButton == infoShowButton) {
+    if (clickedButton == infoShowButton)
+    {
         selectedType = "Info";
     }
-    else if (clickedButton == warningsShowButton) {
+    else if (clickedButton == warningsShowButton)
+    {
         selectedType = "Warning";
     }
-    else if (clickedButton == errorsShowButton) {
+    else if (clickedButton == errorsShowButton)
+    {
         selectedType = "Error";
     }
-    std::string fmt = boost::str(boost::format("%1% %2%") % filterText.toStdString() % selectedType.toStdString());
-    this->m_dataModel->setFilterText(QString::fromStdString(fmt));
+
+    logListLayout->clear();
+    emit showSelectedType(selectedType ,filterText);
 }
 
 void LoggerWidget::switchLayout()
@@ -196,7 +198,6 @@ void LoggerWidget::switchLayout()
     if (isExpanded)
     {
         stackedWidget->setCurrentIndex(1); // Show compact view
-                                           // Change to up arrow icon
     }
     else
     {
@@ -205,3 +206,18 @@ void LoggerWidget::switchLayout()
 
     isExpanded = !isExpanded; // Toggle state
 }
+
+void LoggerWidget::addLogCard(LogCard *card)
+{
+
+    QListWidgetItem *item = new QListWidgetItem(logListLayout);
+    item->setSizeHint(card->sizeHint());
+    logListLayout->addItem(item);
+    logListLayout->setItemWidget(item, card);
+
+    connect(card, &LogCard::sizeChanged, this, [this, item, card]() {
+        item->setSizeHint(card->sizeHint());
+    });
+}
+
+
