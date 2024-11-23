@@ -72,8 +72,8 @@ bool Utils::createDirectory(const std::string &path) {
       return true;
     }
     else {
-      Logger::instance()->log(std::make_unique<ErrorMessage>(
-          1, boost::format("Error creating directory: %1%") % path));
+      // Logger::instance()->log(std::make_unique<ErrorMessage>(
+      //     1, boost::format("Error creating directory: %1%") % path));
       return false;
     }
   }

@@ -53,7 +53,7 @@ private:
 
     QListWidget *logListLayout;
 
-    std::shared_ptr<MessageDataModel> m_dataModel;
+
 
 signals:
     void layoutSwitched(bool isExpanded);
