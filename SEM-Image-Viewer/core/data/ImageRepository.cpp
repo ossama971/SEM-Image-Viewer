@@ -1,7 +1,10 @@
 #include "ImageRepository.h"
+#include "../engines/ThreadPool.h"
+
 #include <filesystem>
 #include <string>
 #include <regex>
+
 #include <boost/algorithm/string.hpp>
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
@@ -9,26 +12,17 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr)
 
 }
 
-bool ImageRepository::load_directory(const std::string &path)
-{
-    try
-    {
+// TODO: what will happen if for example the user loaded one folder
+// then exported while loading another folder?
+bool ImageRepository::load_directory(const std::string& path) {
+    try {
         const std::regex filter(IMAGE_FILE_REGEX);
         std::smatch what;
 
-        std::string image_path;
+        std::vector<std::filesystem::path> image_paths;
 
-        int images_count = count_images(path);
-        if (!images_count)
-            return false;
-
-        selectImage(-1);
-        _images.clear();
-        emit onImageLoadStarted(images_count);
-
-        _folderPath = path;
-        for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it)
-        {
+        // Collect image file paths
+        for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it) {
             if (!std::filesystem::is_regular_file(it->status()))
                 continue;
 
@@ -37,21 +31,58 @@ bool ImageRepository::load_directory(const std::string &path)
             if (!std::regex_search(filename, what, filter))
                 continue;
 
-            image_path = it->path().string();
+            image_paths.push_back(it->path());
+        }
 
-            std::unique_ptr<Image> img = std::make_unique<Image>();
-            load_image_core(std::move(img), image_path, &_images);
+        // Return if no images found
+        int images_count = image_paths.size();
+        if (images_count == 0) return false;
+
+        emit onImageLoadStarted(images_count);
+
+        // Prepare for new data
+        selectImage(-1);
+        _images.clear();
+        _folderPath = path;
+
+
+        const size_t batch_size = 17;
+        std::vector<std::future<std::vector<std::unique_ptr<Image>>> > futures;
+
+        for (size_t i = 0; i < image_paths.size(); i += batch_size) {
+            auto start = image_paths.begin() + i;
+            auto end = (i + batch_size < image_paths.size()) ? start + batch_size : image_paths.end();
+
+            std::vector<std::filesystem::path> batch(start, end);
+
+            auto future = post(ThreadPool::instance(), use_future([this, batch]() {
+                std::vector<std::unique_ptr<Image>> local_images;
+                for (const auto& file : batch) {
+                    auto image = std::make_unique<Image>();
+                    image->load(file.string());
+                    local_images.push_back(std::move(image));
+                }
+                return local_images;
+            }));
+
+            futures.push_back(std::move(future));
+        }
+
+        for (auto& future : futures) {
+            auto local_images = future.get();
+            for (auto& image : local_images) {
+                _images.push_back(std::move(image));
+                emit onImageLoaded(_images.back().get());
+            }
         }
 
         emit onDirectoryChanged(path, getImages(), false);
 
         return true;
-    }
-    catch (std::filesystem::filesystem_error ex)
-    {
-    }
-    catch (std::regex_error ex)
-    {
+    } catch (const std::filesystem::filesystem_error& ex) {
+        std::cerr << "Filesystem error: " << ex.what() << std::endl;
+    } catch (const std::regex_error& ex) {
+        std::cerr << "Regex error: " << ex.what() << std::endl;
     }
 
     return false;
