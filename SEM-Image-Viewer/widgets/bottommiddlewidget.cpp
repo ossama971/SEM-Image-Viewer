@@ -1,6 +1,6 @@
 #include "bottommiddlewidget.h"
 #include "LoggerWidget.h"
-#include "controllerWidget.h"
+#include "loggercontroller.h"
 BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
@@ -10,7 +10,7 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
 
     QVBoxLayout *bottomMiddleLayout = new QVBoxLayout();
 
-    Controller &controller = Controller::instance();
+
 
     LoggerWidget * logger = new LoggerWidget();
     connect(logger, &LoggerWidget::layoutSwitched, this, &BottomMiddleWidget::adjustSizeBasedOnLayout);
@@ -18,7 +18,7 @@ BottomMiddleWidget::BottomMiddleWidget(QWidget *parent) : QWidget(parent) {
     bottomMiddleLayout->setContentsMargins(0, 0, 0, 0);
     bottomMiddleLayout->setSpacing(0);
 
-    controller.setLoggerWidget(logger);
+    loggerController::instance().setLoggerWidget(logger);
     this->setLayout(bottomMiddleLayout);
 }
 

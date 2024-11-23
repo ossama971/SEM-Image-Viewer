@@ -3,7 +3,7 @@
 #include <random>
 #include <string>
 
-#include "./data/ErrorMessage.h"
+
 #include "./data/Image.h"
 #include "./data/ImageRepository.h"
 #include "./data/ImageState.h"
@@ -72,8 +72,8 @@ bool Utils::createDirectory(const std::string &path) {
       return true;
     }
     else {
-      Logger::instance()->log(std::make_unique<ErrorMessage>(
-          1, boost::format("Error creating directory: %1%") % path));
+      // Logger::instance()->log(std::make_unique<ErrorMessage>(
+      //     1, boost::format("Error creating directory: %1%") % path));
       return false;
     }
   }
@@ -84,8 +84,8 @@ void Utils::loadSessionJson(const std::string &filename) {
   try {
     boost::property_tree::read_json(filename, root);
   } catch (const boost::property_tree::json_parser_error &e) {
-    Logger::instance()->log(
-        std::make_unique<ErrorMessage>(1, boost::format("Sharpening image")));
+    // Logger::instance()->log(
+    //     std::make_unique<ErrorMessage>(1, boost::format("Sharpening image")));
     return;
   }
 
@@ -106,10 +106,10 @@ void Utils::loadSessionJson(const std::string &filename) {
           Workspace::Instance()->getActiveSession().getImageRepo().getImage(
               imagePath);
       if (image == nullptr) {
-        Logger::instance()->log(std::make_unique<ErrorMessage>(
-            1, boost::format(
-                   "Image(%1%) not found in the ImageRepo(%2%) anymore") %
-                   imagePath % folderPath));
+        // Logger::instance()->log(std::make_unique<ErrorMessage>(
+        //     1, boost::format(
+        //            "Image(%1%) not found in the ImageRepo(%2%) anymore") %
+        //            imagePath % folderPath));
         continue;
       }
 
@@ -128,7 +128,7 @@ void Utils::loadSessionJson(const std::string &filename) {
       }
     }
   } catch (const boost::property_tree::ptree_error &e) {
-    Logger::instance()->log(std::make_unique<ErrorMessage>(
-        1, boost::format("Error parsing JSON: %1%") % e.what()));
+    // Logger::instance()->log(std::make_unique<ErrorMessage>(
+    //     1, boost::format("Error parsing JSON: %1%") % e.what()));
   }
 }

@@ -2,8 +2,8 @@
 #include <QImage>
 #include <QVariant>
 #include <opencv2/imgproc.hpp>
-#include "../core/engines/Workspace.h"
 
+#include "../core/engines/Workspace.h"
 #include <QDebug>
 
 ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {

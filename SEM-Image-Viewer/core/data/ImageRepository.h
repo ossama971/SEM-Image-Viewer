@@ -42,8 +42,7 @@ public:
     void accept(Visitor &v) const override;
 
 signals:
-    void onImageLoadStarted(int image_count);
-    void onImageLoaded(Image* newImage);
+
     void onDirectoryChanged(const std::string newDir, std::vector<Image*> newImages, bool image_load);
     void onImageChanged(Image* newImage);
     void onImageSaved(const Image& image, const ImageFormat format, const std::string path);

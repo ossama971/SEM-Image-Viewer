@@ -3,7 +3,7 @@
 #include <string>
 #include <regex>
 #include <boost/algorithm/string.hpp>
-
+#include "../engines/Logger.h"
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 {
 
@@ -24,8 +24,8 @@ bool ImageRepository::load_directory(const std::string &path)
 
         selectImage(-1);
         _images.clear();
-        emit onImageLoadStarted(images_count);
 
+        //int _logId=Logger::instance()->logMessageWithProgressBar("I100",{ "Path"},images_count);
         _folderPath = path;
         for (std::filesystem::recursive_directory_iterator it(path); it != std::filesystem::recursive_directory_iterator(); ++it)
         {
@@ -41,6 +41,7 @@ bool ImageRepository::load_directory(const std::string &path)
 
             std::unique_ptr<Image> img = std::make_unique<Image>();
             load_image_core(std::move(img), image_path, &_images);
+           //Logger::instance()->updateProgressBar(_logId,1);
         }
 
         emit onDirectoryChanged(path, getImages(), false);
@@ -71,7 +72,7 @@ bool ImageRepository::load_image(const std::string &path)
 
     selectImage(-1);
     _images.clear();
-    emit onImageLoadStarted(1);
+
 
     std::unique_ptr<Image> img = std::make_unique<Image>();
     load_image_core(std::move(img), path, &_images);
@@ -86,7 +87,6 @@ void ImageRepository::load_image_core(std::unique_ptr<Image> image, const std::s
 
     container->push_back(std::move(image));
 
-    emit onImageLoaded(image.get());
 }
 
 int ImageRepository::count_images(const std::string &dir) {

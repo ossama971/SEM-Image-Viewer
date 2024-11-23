@@ -46,8 +46,8 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-    core/data/ErrorMessage.cpp
-    core/data/ErrorMessage.h
+
+
     core/data/Image.cpp
     core/data/Image.h
     core/data/ImageMetadata.cpp
@@ -58,12 +58,12 @@ set(PROJECT_SOURCES
     core/data/ImageState.h
     core/data/IMessage.cpp
     core/data/IMessage.h
-    core/data/InfoMessage.cpp
-    core/data/InfoMessage.h
+
+
     core/data/SessionData.cpp
     core/data/SessionData.h
-    core/data/WarningMessage.cpp
-    core/data/WarningMessage.h
+
+
     core/engines/JsonVisitor.cpp
     core/engines/JsonVisitor.h
     core/engines/Logger.cpp
@@ -88,8 +88,8 @@ set(PROJECT_SOURCES
     core/data/ImageFormat.h
     core/data/ImageColorSpace.cpp
     core/data/ImageColorSpace.h
-    core/data/logMessageMapper.h
-    core/data/logMessageMapper.cpp
+
+
     # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
     widgets/actionListWidget.cpp
     widgets/actionlistwidget.h
@@ -156,20 +156,29 @@ set(PROJECT_SOURCES
     widgets/SaveSessionDialog.h
     models/ImageDataModel.cpp
     models/ImageDataModel.h
-    models/MessageDataModel.cpp
-    models/MessageDataModel.h
+
+
     resources.qrc
     widgets/logCardWidget.h
     widgets/logCardWidget.cpp
+
+    widgets/loggercontroller.h
+    widgets/loggercontroller.cpp
+
+
+
     widgets/heatmapwidget.cpp
     widgets/heatmapwidget.h
     widgets/otherListWidget.h
     widgets/otherListWidget.cpp
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(SEM-Image-Viewer MANUAL_FINALIZATION ${PROJECT_SOURCES}
       core/filters/BatchFilter.cpp core/filters/BatchFilter.h
+
+
 
 
 

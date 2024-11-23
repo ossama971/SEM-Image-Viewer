@@ -15,10 +15,7 @@ Controller::Controller() : SessionData_(Workspace::Instance()->getActiveSession(
     SessionData_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
 }
 
-void Controller::setLoggerWidget(LoggerWidget *widget)
-{
-    loggerWidget = widget;
-}
+
 void Controller::setHistoryWidget(HistoryWidget *widget)
 {
     historyWidget = widget;

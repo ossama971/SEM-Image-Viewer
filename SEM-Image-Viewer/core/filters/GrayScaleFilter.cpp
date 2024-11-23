@@ -11,7 +11,8 @@ cv::Mat GrayScaleFilter::applyFilter(const Image &inputImage) const
     if(image.channels() !=1){
        cv::cvtColor(image, outputImage, cv::COLOR_BGR2GRAY);
     }
-    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Gray Scale Filter").toStdString())));
+
+    //Logger::instance()->logMessage("F201",{"Gray Scale"});
     return outputImage;
 }
 

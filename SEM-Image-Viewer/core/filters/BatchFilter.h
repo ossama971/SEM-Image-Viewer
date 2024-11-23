@@ -7,8 +7,8 @@
 #include <vector>
 #include <QDateTime>
 #include "../engines/Logger.h"
-#include "../data/InfoMessage.h"
-#include "../data/logMessageMapper.h"
+
+
 class BatchFilter : public QObject
 {
     Q_OBJECT

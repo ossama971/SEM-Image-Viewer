@@ -21,7 +21,7 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
     {
         cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(res), _intensity, _intensity);
     }
-    Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterApplied("Noise Reduction Filter").toStdString())));
+    //Logger::instance()->logMessage("F201",{"Noise Reduction "});
     return res;
 }
 
