@@ -4,6 +4,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QCategoryAxis>
+#include <QGraphicsProxyWidget>
 #include <vector>
 
 using namespace cv;
@@ -46,12 +47,10 @@ void ImageWidgetCore::showEvent(QShowEvent *event) {
 
 void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     if (currentImage.empty()) {
-        // qDebug() << "Image is not grayscale or is empty.";
         return;
     }
     Mat image = currentImage;
-    if (currentImage.type() != CV_8UC1)
-    {
+    if (currentImage.type() != CV_8UC1) {
         cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     }
 
@@ -76,20 +75,30 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
         }
     }
 
+    // Calculate axis proportions
+    int xRange = xEnd - xStart + 1;
+    int yRange = 255; // Intensity values are fixed between 0 and 255
+    double aspectRatio = static_cast<double>(xRange) / yRange;
+
     // Create a chart and configure it
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Intensity Plot");
     chart->legend()->hide();
+    chart->setBackgroundVisible(false);
+    chart->setBackgroundBrush(Qt::NoBrush); // Transparent background
+    chart->setPlotAreaBackgroundVisible(false);
 
     // Customize axes
     QValueAxis *axisX = new QValueAxis();
-    axisX->setRange(xStart, intensities.size() - 1);
-    axisX->setTitleText("X-axis (Pixel)");
-
+    axisX->setRange(0, xRange - 1);
+    axisX->setLabelsVisible(false);
+    axisX->setGridLineVisible(false);
+    axisX->setVisible(false);
     QValueAxis *axisY = new QValueAxis();
     axisY->setRange(0, 255);
-    axisY->setTitleText("Intensity (Value)");
+    axisY->setLabelsVisible(false);
+    axisY->setGridLineVisible(false);
+    axisY->setVisible(false);
 
     // Add axes to the chart
     chart->addAxis(axisX, Qt::AlignBottom);
@@ -100,15 +109,47 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     series->attachAxis(axisY);
 
     // Create a ChartView and embed it in the scene
-    QChartView *chartView = new QChartView(chart);
+    chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setAttribute(Qt::WA_TranslucentBackground); // Transparent background
+    chartView->setStyleSheet("background: transparent;");
 
-    // Set position for the plot overlay
+    // Create a proxy widget to embed the chart view into the scene
+    QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget();
+    proxyWidget->setWidget(chartView);
+
+    // Get the pixmap item's position in the scene
+    QGraphicsPixmapItem *pixmapItem = dynamic_cast<QGraphicsPixmapItem *>(scene->items().last());
+    if (!pixmapItem) {
+        return; // No pixmap item found
+    }
+    QPointF pixmapPos = pixmapItem->pos(); // Top-left corner of the image in the scene
+
+    // Calculate chart position and size
     QRectF viewRect = graphicsView->sceneRect();
-    chartView->setGeometry(viewRect.width() / 4, viewRect.height() / 2, viewRect.width() / 2, viewRect.height() / 3);
+    double chartHeight = viewRect.height() / 4.0; // Proportional height
+    double chartWidth = chartHeight * aspectRatio; // Scale width based on aspect ratio
 
-    scene->addWidget(chartView);
+    double chartX = pixmapPos.x() + xStart;      // Align with xStart on the image
+    double chartY = pixmapPos.y() + y - chartHeight; // Position above the specified y-line
+
+    // Set proxy widget geometry to align chart within the scene
+    // Create a QRectF for the chart's geometry
+    QRectF chartRect(chartX, chartY, chartWidth, chartHeight);
+
+    // Set the geometry using the QRectF
+    proxyWidget->setGeometry(chartRect);
+
+    // Add the proxy widget to the scene
+    scene->addItem(proxyWidget);
+    // Set custom cursor for the plot
+    QPixmap cursorPixmap(":/icons/pen-icon.svg");
+    QSize cursorSize(20, 20); // Adjust size as needed
+    QPixmap scaledCursor = cursorPixmap.scaled(cursorSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    chartView->setCursor(QCursor(scaledCursor));
 }
+
+
 
 bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
     if (obj == scene) {

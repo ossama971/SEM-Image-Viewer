@@ -14,7 +14,7 @@
 #include <QWidget>
 #include <opencv2/opencv.hpp>
 #include <optional>
-
+#include <QtCharts/QChartView>
 #include "../core/data/Image.h"
 #include "image_info_bar.h"
 #include "zoom_widget.h"
@@ -41,6 +41,7 @@ private:
   QGraphicsScene *scene;
   ZoomWidget *zoomWidget;
 
+  QChartView *chartView;
   std::optional<QPixmap> loadAndPrepareImage(const Image &image,
                                              const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
@@ -71,5 +72,7 @@ public slots:
   void updateImage(const cv::Mat &image);
   void onupdateImageState(std::vector<std::unique_ptr<ImageState>> &states);
 };
+
+
 
 #endif // IMAGEWIDGETCORE_H
