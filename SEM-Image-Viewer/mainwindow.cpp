@@ -41,9 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolbarWidget = new ToolbarWidget(this);
 
     topMiddleWidget = new TopMiddleWidget(this);
-
     bottomMiddleWidget = new BottomMiddleWidget(this);
-
     miniGrid = new MiniGrid(this);
     miniGrid->setMinimumHeight(90);
     miniGrid->setMaximumHeight(120);
@@ -62,13 +60,11 @@ MainWindow::MainWindow(QWidget *parent)
     horizontalSplitter->setStretchFactor(0, 3);  // topMiddleWidget takes more space
     horizontalSplitter->setStretchFactor(1, 1);  // miniGrid remains small
     horizontalSplitter->setStretchFactor(2, 1);
-    horizontalSplitter->setSizes({400, 110, 250});
-
+    horizontalSplitter->setSizes({450, 110, 200});
     QSplitter *middleSplitter = new QSplitter(Qt::Vertical, this);
     middleSplitter->addWidget(toolbarWidget);
     middleSplitter->addWidget(fixedSplitter);
     middleSplitter->addWidget(horizontalSplitter);
-
     QSplitter *mainSplitter = new QSplitter(Qt::Horizontal, this);
     mainSplitter->addWidget(leftSidebarWidget);
     mainSplitter->addWidget(middleSplitter);
@@ -76,11 +72,9 @@ MainWindow::MainWindow(QWidget *parent)
     mainSplitter->setStretchFactor(0, 1);
     mainSplitter->setStretchFactor(1, 3);
     mainSplitter->setStretchFactor(2, 1);
-
     QSplitter *finalSplitter = new QSplitter(Qt::Vertical, this);
     finalSplitter->addWidget(fixedSplitter);
     finalSplitter->addWidget(mainSplitter);
-
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(finalSplitter);
     layout->setContentsMargins(0, 0, 0, 0);

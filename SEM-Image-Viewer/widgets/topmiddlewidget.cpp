@@ -5,7 +5,6 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
   : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
-    //setStyleSheet("background-color: #00ee00;");
     setMinimumWidth(mainScreenWidth*0.3);
     setMaximumWidth(mainScreenWidth*1.0);
 
@@ -28,7 +27,7 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
 
     this->setLayout(topMiddleLayout);
 
-    // Connect to tell toolbar that diff view is opened when to images is selected and right clicked to open in diff view
+    // Connect to tell toolbar that diff view is opened when to images is selected and right cl icked to open in diff view
     connect(this, &TopMiddleWidget::selectDiffView, toolbar, &ToolbarWidget::onSelectDiffView);
 }
 

@@ -1,4 +1,4 @@
-fQMainWindow {
+QMainWindow {
     background-color: #2B2B2B;
     color: #D3D3D3;
 }
@@ -18,13 +18,13 @@ QMenuBar::item:selected {
 
 QWidget#ToolbarWidget {
     background-color: #333333;
-    border: none;
+    border: 2px solid #333333;
+    border-radius: 4px;
     padding: 0px;
 }
 
 QGraphicsView {
     background: #333333;
-    border-radius: 8px;
 }
 
 /* Toolbar styling */
@@ -54,9 +54,12 @@ QCheckBox {
 /* Styling for QSplitter */
 QSplitter {
     background-color: #2C2C2C;
+    border: 1px #2C2C2C;
+    border-radius: 8px;
 }
 QSplitter::handle {
     background-color: #1E1E1E;
+     border-radius: 8px;
 }
 
 /* Styling for QTreeView and QListView */
