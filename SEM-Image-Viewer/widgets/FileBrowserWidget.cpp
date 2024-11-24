@@ -21,8 +21,6 @@ FileBrowserWidget::~FileBrowserWidget()
 }
 
 void FileBrowserWidget::Initialize() {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
     QPushButton* newFolderBtn = new QPushButton();
     newFolderBtn->setObjectName("newFolderBtn");
     newFolderBtn->setStyleSheet(
@@ -132,10 +130,13 @@ void FileBrowserWidget::Initialize() {
     //separator->setStyleSheet(QString("background-color: white;"));
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addSpacing(50);
     buttonsLayout->addWidget(newFolderBtn);
+    buttonsLayout->addSpacing(5);
     buttonsLayout->addWidget(newFileBtn);
+    buttonsLayout->addSpacing(5);
     buttonsLayout->addWidget(collapseBtn);
-    buttonsLayout->setContentsMargins(0, 0, 0, 0);
+    buttonsLayout->addSpacing(50);
     buttonsLayout->setSpacing(0);
 
     QHBoxLayout *searchLayout = new QHBoxLayout();
@@ -146,10 +147,14 @@ void FileBrowserWidget::Initialize() {
 
     searchBoxHolder->setLayout(searchLayout);
 
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(buttonsLayout);
     mainLayout->addWidget(separator);
     mainLayout->addWidget(searchBoxHolder);
     mainLayout->addWidget(treeView);
+
+    mainLayout->setContentsMargins(9, 3, 9, 9);
+    mainLayout->setAlignment(Qt::AlignTop);
 
     setLayout(mainLayout);
 }

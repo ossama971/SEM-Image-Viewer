@@ -58,7 +58,7 @@ LogCard::LogCard(const QString typeOfMessage,const QString &headerText, const QS
         connect(detailsBtn, &QPushButton::clicked, this, &LogCard::toggleDetails);
     }
     copyBtn=new QPushButton(this);
-    copyBtn->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCopy));
+    copyBtn->setObjectName("copyBtn");
     headerLayout->addWidget(copyBtn);
 
     // Add header layout to main layout
