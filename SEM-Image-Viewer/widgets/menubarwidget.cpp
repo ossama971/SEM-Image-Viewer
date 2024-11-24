@@ -105,6 +105,7 @@ void MenuBarWidget::exportSelectedImage(QString format) {
   }
   string fileName = image->getPath().filename().string();
   size_t lastDot = fileName.find_last_of('.');
+  QString baseName = QString::fromStdString(fileName);
 
   if (lastDot != string::npos) {
     fileName = fileName.substr(0, lastDot); // Remove the extension
