@@ -1,75 +1,40 @@
 #include "BatchFilter.h"
-#include <QThread>
-#include <thread>
-
-BatchFilter::BatchFilter(bool isolateMainThread, int threadCount)
-    : _isolateMainThread(isolateMainThread), _threadCount(threadCount ? threadCount : std::thread::hardware_concurrency())
-{}
+#include "../engines/Logger.h"
+#include "../engines/ThreadPool.h"
 
 void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, std::vector<Image*> input) {
-    startTime = QDateTime::currentDateTime();
-   // Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterStarted().toStdString())));
-    if (_isolateMainThread)
-    {
-        QThread *thread = QThread::create(&BatchFilter::execute, this, std::move(filter), std::move(input));
-        thread->start();
-    }
-    else
-        execute(std::move(filter), std::move(input));
-}
+  if (input.empty() || !filter)
+    return;
+  startTime = QDateTime::currentDateTime();
+  // Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterStarted().toStdString())));
+  std::vector<cv::Mat> output(input.size());
+  ImageFilter* filterPtr = filter.get();
 
-void BatchFilter::execute(std::unique_ptr<ImageFilter> filter, std::vector<Image*> input) {
-    std::vector<cv::Mat> output;
+  const std::size_t batch_size = 17;
 
-    int threadCount = _threadCount;
-    int operationCount = input.size();
-    int operationPerThread;
+  std::vector<std::future<void>> futures;
+  for (std::size_t i = 0; i < input.size(); i += batch_size) {
+    auto start = input.begin() + i;
+    auto end = (i + batch_size < input.size()) ? start + batch_size : input.end();
+    std::vector<Image*> batch(start, end);
 
-    if (!operationCount || !threadCount)
-        return;
+    auto future = post(ThreadPool::instance(),
+        use_future([this, filterPtr, batch, &output]() {
+          for (std::size_t i = 0; i < batch.size(); ++i) {
+            output[i] = filterPtr->applyFilter(*batch[i]);
+            emit onImageProcessed(batch[i]);
+          }
+        }));
+    futures.push_back(std::move(future));
+  }
 
-    if (operationCount > threadCount)
-        operationPerThread = floor(operationCount / threadCount);
-    else if (operationCount < threadCount)
-    {
-        threadCount = operationCount;
-        operationPerThread = 1;
-    }
-    else
-        operationPerThread = 1;
-
-    output.resize(operationCount);
-
-    ImageFilter* filterPtr = filter.get();
-    std::vector<std::thread> threads;
-    int startIndex = 0;
-    int lastIndex;
-
-    for (int threadIndex = 0; threadIndex < threadCount; ++threadIndex)
-    {
-        lastIndex = startIndex + operationPerThread + (threadIndex < (operationCount % threadCount));
-
-        threads.emplace_back([this, &input, &output, filterPtr, threadIndex, startIndex, lastIndex]()
-        {
-            for (int i = startIndex; i < lastIndex; ++i)
-            {
-                output[i] = filterPtr->applyFilter(*input[i]);
-
-                QMetaObject::invokeMethod(this, "onImageProcessed", Qt::QueuedConnection, Q_ARG(Image*, input[i]));
-            }
-        });
-
-        startIndex = lastIndex;
-    }
-
-    for (auto thread = threads.begin(); thread != threads.end(); ++thread)
-    {
-        if (thread->joinable())
-            thread->join();
-    }
+  for (auto& future : futures) {
+    future.get();
+  }
 
   //  auto duration = startTime.msecsTo(QDateTime::currentDateTime());
   //  Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterCompleted(duration).toStdString())));
 
-    emit onFinish(std::move(input), std::move(output), filter->getImageSource());
+  emit onFinish(std::move(input), std::move(output), filter->getImageSource());
 }
+
