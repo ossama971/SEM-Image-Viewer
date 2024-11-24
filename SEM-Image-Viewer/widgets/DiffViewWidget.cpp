@@ -1,6 +1,6 @@
 #include "DiffViewWidget.h"
 #include "../core/utils.h"
-
+#include "../core/engines/Workspace.h"
 #include <QDebug>
 
 DiffViewWidget::DiffViewWidget(QWidget *parent)
@@ -23,11 +23,11 @@ DiffViewWidget::DiffViewWidget(QWidget *parent)
 
   connect(lowerImageWidget, &ImageWidgetCore::imageUpdated, this,
           &DiffViewWidget::updateDiffImage);
-
+  QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
+                   this, &DiffViewWidget::resetDiff);
 }
 
 void DiffViewWidget::updateDiffImage() {
-  qDebug() << "Updating diff image";
   cv::Mat upperImage = upperImageWidget->getImage();
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
@@ -43,4 +43,10 @@ void DiffViewWidget::setImages(Image *upperImage, Image *lowerImage) {
   qDebug() << "Lower image path: " << lowerImage->getPath().string().c_str();
   upperImageWidget->loadAndDisplayImage(*upperImage);
   lowerImageWidget->loadAndDisplayImage(*lowerImage);
+}
+
+void DiffViewWidget::resetDiff(){
+    upperImageWidget->resetView();
+    lowerImageWidget->resetView();
+    diffImageWidget->resetView();
 }

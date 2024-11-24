@@ -5,7 +5,6 @@
 #include <QVector>
 #include <filesystem>
 #include <regex>
-#include <string>
 
 #include "../engines/Logger.h"
 #include <boost/algorithm/string.hpp>

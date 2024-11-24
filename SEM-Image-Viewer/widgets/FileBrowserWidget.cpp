@@ -166,6 +166,7 @@ void FileBrowserWidget::setRoot(QString path) {
 
 void FileBrowserWidget::onOpenFolder() {
     imageDialog->openFolder(_imageRepo, this);
+     _imageRepo->selectImage("");
 }
 
 void FileBrowserWidget::onOpenFile() {
@@ -195,6 +196,8 @@ void FileBrowserWidget::onDirectoryChanged(const std::string newDir, std::vector
 
     if (!image_load)
         proxyModel->setImageFilter("");
-    else
+    else{
         proxyModel->setImageFilter(!newImages.empty() ? QString::fromStdString(newImages.front()->getPath().string()) : "");
+
+    }
 }

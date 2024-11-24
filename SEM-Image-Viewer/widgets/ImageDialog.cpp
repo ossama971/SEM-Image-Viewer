@@ -23,5 +23,6 @@ void ImageDialog::openFile(ImageRepository *imageRepo, QWidget *parent) {
                                    "All Files (*.*);;Text Files (*.txt);;Image "
                                    "Files (*.png *.jpg)");
 
-  imageRepo->load_image(fileName.toStdString());
+    imageRepo->load_image(fileName.toStdString());
+    imageRepo->selectImage(fileName.toStdString());
 }

@@ -52,6 +52,8 @@
         <file>icons/error-light.svg</file>
         <file>icons/mini-grid-dark.svg</file>
         <file>icons/mini-grid-light.svg</file>
+	<file>icons/checkbox_checked.svg</file>
+	<file>icons/checkbox_checked_light.svg</file>
         <file>icons/pen-icon.svg</file>
     </qresource>
 </RCC>
