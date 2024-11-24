@@ -71,11 +71,11 @@ void MenuBarWidget::fileMenu() {
   });
 
   connect(JPGAllAction, &QAction::triggered, this,
-          [=]() { exportImages(".jpg"); });
+          [=]() { exportImages("jpg"); });
   connect(PNGAllAction, &QAction::triggered, this,
-          [=]() { exportImages(".png"); });
+          [=]() { exportImages("png"); });
   connect(BMPAllAction, &QAction::triggered, this,
-          [=]() { exportImages(".bmp"); });
+          [=]() { exportImages("bmp"); });
 
   // selected image
   connect(JPGAction, &QAction::triggered, this,
