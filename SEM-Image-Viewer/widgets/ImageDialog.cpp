@@ -1,6 +1,5 @@
 #include "ImageDialog.h"
 #include <QFileDialog>
-#include <QThread>
 
 #include "../core/engines/ThreadPool.h"
 

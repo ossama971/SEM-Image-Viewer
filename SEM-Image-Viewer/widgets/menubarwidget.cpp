@@ -296,19 +296,9 @@ void MenuBarWidget::loadSession() {
   if (dialog.exec() == QDialog::Accepted) {
     auto jsonFilePath = dialog.getJsonFilePath();
 
-    loadThread = new QThread;
-    QObject *worker = new QObject();
-    worker->moveToThread(loadThread);
-
-    connect(loadThread, &QThread::started, [worker, jsonFilePath]() {
+    post(ThreadPool::instance(), [jsonFilePath]() {
       Utils::loadSessionJson(jsonFilePath.string());
-      emit worker->destroyed();
     });
 
-    connect(worker, &QObject::destroyed, loadThread, &QThread::quit);
-    connect(loadThread, &QThread::finished, loadThread, &QThread::deleteLater);
-    connect(loadThread, &QThread::finished, worker, &QObject::deleteLater);
-
-    loadThread->start();
   }
 }

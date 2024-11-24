@@ -10,7 +10,6 @@
 #include <QImage>
 #include <QFileDialog>
 #include <QMetaObject>
-#include <QThread>
 
 #include "ImageDialog.h"
 
@@ -63,11 +62,6 @@ private:
     QAction *darkModeAction;
     ImageDialog *imageDialog;
     bool isDarkMode = false;
-
-    // TODO: what will happend if the user save and load from the session file in the
-    // same time? this isn't handled yet, one idea to solve it is to lock the
-    // stream the stream is reading from or writing to.
-    QThread *loadThread;
 };
 
 #endif // MENUBARWIDGET_H
