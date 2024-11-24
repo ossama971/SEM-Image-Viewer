@@ -1,8 +1,6 @@
 #include "utils.h"
-#include <memory>
 #include <random>
 #include <string>
-
 
 #include "./data/Image.h"
 #include "./data/ImageRepository.h"
@@ -10,6 +8,8 @@
 #include "./data/SessionData.h"
 #include "./engines/Logger.h"
 #include "./engines/Workspace.h"
+#include "./engines/ThreadPool.h"
+#include "./engines/Logger.h"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -84,8 +84,7 @@ void Utils::loadSessionJson(const std::string &filename) {
   try {
     boost::property_tree::read_json(filename, root);
   } catch (const boost::property_tree::json_parser_error &e) {
-    // Logger::instance()->log(
-    //     std::make_unique<ErrorMessage>(1, boost::format("Sharpening image")));
+    // Handle JSON parsing error
     return;
   }
 
@@ -94,42 +93,81 @@ void Utils::loadSessionJson(const std::string &filename) {
     const auto &repo_data = session_data.get_child("ImageRepository");
 
     std::string folderPath = repo_data.get<std::string>("_folderPath");
-    // load the previously loaded directory with all the images inside it
-    // this call loads from the directory into memory
     Workspace::Instance()->getActiveSession().loadDirectory(folderPath);
 
-    for (const auto &image_node : repo_data.get_child("Images")) {
-      std::string imagePath = image_node.second.get<std::string>("_path");
-      bool isLoaded = image_node.second.get<bool>("_loaded");
+    const auto &images = repo_data.get_child("Images");
+    const std::size_t total_images = images.size();
+    const std::size_t batch_size = 17;
 
-      Image *image =
-          Workspace::Instance()->getActiveSession().getImageRepo().getImage(
-              imagePath);
-      if (image == nullptr) {
-        // Logger::instance()->log(std::make_unique<ErrorMessage>(
-        //     1, boost::format(
-        //            "Image(%1%) not found in the ImageRepo(%2%) anymore") %
-        //            imagePath % folderPath));
-        continue;
-      }
+    std::vector<boost::property_tree::ptree> image_nodes;
+    for (const auto &image_node : images) {
+      image_nodes.push_back(image_node.second);
+    }
 
-      for (const auto &state_node : image_node.second.get_child("states")) {
-        std::string state = state_node.second.get<std::string>("state");
-        std::string imageFile = state_node.second.get<std::string>("image");
-        image->setImage(cv::imread(imageFile),
-                        imageStateSourceFromString(state));
-      }
+    int progressbarID = Logger::instance()->logMessageWithProgressBar(
+        Logger::MessageTypes::INFO,
+        Logger::MessageID::LOADING_SESSION,
+        Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+        { QString::fromStdString(filename) },
+        total_images,
+        "Loading images states .... "
+    );
 
-      for (const auto &undo_node : image_node.second.get_child("undo")) {
-        std::string state = undo_node.second.get<std::string>("state");
-        std::string imageFile = undo_node.second.get<std::string>("image");
-        image->addRedo(cv::imread(imageFile),
-                       imageStateSourceFromString(state));
-      }
+    std::vector<std::future<void>> futures;
+    std::atomic<size_t> processed_images{0};
+
+    for (std::size_t i = 0; i < total_images; i += batch_size) {
+      auto start = image_nodes.begin() + i;
+      auto end = (i + batch_size < total_images) ? start + batch_size : image_nodes.end();
+      std::vector<boost::property_tree::ptree> batch(start, end);
+
+      futures.push_back(post(ThreadPool::instance(), use_future([
+        progressbarID,
+        folderPath,
+        batch,
+        &processed_images,
+        total_images]() {
+        for (const auto &node : batch) {
+          try {
+            std::string imagePath = node.get<std::string>("_path");
+            bool isLoaded = node.get<bool>("_loaded");
+
+            Image *image =
+                Workspace::Instance()->getActiveSession().getImageRepo().getImage(imagePath);
+            if (!image) {
+              // Log missing image
+              continue;
+            }
+
+            for (const auto &state_node : node.get_child("states")) {
+              std::string state = state_node.second.get<std::string>("state");
+              std::string imageFile = state_node.second.get<std::string>("image");
+              image->setImage(cv::imread(imageFile),
+                              imageStateSourceFromString(state));
+            }
+
+            for (const auto &undo_node : node.get_child("undo")) {
+              std::string state = undo_node.second.get<std::string>("state");
+              std::string imageFile = undo_node.second.get<std::string>("image");
+              image->addRedo(cv::imread(imageFile),
+                             imageStateSourceFromString(state));
+            }
+          } catch (const boost::property_tree::ptree_error &e) {
+            // Handle parsing errors for individual nodes
+          }
+
+          processed_images++;
+          float progress = static_cast<float>(processed_images.load()) / total_images;
+          Logger::instance()->updateProgressBar(progressbarID, progress);
+        }
+      })));
+    }
+
+    for (auto &future : futures) {
+      future.get();
     }
   } catch (const boost::property_tree::ptree_error &e) {
-    // Logger::instance()->log(std::make_unique<ErrorMessage>(
-    //     1, boost::format("Error parsing JSON: %1%") % e.what()));
+    // Handle other JSON structure errors
   }
 }
 

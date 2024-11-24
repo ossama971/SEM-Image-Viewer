@@ -33,6 +33,7 @@ public:
         EXPORTING_IMAGES,
         BATCH_FILTER_APPLIED,
         SAVING_SESSION,
+        LOADING_SESSION,
     };
 
     static QMap<MessageID,QString> LoggerMap;
