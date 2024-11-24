@@ -3,7 +3,6 @@
 #include "../filters/BatchFilter.h"
 
 SessionData::SessionData() : _batchFilter() {
-    connect(&_batchFilter, &BatchFilter::onImageProcessed, this, &SessionData::onBatchFilterProgress);
     connect(&_batchFilter, &BatchFilter::onFinish, this, &SessionData::onBatchFilterApplied);
 }
 

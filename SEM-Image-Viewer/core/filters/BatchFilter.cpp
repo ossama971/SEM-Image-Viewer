@@ -5,36 +5,49 @@
 void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, std::vector<Image*> input) {
   if (input.empty() || !filter)
     return;
+
   startTime = QDateTime::currentDateTime();
-  // Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterStarted().toStdString())));
-  std::vector<cv::Mat> output(input.size());
-  ImageFilter* filterPtr = filter.get();
+  
+  int progressbarID = Logger::instance()->logMessageWithProgressBar(
+      Logger::MessageTypes::INFO,
+      Logger::MessageID::BATCH_FILTER_APPLIED,
+      Logger::MessageOptian::WITHOUT_DETIALS,
+      {  },
+      input.size(),
+      ""
+  );
 
-  const std::size_t batch_size = 17;
+  post(ThreadPool::instance(), [this, filter = std::move(filter), input = std::move(input), progressbarID]() {
 
-  std::vector<std::future<void>> futures;
-  for (std::size_t i = 0; i < input.size(); i += batch_size) {
-    auto start = input.begin() + i;
-    auto end = (i + batch_size < input.size()) ? start + batch_size : input.end();
-    std::vector<Image*> batch(start, end);
+    std::vector<cv::Mat> output(input.size());
+    ImageFilter* filterPtr = filter.get();
 
-    auto future = post(ThreadPool::instance(),
-        use_future([this, filterPtr, batch, &output]() {
-          for (std::size_t i = 0; i < batch.size(); ++i) {
-            output[i] = filterPtr->applyFilter(*batch[i]);
-            emit onImageProcessed(batch[i]);
-          }
-        }));
-    futures.push_back(std::move(future));
-  }
+    const std::size_t batch_size = 17;
 
-  for (auto& future : futures) {
-    future.get();
-  }
+    std::vector<std::future<void>> futures;
+    size_t processed_images = 0;
 
-  //  auto duration = startTime.msecsTo(QDateTime::currentDateTime());
-  //  Logger::instance()->log(std::make_unique<InfoMessage>(LOG_INFO,boost::format(LogMessageMapper::filterCompleted(duration).toStdString())));
+    for (std::size_t i = 0; i < input.size(); i += batch_size) {
+      auto start = input.begin() + i;
+      auto end = (i + batch_size < input.size()) ? start + batch_size : input.end();
+      std::vector<Image*> batch(start, end);
 
-  emit onFinish(std::move(input), std::move(output), filter->getImageSource());
+      auto future = post(ThreadPool::instance(),
+          use_future([filterPtr, batch, progressbarID, &output, &processed_images]() {
+            for (std::size_t i = 0; i < batch.size(); ++i) {
+              output[i] = filterPtr->applyFilter(*batch[i]);
+              processed_images++;
+              float progress = static_cast<float>(processed_images) / static_cast<float>(output.size());
+              Logger::instance()->updateProgressBar(progressbarID, progress);
+            }
+          }));
+      futures.push_back(std::move(future));
+    }
+
+    for (auto& future : futures) {
+      future.get();
+    }
+
+    emit onFinish(std::move(input), std::move(output), filter->getImageSource());
+  });
 }
-

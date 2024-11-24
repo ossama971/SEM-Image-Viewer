@@ -35,7 +35,6 @@ signals:
     void popActionList();
 
     void onBatchFilterStarted(int maxIterations);
-    void onBatchFilterProgress();
     void onBatchFilterFinished();
 
 private slots:

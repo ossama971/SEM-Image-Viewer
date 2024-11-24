@@ -17,6 +17,7 @@ Logger *Logger::instance() {
     LoggerMap[MessageID::UNDO_STACK_IS_EMPTY] = "Redo Stack For Image %1 is Empty";
     LoggerMap[MessageID::REDO_STACK_IS_EMPTY] = "Undo Stack For Image %1 is Empty";
     LoggerMap[MessageID::EXPORTING_IMAGES] = "Exporting images to %1";
+    LoggerMap[MessageID::BATCH_FILTER_APPLIED] = "Batch Filter applied";
 
     std::atexit(destroyInstance);
   }
@@ -87,7 +88,6 @@ void Logger::updateProgressBar(int id, int value) {
 }
 
 QString Logger::CreateMessage(MessageID msgCode, QVector<QString> &args) {
-
   std::scoped_lock<std::recursive_mutex> lock(m_mutex);
   QString res = LoggerMap[msgCode];
 

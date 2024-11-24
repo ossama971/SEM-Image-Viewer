@@ -31,6 +31,7 @@ public:
         UNDO_STACK_IS_EMPTY,
         REDO_STACK_IS_EMPTY,
         EXPORTING_IMAGES,
+        BATCH_FILTER_APPLIED,
     };
 
     static QMap<MessageID,QString> LoggerMap;
