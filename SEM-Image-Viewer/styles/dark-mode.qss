@@ -232,17 +232,17 @@ QPushButton:hover#searchButton2 {
 
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-dark.svg);
-    qproperty-iconSize: 17px 17px;
+    qproperty-iconSize: 20px 20px;
 }
 
 QPushButton#newFileBtn {
     qproperty-icon: url(:/icons/new-file-dark.svg);
-    qproperty-iconSize: 17px 17px;
+    qproperty-iconSize: 20px 20px;
 }
 
 QPushButton#collapseBtn {
     qproperty-icon: url(:/icons/nav-arrow-dark.svg);
-    qproperty-iconSize: 17px 17px;
+    qproperty-iconSize: 20px 20px;
 }
 
 QPushButton#redoButton {
