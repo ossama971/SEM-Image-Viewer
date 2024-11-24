@@ -20,8 +20,12 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
 
     connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
+    connect(gridView, &GridView::resetDiffView, diffView, &DiffViewWidget::resetDiff);
     
-    Controller::instance().setImageWidget(image);
+    Controller &controller = Controller::instance();
+    controller.setImageWidget(image);
+    controller.setGridView(gridView);
+
     this->setLayout(topMiddleLayout);
 
     // Connect to tell toolbar that diff view is opened when to images is selected and right clicked to open in diff view

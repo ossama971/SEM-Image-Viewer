@@ -7,7 +7,7 @@
 #include <QMenu>
 #include <QCheckBox>
 #include <QStyle>
-
+#include <QDebug>
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -41,6 +41,18 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
     // Connect the scrollbar to load more images when necessary
     connect(listView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GridView::onScroll);
+}
+
+std::vector<int> GridView::getSelectedImages() {
+    std::vector<int> images;
+
+    QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
+    if (selectedIndexes.isEmpty())
+        return images;
+
+    for (auto it = selectedIndexes.begin(); it != selectedIndexes.end(); ++it)
+        images.push_back(it->row());
+    return images;
 }
 
 void GridView::handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {

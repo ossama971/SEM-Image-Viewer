@@ -8,6 +8,8 @@
 #include "historywidget.h"
 #include "grayscalewidget.h"
 #include "noisereductionwidget.h"
+#include "GridView.h"
+
 class LoggerWidget;
 class ImageWidget;
 class SharpenWidget;
@@ -32,6 +34,7 @@ public:
     void setNoiseReductionWidget(NoiseReductionWidget *widget);
     void setHistoryWidget(HistoryWidget *widget);
     void setGraySacleWidget(GrayScaleWidget* widget);
+    void setGridView(GridView* widget);
 
 private slots:
 
@@ -39,6 +42,7 @@ private slots:
     void onNoiseReductionFilterApplied();
     void onSharpenFilterApplied();
     void onGraySacleFilterApplied();
+
     void redoAction();
     void undoAction();
 private:
@@ -46,6 +50,7 @@ private:
     Controller(const Controller &) = delete;
     Controller &operator=(const Controller &) = delete;
 
+    void applyFilter(std::unique_ptr<ImageFilter> filter);
 
     SessionData &SessionData_;
     HistoryWidget* historyWidget=nullptr;
@@ -54,6 +59,7 @@ private:
     EdgeExtractionWidget *edgeExtractionWidget = nullptr;
     NoiseReductionWidget *noiseReductionWidget = nullptr;
     GrayScaleWidget *graySacleWidget = nullptr;
+    GridView *gridView;
 
 signals:
     void imageUpdated(const cv::Mat &newImage);

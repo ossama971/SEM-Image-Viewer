@@ -11,7 +11,7 @@
 #include "edge_extraction_wigdet.h"
 #include <opencv2/imgproc.hpp>
 
-Controller::Controller() : SessionData_(Workspace::Instance()->getActiveSession()) {
+Controller::Controller() : SessionData_(Workspace::Instance()->getActiveSession()), gridView(nullptr) {
     SessionData_.loadImage("/home/bigfish/wsp/siemens/sem-image-viewer/SEM-Image-Viewer/assets/micro-electronic-sed.jpg");
 }
 
@@ -71,6 +71,11 @@ void Controller::setGraySacleWidget(GrayScaleWidget* widget)
         connect(graySacleWidget,&GrayScaleWidget::applyFilter,this,&Controller::onGraySacleFilterApplied);
     }
 }
+
+void Controller::setGridView(GridView* widget) {
+    gridView = widget;
+}
+
 // Slot to handle filter application
 void Controller::onEdgeWidgetFilterApplied()
 {
@@ -80,7 +85,8 @@ void Controller::onEdgeWidgetFilterApplied()
     std::unique_ptr<EdgeDetectionFilter> filter = std::make_unique<EdgeDetectionFilter>();
     filter->setThresholdLow(low);
     filter->setTHresholdHigh(high);
-    SessionData_.applyFilter(std::move(filter));
+
+    applyFilter(std::move(filter));
 
 }
 void Controller::onNoiseReductionFilterApplied()
@@ -88,18 +94,32 @@ void Controller::onNoiseReductionFilterApplied()
     int instensity=noiseReductionWidget->getIntensity();
     std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(instensity);
 
-    SessionData_.applyFilter(std::move(filter));
+    applyFilter(std::move(filter));
 }
 
 void Controller::onSharpenFilterApplied()
 {
     std::unique_ptr<SharpenFilter> filter = std::make_unique<SharpenFilter>();
 
-    SessionData_.applyFilter(std::move(filter));
+    applyFilter(std::move(filter));
 }
 void Controller::onGraySacleFilterApplied()
 {
     std::unique_ptr<GrayScaleFilter> filter = std::make_unique<GrayScaleFilter>();
+    applyFilter(std::move(filter));
+}
+
+void Controller::applyFilter(std::unique_ptr<ImageFilter> filter) {
+    if (gridView && gridView->isVisible())
+    {
+        std::vector<int> images = gridView->getSelectedImages();
+        if (images.size() > 1)
+        {
+            SessionData_.applyFilter(std::move(filter), images);
+            return;
+        }
+    }
+
     SessionData_.applyFilter(std::move(filter));
 }
 

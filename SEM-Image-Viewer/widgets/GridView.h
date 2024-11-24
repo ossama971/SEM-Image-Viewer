@@ -19,6 +19,8 @@ signals:
 public:
     explicit GridView(QWidget *parent = nullptr);
 
+    std::vector<int> getSelectedImages();
+
 private slots:
     void handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void toggleSelectAll(QCheckBox *checkbox, bool checked);
