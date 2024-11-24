@@ -208,12 +208,15 @@ background-color: transparent;
 }
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-light.svg);
+    qproperty-iconSize: 17px 17px;
 }
 QPushButton#newFileBtn {
    qproperty-icon: url(:/icons/new-file-light.svg);
+   qproperty-iconSize: 17px 17px;
 }
 QPushButton#collapseBtn {
   qproperty-icon: url(:/icons/nav-arrow-light.svg);
+  qproperty-iconSize: 17px 17px;
 }
 QPushButton#redoButton {
  qproperty-icon: url(:/icons/redo-icon.svg);
