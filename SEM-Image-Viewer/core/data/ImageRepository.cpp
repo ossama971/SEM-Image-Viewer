@@ -8,6 +8,7 @@
 
 #include "../engines/Logger.h"
 #include <boost/algorithm/string.hpp>
+#include <iostream>
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {}
 
@@ -215,3 +216,13 @@ void ImageRepository::accept(Visitor &v) const {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
   v.visit(*this);
 }
+
+void ImageRepository::setUnsavedChanges() {
+    _hasUnsavedChanges = true; // Set to true when any image state changes
+}
+
+bool ImageRepository::getHasUnsavedChanges(){
+    return _hasUnsavedChanges;
+}
+
+

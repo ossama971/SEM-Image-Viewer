@@ -50,7 +50,7 @@ SaveSessionDialog::SaveSessionDialog(QWidget *parent)
 
     connect(browseButton, &QPushButton::clicked, this, &SaveSessionDialog::browseForFolder);
     connect(saveButton, &QPushButton::clicked, this, &SaveSessionDialog::save);
-    connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+    connect(cancelButton, &QPushButton::clicked, this, &SaveSessionDialog::cancel);
 
     // Add layouts to the main layout
     mainLayout->addLayout(gridLayout);
@@ -97,4 +97,8 @@ void SaveSessionDialog::save() {
     }
 
     accept();
+}
+
+void SaveSessionDialog::cancel(){
+    reject();
 }

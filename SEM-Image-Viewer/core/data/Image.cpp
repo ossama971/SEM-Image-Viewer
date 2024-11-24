@@ -159,6 +159,7 @@ QList<QString> Image::getHistory(){
 }
 
 cv::Mat& Image::getImageMat() const {
+    // qDebug() << "num of states in the image: "<<_states.size()<<" alooo";
     return _states.back()->Image;
 }
 

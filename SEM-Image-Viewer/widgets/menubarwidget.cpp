@@ -71,19 +71,19 @@ void MenuBarWidget::fileMenu() {
   });
 
   connect(JPGAllAction, &QAction::triggered, this,
-          [=]() { exportImages("jpg"); });
+          [=]() { exportImages(".jpg"); });
   connect(PNGAllAction, &QAction::triggered, this,
-          [=]() { exportImages("png"); });
+          [=]() { exportImages(".png"); });
   connect(BMPAllAction, &QAction::triggered, this,
-          [=]() { exportImages("bmp"); });
+          [=]() { exportImages(".bmp"); });
 
   // selected image
   connect(JPGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("jpg"); });
+          [=]() { exportSelectedImage(".jpg"); });
   connect(PNGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("png"); });
+          [=]() { exportSelectedImage(".png"); });
   connect(BMPAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage("bmp"); });
+          [=]() { exportSelectedImage(".bmp"); });
 
   connect(saveSessionAction, &QAction::triggered, this,
           [=]() { saveSession(); });
@@ -91,12 +91,23 @@ void MenuBarWidget::fileMenu() {
           [=]() { loadSession(); });
 }
 
-void MenuBarWidget::exportSelectedImage(const QString format) {
+void MenuBarWidget::exportSelectedImage(QString format) {
+    qDebug("exporting  selected img");
   Image *image =
       Workspace::Instance()->getActiveSession().getImageRepo().getImage();
-  if (!image) {
-    qDebug() << "No active image found.";
-    return;
+
+
+
+  if(image==nullptr){
+      //TODO: use logger to inform user that there is no image to export
+      qDebug("No selected image to export");
+      return;
+  }
+  string fileName = image->getPath().filename().string();
+  size_t lastDot = fileName.find_last_of('.');
+
+  if (lastDot != string::npos) {
+    fileName = fileName.substr(0, lastDot); // Remove the extension
   }
 
   QString directoryPath = QFileDialog::getSaveFileName(
@@ -104,8 +115,33 @@ void MenuBarWidget::exportSelectedImage(const QString format) {
       QString::fromStdString(image->getPath().filename().stem().string()),
       tr("Images (*.%1)").arg(format));
 
-  if (directoryPath.isEmpty()) {
-    return;
+  QString baseFileName = QFileDialog::getSaveFileName(
+      this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
+
+  if (!baseFileName.isEmpty()) {
+    QFileInfo fileInfo(baseFileName);
+    QString extension = fileInfo.completeSuffix();
+    QString filePath = fileInfo.path();
+
+    cv::Mat matImg = image->getImageMat();
+    QImage qImg;
+    if (matImg.type() == CV_8UC1) {
+        // Grayscale image
+        qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step, QImage::Format_Grayscale8);
+    } else if (matImg.type() == CV_8UC3) {
+        // RGB image (already 3 channels)
+        qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step, QImage::Format_RGB888).rgbSwapped();
+    } else {
+        // Convert other types if necessary
+        cv::Mat convertedImg;
+        cv::cvtColor(matImg, convertedImg, cv::COLOR_BGR2RGB); // Assuming BGR format
+        qImg = QImage(convertedImg.data, convertedImg.cols, convertedImg.rows, convertedImg.step, QImage::Format_RGB888);
+    }
+
+    QString numberedFileName =
+        QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
+
+    qImg.save(numberedFileName);
   }
 
   auto result = Utils::prepareImageForExport(
@@ -169,6 +205,8 @@ void MenuBarWidget::exportImages(const QString format) {
                                      saveImagesSubset, startIdx, endIdx)));
   }
 }
+
+
 
 void MenuBarWidget::editMenu() {
   QMenu *editMenu = this->addMenu("Edit");

@@ -18,6 +18,7 @@ public:
 private slots:
     void browseForFolder();
     void save();
+    void cancel();
 
 private:
     QLabel *folderLabel;
