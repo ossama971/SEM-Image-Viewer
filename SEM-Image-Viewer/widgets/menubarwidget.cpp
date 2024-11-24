@@ -130,15 +130,15 @@ void MenuBarWidget::exportImages(const QString format) {
     return;
   }
 
-  auto images =
-      Workspace::Instance()->getActiveSession().getImageRepo().getImages();
+  auto images_count =
+      Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount();
 
   int progressbarID = Logger::instance()->logMessageWithProgressBar(
       Logger::MessageTypes::INFO,
       Logger::MessageID::EXPORTING_IMAGES,
       Logger::MessageOptian::WITH_DETAILS_AND_PATH,
       { directoryPath },
-      images.size(),
+      images_count,
       "Loading .... ",
       QString("file:///%1").arg(directoryPath)
   );
@@ -162,9 +162,9 @@ void MenuBarWidget::exportImages(const QString format) {
 
   const std::size_t BATCH_SIZE = 17;
 
-  for (std::size_t i = 0; i < images.size(); i += BATCH_SIZE) {
+  for (std::size_t i = 0; i < images_count; i += BATCH_SIZE) {
     std::size_t startIdx = i;
-    std::size_t endIdx = std::min(i + BATCH_SIZE, images.size());
+    std::size_t endIdx = std::min(i + BATCH_SIZE, images_count);
     post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(
                                      saveImagesSubset, startIdx, endIdx)));
   }
@@ -274,25 +274,20 @@ void MenuBarWidget::saveSession() {
     auto directoryPath = dialog.getDirectoryPath();
     auto jsonFilePath = dialog.getJsonFilePath();
 
-    saveThread = new QThread;
+    int progressbarID = Logger::instance()->logMessageWithProgressBar(
+        Logger::MessageTypes::INFO,
+        Logger::MessageID::SAVING_SESSION,
+        Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+        { QString::fromStdString(jsonFilePath.string()) },
+        Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount(),
+        QString("Saving Images Data to %1 .... ").arg(QString::fromStdString(directoryPath.string()))
+    );
 
-    QObject *worker = new QObject();
-    worker->moveToThread(saveThread);
-
-    connect(
-        saveThread, &QThread::started, [worker, directoryPath, jsonFilePath]() {
-          JsonVisitor visitor(directoryPath.string(), jsonFilePath.string());
-          Workspace::Instance()->getActiveSession().accept(visitor);
-          visitor.write_json();
-
-          emit worker->destroyed();
-        });
-
-    connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
-    connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
-    connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
-
-    saveThread->start();
+    post(ThreadPool::instance(), [directoryPath, jsonFilePath, progressbarID]() {
+        JsonVisitor visitor(directoryPath, jsonFilePath, progressbarID);
+        Workspace::Instance()->getActiveSession().accept(visitor);
+        visitor.write_json();
+    });
   }
 }
 

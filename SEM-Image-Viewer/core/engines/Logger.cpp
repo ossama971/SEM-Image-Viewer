@@ -18,6 +18,7 @@ Logger *Logger::instance() {
     LoggerMap[MessageID::REDO_STACK_IS_EMPTY] = "Undo Stack For Image %1 is Empty";
     LoggerMap[MessageID::EXPORTING_IMAGES] = "Exporting images to %1";
     LoggerMap[MessageID::BATCH_FILTER_APPLIED] = "Batch Filter applied";
+    LoggerMap[MessageID::SAVING_SESSION] = "Saving session to %1 file";
 
     std::atexit(destroyInstance);
   }

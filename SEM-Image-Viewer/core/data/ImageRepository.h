@@ -26,6 +26,7 @@ public:
     void selectImage(int index);
     void selectImage(const std::string& path);
 
+    std::size_t getImagesCount() const;
     Image* getImage();
     Image* getImage(const std::filesystem::path &path);
     Image* getImage(const std::size_t index);

@@ -5,11 +5,14 @@
 #include "../data/ImageColorSpace.h"
 #include "../data/ImageState.h"
 
+#include "../engines/ThreadPool.h"
+#include "../engines/Logger.h"
+
 // TODO: need to handle errors & exceptions that can be thrown by any of the
 // visit() methods report the errors through the Logger
 
-JsonVisitor::JsonVisitor(std::string session_datapath, std::string json_filepath)
-    : session_datapath(session_datapath), json_filepath(json_filepath) {}
+JsonVisitor::JsonVisitor(std::string session_datapath, std::string json_filepath, int progressbarID)
+    : session_datapath(session_datapath), json_filepath(json_filepath), progressbarID(progressbarID) {}
 
 void JsonVisitor::visit(const ImageMetadata &metadata) {
   boost::property_tree::ptree metadata_tree;
@@ -45,7 +48,7 @@ void JsonVisitor::visit(const Image &image) {
   image_tree.put("_loaded", image.isLoaded());
   image_tree.put("_path", image.getPath().string());
 
-  JsonVisitor metadataVisitor(session_datapath, json_filepath);
+  JsonVisitor metadataVisitor(session_datapath, json_filepath, progressbarID);
   image.getMetadata().accept(metadataVisitor);
   image_tree.add_child("metadata", metadataVisitor.json_tree.get_child("metadata"));
 
@@ -55,7 +58,7 @@ void JsonVisitor::visit(const Image &image) {
 
   boost::property_tree::ptree states_tree;
   for (const auto &state : image.getStates()) {
-    JsonVisitor stateVisitor(session_datapath, json_filepath);
+    JsonVisitor stateVisitor(session_datapath, json_filepath, progressbarID);
     state->accept(stateVisitor);
     states_tree.push_back(std::make_pair("", stateVisitor.json_tree.get_child("state")));
   }
@@ -63,31 +66,83 @@ void JsonVisitor::visit(const Image &image) {
 
   boost::property_tree::ptree undo_tree;
   for (const auto &undoState : image.getUndo()) {
-    JsonVisitor undoVisitor(session_datapath, json_filepath);
+    JsonVisitor undoVisitor(session_datapath, json_filepath, progressbarID);
     undoState->accept(undoVisitor);
     undo_tree.push_back(std::make_pair("", undoVisitor.json_tree.get_child("state")));
   }
   image_tree.add_child("undo", undo_tree);
   json_tree.add_child("Image", image_tree);
+  // Logger::instance()->updateProgressBar(this->progressbarID, 1.0);
 }
+
+// void JsonVisitor::visit(const ImageRepository &repo) {
+//   boost::property_tree::ptree repo_tree;
+//   repo_tree.put("_folderPath", repo.getFolderPath());
+//   boost::property_tree::ptree images_tree;
+//   for (const auto &image : repo.getImages()) {
+//     JsonVisitor imageVisitor(session_datapath, json_filepath, progressbarID);
+//     image->accept(imageVisitor);
+//     images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
+//   }
+//   repo_tree.add_child("Images", images_tree);
+//   json_tree.add_child("ImageRepository", repo_tree);
+// }
 
 void JsonVisitor::visit(const ImageRepository &repo) {
   boost::property_tree::ptree repo_tree;
   repo_tree.put("_folderPath", repo.getFolderPath());
 
-  boost::property_tree::ptree images_tree;
-  for (const auto &image : repo.getImages()) {
-    JsonVisitor imageVisitor(session_datapath, json_filepath);
-    image->accept(imageVisitor);
-    images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
+  const std::size_t batch_size = 17;
+  std::vector<std::future<boost::property_tree::ptree>> futures;
+  const auto& images = repo.getImages();
+  const size_t total_images = images.size();
+  size_t processed_images = 0;
+
+  for (std::size_t i = 0; i < total_images; i += batch_size) {
+    auto start = images.begin() + i;
+    auto end = (i + batch_size < total_images) ? start + batch_size : images.end();
+    std::vector<std::shared_ptr<Image>> batch(start, end);
+
+    auto future = post(ThreadPool::instance(),
+      use_future([
+        progressbarID=this->progressbarID,
+        session_datapath=this->session_datapath,
+        json_filepath=this->json_filepath,
+        batch, total_images,
+        &processed_images]() -> boost::property_tree::ptree {
+        boost::property_tree::ptree local_images_tree;
+        JsonVisitor imageVisitor(session_datapath, json_filepath, progressbarID);
+
+        for (const auto &image : batch) {
+          image->accept(imageVisitor);
+          local_images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
+
+          processed_images++;
+          float progress = static_cast<float>(processed_images) / static_cast<float>(total_images);
+          Logger::instance()->updateProgressBar(progressbarID, progress);
+        }
+
+        return local_images_tree;
+      }));
+    futures.push_back(std::move(future));
   }
+
+  boost::property_tree::ptree images_tree;
+  for (auto& future : futures) {
+    auto batch_tree = future.get();
+    for (auto& node : batch_tree) {
+      images_tree.push_back(std::make_pair("", node.second));
+    }
+  }
+
   repo_tree.add_child("Images", images_tree);
   json_tree.add_child("ImageRepository", repo_tree);
 }
 
+
 void JsonVisitor::visit(const SessionData &session) {
   boost::property_tree::ptree session_tree;
-  JsonVisitor repoVisitor(session_datapath, json_filepath);
+  JsonVisitor repoVisitor(session_datapath, json_filepath, progressbarID);
   /// Safety: We are casting away const on `session` to access `getImageRepo()`, 
   /// which is logically const in this context. This method does not modify the 
   /// observable state of `SessionData`, and we ensure that no changes are made 
@@ -95,14 +150,6 @@ void JsonVisitor::visit(const SessionData &session) {
   const_cast<SessionData&>(session).getImageRepo().accept(repoVisitor);
   session_tree.add_child("ImageRepository", repoVisitor.json_tree.get_child("ImageRepository"));
   json_tree.add_child("SessionData", session_tree);
-}
-
-void JsonVisitor::set_session_datapath(const std::filesystem::path& path) {
-  session_datapath = path.string();
-}
-
-void JsonVisitor::set_json_filepath(const std::filesystem::path& path) {
-  json_filepath = path.string();
 }
 
 void JsonVisitor::write_json() const {

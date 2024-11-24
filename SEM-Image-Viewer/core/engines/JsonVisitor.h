@@ -22,17 +22,17 @@ public:
   void write_json() const;
 
   JsonVisitor() = default;
-  JsonVisitor(std::string session_datapath, std::string json_filepath);
+  JsonVisitor(std::string session_datapath, std::string json_filepath, int progressbarID);
   ~JsonVisitor() override = default;
-
-  // TODO: should have a better way to enforce setting these paths
-  void set_session_datapath(const std::filesystem::path& path);
-  void set_json_filepath(const std::filesystem::path& path);
 
 private:
     boost::property_tree::ptree json_tree;
     std::string session_datapath;
     std::string json_filepath;
+    // TODO: the visitor should not be aware of the progressbar. there should be
+    // a better way to notify the progressbar as a seperate entity about the
+    // progress of the visitor
+    int progressbarID;
 };
 
 #endif // JSON_VISITOR_H

@@ -157,6 +157,11 @@ void ImageRepository::selectImage(const std::string &path) {
     }
 }
 
+std::size_t ImageRepository::getImagesCount() const {
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
+  return _images.size();
+}
+
 Image *ImageRepository::getImage() {
   std::scoped_lock lock(_mutex);
   return _selectedImage;
