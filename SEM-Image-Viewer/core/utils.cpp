@@ -16,21 +16,48 @@
 
 cv::Mat Utils::diffTwoImages(const cv::Mat &image1, const cv::Mat &image2,
                              const int threshold) {
-  cv::Mat diff;
-  cv::absdiff(image1, image2, diff);
-  cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
-  for (int j = 0; j < diff.rows; ++j) {
-    for (int i = 0; i < diff.cols; ++i) {
-      cv::Vec3b pix = diff.at<cv::Vec3b>(j, i);
-      int val = (pix[0] + pix[1] + pix[2]);
-      if (val > threshold) {
-        mask.at<unsigned char>(j, i) = 255;
-      }
+    cv::Mat diff;
+    cv::Mat image_one = image1.clone();
+    cv::Mat image_two = image2.clone();
+
+    // Ensure both images are of the same type
+    if (image1.channels() == 1 && image2.channels() != 1) {
+        cv::cvtColor(image2, image_two, cv::COLOR_BGR2GRAY);
     }
-  }
-  cv::Mat res;
-  cv::bitwise_and(image1, image1, res, mask);
-  return res;
+    if (image1.channels() != 1 && image2.channels() == 1) {
+        cv::cvtColor(image1, image_one, cv::COLOR_BGR2GRAY);
+    }
+
+    // Compute absolute difference
+    cv::absdiff(image_one, image_two, diff);
+
+    // Create a binary mask based on the threshold
+    cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
+
+    if (diff.channels() == 1) { // Grayscale images
+        for (int j = 0; j < diff.rows; ++j) {
+            for (int i = 0; i < diff.cols; ++i) {
+                int val = diff.at<unsigned char>(j, i);
+                if (val > threshold) {
+                    mask.at<unsigned char>(j, i) = 255;
+                }
+            }
+        }
+    } else if (diff.channels() == 3) { // Color images
+        for (int j = 0; j < diff.rows; ++j) {
+            for (int i = 0; i < diff.cols; ++i) {
+                cv::Vec3b pix = diff.at<cv::Vec3b>(j, i);
+                int val = pix[0] + pix[1] + pix[2];
+                if (val > threshold) {
+                    mask.at<unsigned char>(j, i) = 255;
+                }
+            }
+        }
+    }
+
+    cv::Mat res;
+    cv::bitwise_and(image_one, image_one, res, mask);
+    return res;
 }
 
 std::string Utils::generateString(size_t length) {

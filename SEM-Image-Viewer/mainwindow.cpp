@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     // ui->setupUi(this);
 
     // resize(1000, 800);  // Adjust this size as needed
-    this->setWindowState(Qt::WindowFullScreen);
+    this->setWindowState(Qt::WindowMaximized);
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
