@@ -45,7 +45,7 @@ signals:
 
 private:
     std::string _folderPath;
-    mutable std::mutex _mutex;
+    mutable std::recursive_mutex _mutex;
     // TODO: this should be a map of path to image, to have faster lookups
     std::vector<std::unique_ptr<Image>> _images;
     Image* _selectedImage;

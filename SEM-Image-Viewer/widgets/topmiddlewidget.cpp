@@ -20,7 +20,7 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
 
     connect(gridView, &GridView::openDiffView, this, &TopMiddleWidget::openDiffView);
     connect(gridView, &GridView::openDiffViewRequested, diffView, &DiffViewWidget::setImages);
-    connect(gridView, &GridView::resetDiffView, diffView, &DiffViewWidget::resetDiff);
+    // connect(gridView, &GridView::resetDiffView, diffView, &DiffViewWidget::resetDiff);
     
     Controller &controller = Controller::instance();
     controller.setImageWidget(image);

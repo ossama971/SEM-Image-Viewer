@@ -13,7 +13,7 @@
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {}
 
 bool ImageRepository::load_directory(const std::string &path) {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
   try {
     const std::regex filter(IMAGE_FILE_REGEX);
     std::smatch what;
@@ -94,7 +94,7 @@ bool ImageRepository::load_directory(const std::string &path) {
 }
 
 bool ImageRepository::load_image(const std::string &path) {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
 
   std::filesystem::path fpath(path);
   if (!std::filesystem::exists(fpath))
@@ -118,7 +118,7 @@ bool ImageRepository::load_image(const std::string &path) {
 }
 
 void ImageRepository::selectImage(int index) {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
 
   if (index == -1) {
     _selectedImage = nullptr;
@@ -136,7 +136,7 @@ void ImageRepository::selectImage(int index) {
 }
 
 void ImageRepository::selectImage(const std::string &path) {
-    std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     auto it = std::find_if(_images.begin(), _images.end(), [&path](const std::unique_ptr<Image> &image) {
         return image->getPath() == path;
@@ -181,7 +181,7 @@ Image *ImageRepository::getImage(const std::size_t index) {
 }
 
 std::vector<Image *> ImageRepository::getImages() const {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
   std::vector<Image *> images;
   for (const auto &image : _images) {
     images.push_back(image.get());
@@ -191,7 +191,7 @@ std::vector<Image *> ImageRepository::getImages() const {
 
 std::vector<Image *>
 ImageRepository::getImages(const std::vector<int> &indices) const {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
   std::vector<Image *> result;
 
   for (int index : indices) {
@@ -203,11 +203,11 @@ ImageRepository::getImages(const std::vector<int> &indices) const {
 }
 
 std::string ImageRepository::getFolderPath() const {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
   return _folderPath;
 }
 
 void ImageRepository::accept(Visitor &v) const {
-  std::unique_lock<std::mutex> lock(_mutex);
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
   v.visit(*this);
 }
