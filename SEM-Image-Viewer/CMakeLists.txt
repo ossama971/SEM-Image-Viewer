@@ -48,137 +48,137 @@ set(PROJECT_SOURCES
     mainwindow.ui
 
 
-    core/data/Image.cpp
-    core/data/Image.h
-    core/data/ImageMetadata.cpp
-    core/data/ImageMetadata.h
-    core/data/ImageRepository.cpp
-    core/data/ImageRepository.h
-    core/data/ImageState.cpp
-    core/data/ImageState.h
-    core/data/IMessage.cpp
-    core/data/IMessage.h
+    core/data/image.cpp
+    core/data/image.h
+    core/data/image_meta_data.cpp
+    core/data/image_meta_data.h
+    core/data/image_repository.cpp
+    core/data/image_repository.h
+    core/data/image_state.cpp
+    core/data/image_state.h
+    core/data/imessage.cpp
+    core/data/imessage.h
 
 
-    core/data/SessionData.cpp
-    core/data/SessionData.h
+    core/data/session_data.cpp
+    core/data/session_data.h
 
 
-    core/engines/JsonVisitor.cpp
-    core/engines/JsonVisitor.h
-    core/engines/Logger.cpp
-    core/engines/Logger.h
-    core/engines/Workspace.cpp
-    core/engines/Workspace.h
-    core/engines/ThreadPool.cpp
-    core/engines/ThreadPool.h
-    core/filters/EdgeDetectionFilter.cpp
-    core/filters/EdgeDetectionFilter.h
-    core/filters/GrayScaleFilter.cpp
-    core/filters/GrayScaleFilter.h
-    core/filters/ImageFilter.cpp
-    core/filters/ImageFilter.h
-    core/filters/NoiseReductionFilter.cpp
-    core/filters/NoiseReductionFilter.h
-    core/filters/SharpenFilter.cpp
-    core/filters/SharpenFilter.h
-    core/imageeditor.h
-    core/imageeditor.cpp
+    core/engines/json_vsitor.cpp
+    core/engines/json_vsitor.h
+    core/engines/logger.cpp
+    core/engines/logger.h
+    core/engines/workspace.cpp
+    core/engines/workspace.h
+    core/engines/thread_pool.cpp
+    core/engines/thread_pool.h
+    core/filters/edge_detection_filter.cpp
+    core/filters/edge_detection_filter.h
+    core/filters/gray_scale_filter.cpp
+    core/filters/gray_scale_filter.h
+    core/filters/image_filter.cpp
+    core/filters/image_filter.h
+    core/filters/noise_reduction_filter.cpp
+    core/filters/noise_reduction_filter.h
+    core/filters/sharpen_filter.cpp
+    core/filters/sharpen_filter.h
+    core/image_editor.h
+    core/image_editor.cpp
     core/utils.cpp
     core/utils.h
-    core/data/ImageFormat.cpp
-    core/data/ImageFormat.h
-    core/data/ImageColorSpace.cpp
-    core/data/ImageColorSpace.h
+    core/data/image_format.cpp
+    core/data/image_format.h
+    core/data/image_color_space.cpp
+    core/data/image_color_space.h
 
 
     # core/filters/noise_reduction_filter.cpp core/filters/noise_reduction_filter.h
-    widgets/actionListWidget.cpp
-    widgets/actionlistwidget.h
-    widgets/bottommiddlewidget.cpp
-    widgets/bottommiddlewidget.h
-    widgets/controllerWidget.cpp
-    widgets/controllerWidget.h
-    widgets/DiffViewWidget.cpp
-    widgets/DiffViewWidget.h
+    widgets/action_list_widget.cpp
+    widgets/action_list_widget.h
+    widgets/bottom_middle_widget.cpp
+    widgets/bottom_middle_widget.h
+    widgets/controller_widget.cpp
+    widgets/controller_widget.h
+    widgets/diff_view_widget.cpp
+    widgets/diff_view_widget.h
     widgets/edge_extraction_wigdet.h
     widgets/edge_extraction_wigdet.cpp
-    widgets/GridView.cpp
-    widgets/GridView.h
-    widgets/historywidget.h
-    widgets/historywidget.cpp
+    widgets/grid_view_widget.cpp
+    widgets/grid_view_widget.h
+    widgets/history_widget.h
+    widgets/history_widget.cpp
     widgets/image_info_bar.cpp
     widgets/image_info_bar.h
     widgets/image_info_bar.h
     widgets/image_info_bar.cpp
-    widgets/ImageWidgetCore.cpp
-    widgets/ImageWidgetCore.h
+    widgets/image_widget_core.cpp
+    widgets/image_widget_core.h
     widgets/image_widget.cpp
     widgets/image_widget.h
     widgets/image_widget.cpp
     widgets/image_widget.h
-    widgets/leftsidebarwidget.cpp
-    widgets/leftsidebarwidget.h
-    widgets/LoggerWidget.cpp
-    widgets/LoggerWidget.h
-    widgets/menubarwidget.cpp
-    widgets/menubarwidget.h
-    widgets/MiniGrid.cpp
-    widgets/MiniGrid.h
-    widgets/progressbar.h
-    widgets/progressbar.cpp
-    widgets/rightsidebarwidget.cpp
-    widgets/rightsidebarwidget.h
-    widgets/LoadSessionDialog.cpp
-    widgets/LoadSessionDialog.h
-    widgets/ExitDialogWidget.cpp
-    widgets/ExitDialogWidget.h
-    widgets/grayscalewidget.cpp
-    widgets/grayscalewidget.h
-    widgets/noisereductionwidget.cpp
-    widgets/noisereductionwidget.h
+    widgets/left_side_bar_widget.cpp
+    widgets/left_side_bar_widget.h
+    widgets/logger_widget.cpp
+    widgets/logger_widget.h
+    widgets/menu_bar_widget.cpp
+    widgets/menu_bar_widget.h
+    widgets/mini_grid_widget.cpp
+    widgets/mini_grid_widget.h
+    widgets/progress_bar.h
+    widgets/progress_bar.cpp
+    widgets/right_side_bar_widget.cpp
+    widgets/right_side_bar_widget.h
+    widgets/load_session_dialog.cpp
+    widgets/load_session_dialog.h
+    widgets/exit_dialog_widget.cpp
+    widgets/exit_dialog_widget.h
+    widgets/grayscale_widget.cpp
+    widgets/grayscale_widget.h
+    widgets/noise_reduction_widget.cpp
+    widgets/noise_reduction_widget.h
     widgets/sharpen_filter_widget.cpp
     widgets/sharpen_filter_widget.h
-    widgets/topmiddlewidget.cpp
-    widgets/topmiddlewidget.h
+    widgets/top_middle_widget.cpp
+    widgets/top_middle_widget.h
     widgets/zoom_widget.cpp
     widgets/zoom_widget.h
-    widgets/ThumbnailDelegate.h
-    widgets/FileBrowserWidget.cpp 
-    widgets/FileBrowserWidget.h 
-    widgets/FileIconHider.cpp 
-    widgets/FileIconHider.h 
-    widgets/ImageFilterProxyModel.cpp 
-    widgets/ImageFilterProxyModel.h
-    widgets/ImageDialog.cpp 
-    widgets/ImageDialog.h
+    widgets/thumbnail_delegate.h
+    widgets/file_browser_widget.cpp
+    widgets/file_browser_widget.h
+    widgets/file_icon_hider.cpp
+    widgets/file_icon_hider.h
+    widgets/image_filter_proxy_model.cpp
+    widgets/image_filter_proxy_model.h
+    widgets/image_dialog.cpp
+    widgets/image_dialog.h
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
-    widgets/SaveSessionDialog.cpp
-    widgets/SaveSessionDialog.h
-    models/ImageDataModel.cpp
-    models/ImageDataModel.h
+    widgets/save_session_dialog.cpp
+    widgets/save_session_dialog.h
+    models/image_data_model.cpp
+    models/image_data_model.h
 
 
     resources.qrc
-    widgets/logCardWidget.h
-    widgets/logCardWidget.cpp
+    widgets/log_card_widget.h
+    widgets/log_card_widget.cpp
 
-    widgets/loggercontroller.h
-    widgets/loggercontroller.cpp
+    widgets/logger_controller.h
+    widgets/logger_controller.cpp
 
 
 
-    widgets/heatmapwidget.cpp
-    widgets/heatmapwidget.h
-    widgets/otherListWidget.h
-    widgets/otherListWidget.cpp
+    widgets/heat_map_widget.cpp
+    widgets/heat_map_widget.h
+    widgets/heatmap_intensity_widget.h
+    widgets/heatmap_intensity_widget.cpp
 
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(SEM-Image-Viewer MANUAL_FINALIZATION ${PROJECT_SOURCES}
-      core/filters/BatchFilter.cpp core/filters/BatchFilter.h
+      core/filters/batch_filter.cpp core/filters/batch_filter.h
 
 
 

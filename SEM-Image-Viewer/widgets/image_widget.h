@@ -9,7 +9,7 @@
 #include <QMouseEvent>
 #include <opencv2/opencv.hpp>
 
-#include "ImageWidgetCore.h"
+#include "image_widget_core.h"
 
 class ImageWidget : public QWidget
 {

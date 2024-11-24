@@ -13,10 +13,10 @@
 #include <QMenu>
 #include <QAction>
 
-#include "widgets/SaveSessionDialog.h"
-#include "core/engines/JsonVisitor.h"
-#include "core/engines/Workspace.h"
-#include "core/engines/ThreadPool.h"
+#include "widgets/save_session_dialog.h"
+#include "core/engines/json_vsitor.h"
+#include "core/engines/workspace.h"
+#include "core/engines/thread_pool.h"
 
 
 MainWindow::MainWindow(QWidget *parent)

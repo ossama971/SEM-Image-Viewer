@@ -4,13 +4,13 @@
 #include <QMainWindow>
 
 #include <QSplitter>
-#include "widgets/bottommiddlewidget.h"
-#include "widgets/leftsidebarwidget.h"
-#include "widgets/rightsidebarwidget.h"
-#include "widgets/topmiddlewidget.h"
-#include "widgets/menubarwidget.h"
-#include "widgets/ExitDialogWidget.h"
-#include "widgets/MiniGrid.h"
+#include "widgets/bottom_middle_widget.h"
+#include "widgets/left_side_bar_widget.h"
+#include "widgets/right_side_bar_widget.h"
+#include "widgets/top_middle_widget.h"
+#include "widgets/menu_bar_widget.h"
+#include "widgets/exit_dialog_widget.h"
+#include "widgets/mini_grid_widget.h"
 #include "widgets/toolbar_widget.h"
 // #include "core/engines/JsonVisitor.h"
 

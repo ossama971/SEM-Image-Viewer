@@ -2,14 +2,14 @@
 #include <random>
 #include <string>
 
-#include "./data/Image.h"
-#include "./data/ImageRepository.h"
-#include "./data/ImageState.h"
-#include "./data/SessionData.h"
-#include "./engines/Logger.h"
-#include "./engines/Workspace.h"
-#include "./engines/ThreadPool.h"
-#include "./engines/Logger.h"
+#include "./data/image.h"
+#include "./data/image_repository.h"
+#include "./data/image_state.h"
+#include "./data/session_data.h"
+#include "./engines/logger.h"
+#include "./engines/workspace.h"
+#include "./engines/thread_pool.h"
+#include "./engines/logger.h"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>

@@ -1,5 +1,5 @@
 #include "image_widget.h"
-#include "../core/engines/Workspace.h"
+#include "../core/engines/workspace.h"
 
 ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent), core(new ImageWidgetCore(this))
