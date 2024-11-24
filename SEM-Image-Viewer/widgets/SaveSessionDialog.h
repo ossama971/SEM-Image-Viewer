@@ -5,7 +5,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
-
 #include <filesystem>
 
 class SaveSessionDialog : public QDialog {
@@ -19,19 +18,22 @@ public:
 private slots:
     void browseForFolder();
     void save();
+    void cancel();
 
 private:
     QLabel *folderLabel;
+    QLabel *sessionFolderLabel;
     QLabel *fileLabel;
     QLineEdit *folderEdit;
+    QLineEdit *sessionFolderEdit;
     QLineEdit *fileEdit;
     QPushButton *browseButton;
     QPushButton *saveButton;
     QPushButton *cancelButton;
 
     std::filesystem::path directoryPath;
+    std::filesystem::path sessionFolderPath;
     std::filesystem::path jsonFilePath;
 };
 
 #endif // SAVESESSIONDIALOG_H
-

@@ -21,7 +21,7 @@ ExitDialogWidget::ExitDialogWidget(QWidget *parent) : QDialog(parent) {
     resize(350, 200);
 
     // Create a label with a larger font for the main message
-    auto *mainLabel = new QLabel("Do you want to save the changes?");
+    auto *mainLabel = new QLabel("You have unsaved changes. Do you want to save them before exiting?");
     mainLabel->setAlignment(Qt::AlignCenter);
 
     QFont mainFont;
@@ -103,7 +103,8 @@ ExitDialogWidget::ExitDialogWidget(QWidget *parent) : QDialog(parent) {
 
 void ExitDialogWidget::onSaveClicked() {
     emit saveRequested();
-    accept();  // Close the dialog with 'Accept' status
+    // accept();  // Close the dialog with 'Accept' status
+    reject();
 }
 
 void ExitDialogWidget::onDontSaveClicked() {

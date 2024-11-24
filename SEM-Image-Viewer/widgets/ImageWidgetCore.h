@@ -53,6 +53,7 @@ private:
   QPoint lastMousePosition;
   bool isPanning = false;
   double zoomFactor = 1.0;
+  QGraphicsPixmapItem *image= nullptr;
   QGraphicsPixmapItem *heatmap = nullptr;
 
   bool intensityPlotMode = false;

@@ -14,24 +14,33 @@ SaveSessionDialog::SaveSessionDialog(QWidget *parent)
 
     auto *mainLayout = new QVBoxLayout(this);
 
-    auto *folderLayout = new QHBoxLayout();
-    folderLabel = new QLabel("Save Directory:", this);
+    // Create a grid layout for the labels and inputs
+    auto *gridLayout = new QGridLayout();
+
+    // Base Directory Input
+    folderLabel = new QLabel("Base Directory:", this);
     folderEdit = new QLineEdit(this);
     browseButton = new QPushButton("Browse...", this);
 
-    folderLayout->addWidget(folderLabel);
-    folderLayout->addWidget(folderEdit);
-    folderLayout->addWidget(browseButton);
+    gridLayout->addWidget(folderLabel, 0, 0); // Row 0, Column 0
+    gridLayout->addWidget(folderEdit, 0, 1); // Row 0, Column 1
+    gridLayout->addWidget(browseButton, 0, 2); // Row 0, Column 2
 
-    connect(browseButton, &QPushButton::clicked, this, &SaveSessionDialog::browseForFolder);
+    // Session Folder Name Input
+    sessionFolderLabel = new QLabel("Session Folder Name:", this);
+    sessionFolderEdit = new QLineEdit("session_data", this);
 
-    auto *fileLayout = new QHBoxLayout();
+    gridLayout->addWidget(sessionFolderLabel, 1, 0); // Row 1, Column 0
+    gridLayout->addWidget(sessionFolderEdit, 1, 1); // Row 1, Column 1
+
+    // JSON File Name Input
     fileLabel = new QLabel("JSON File Name:", this);
     fileEdit = new QLineEdit("session.json", this);
 
-    fileLayout->addWidget(fileLabel);
-    fileLayout->addWidget(fileEdit);
+    gridLayout->addWidget(fileLabel, 2, 0); // Row 2, Column 0
+    gridLayout->addWidget(fileEdit, 2, 1); // Row 2, Column 1
 
+    // Buttons Layout
     auto *buttonLayout = new QHBoxLayout();
     saveButton = new QPushButton("Save", this);
     cancelButton = new QPushButton("Cancel", this);
@@ -39,16 +48,17 @@ SaveSessionDialog::SaveSessionDialog(QWidget *parent)
     buttonLayout->addWidget(saveButton);
     buttonLayout->addWidget(cancelButton);
 
+    connect(browseButton, &QPushButton::clicked, this, &SaveSessionDialog::browseForFolder);
     connect(saveButton, &QPushButton::clicked, this, &SaveSessionDialog::save);
-    connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+    connect(cancelButton, &QPushButton::clicked, this, &SaveSessionDialog::cancel);
 
-    mainLayout->addLayout(folderLayout);
-    mainLayout->addLayout(fileLayout);
+    // Add layouts to the main layout
+    mainLayout->addLayout(gridLayout);
     mainLayout->addLayout(buttonLayout);
 }
 
 std::filesystem::path SaveSessionDialog::getDirectoryPath() const {
-    return directoryPath;
+    return sessionFolderPath;
 }
 
 std::filesystem::path SaveSessionDialog::getJsonFilePath() const {
@@ -56,7 +66,7 @@ std::filesystem::path SaveSessionDialog::getJsonFilePath() const {
 }
 
 void SaveSessionDialog::browseForFolder() {
-    QString folder = QFileDialog::getExistingDirectory(this, "Select Save Directory");
+    QString folder = QFileDialog::getExistingDirectory(this, "Select Base Directory");
     if (!folder.isEmpty()) {
         folderEdit->setText(folder);
     }
@@ -64,10 +74,11 @@ void SaveSessionDialog::browseForFolder() {
 
 void SaveSessionDialog::save() {
     QString folder = folderEdit->text();
+    QString sessionFolderName = sessionFolderEdit->text();
     QString fileName = fileEdit->text();
 
-    if (folder.isEmpty() || fileName.isEmpty()) {
-        QMessageBox::warning(this, "Invalid Input", "Both save directory and JSON file name must be specified.");
+    if (folder.isEmpty() || sessionFolderName.isEmpty() || fileName.isEmpty()) {
+        QMessageBox::warning(this, "Invalid Input", "Base directory, session folder name, and JSON file name must all be specified.");
         return;
     }
 
@@ -76,8 +87,18 @@ void SaveSessionDialog::save() {
         return;
     }
 
-    directoryPath = std::filesystem::path(folder.toStdString());
-    jsonFilePath = directoryPath / std::filesystem::path(fileName.toStdString());
+    sessionFolderPath = std::filesystem::path(folder.toStdString()) / std::filesystem::path(sessionFolderName.toStdString());
+    jsonFilePath = sessionFolderPath / std::filesystem::path(fileName.toStdString());
+
+    // Check if the session folder already exists
+    if (std::filesystem::exists(sessionFolderPath)) {
+        QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists in the selected directory. Please choose a different name.").arg(sessionFolderName));
+        return;
+    }
 
     accept();
+}
+
+void SaveSessionDialog::cancel(){
+    reject();
 }

@@ -8,6 +8,7 @@
 
 #include "../engines/Logger.h"
 #include <boost/algorithm/string.hpp>
+#include <iostream>
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr) {}
 
@@ -81,6 +82,9 @@ bool ImageRepository::load_directory(const std::string &path) {
       }
       lock.unlock(); // Unlock after modifying
     }
+    for (const auto& image : _images) {
+        connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
+    }
 
     emit onDirectoryChanged(path, getImages(), false);
     return true;
@@ -111,6 +115,9 @@ bool ImageRepository::load_image(const std::string &path) {
   std::unique_ptr<Image> img = std::make_unique<Image>();
   img->load(path);
   _images.push_back(std::move(img));
+  for (const auto& image : _images) {
+      connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
+  }
 
   emit onDirectoryChanged(fpath.parent_path().string(), getImages(), true);
   return true;
@@ -215,3 +222,13 @@ void ImageRepository::accept(Visitor &v) const {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
   v.visit(*this);
 }
+
+void ImageRepository::setUnsavedChanges() {
+    _hasUnsavedChanges = true; // Set to true when any image state changes
+}
+
+bool ImageRepository::getHasUnsavedChanges(){
+    return _hasUnsavedChanges;
+}
+
+

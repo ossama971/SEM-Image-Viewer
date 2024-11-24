@@ -288,7 +288,7 @@ ImageWidgetCore::loadAndPrepareImage(const Image &selected_image,
 
 void ImageWidgetCore::setImage(const QPixmap &pixmap) {
   scene->clear();
-  QGraphicsPixmapItem *image = scene->addPixmap(pixmap);
+  image = scene->addPixmap(pixmap);
   image->setFlags(QGraphicsItem::ItemIsSelectable |
                   QGraphicsItem::ItemIsFocusable |
                   QGraphicsItem::ItemIsMovable);
@@ -392,7 +392,7 @@ void ImageWidgetCore::handleHeatmap(const cv::Mat image,bool checked)
     QPixmap pixmap=matToQPixmap(image);
     if(!heatmap)
     {
-        heatmap=scene->addPixmap(pixmap);
+        heatmap = new QGraphicsPixmapItem(pixmap, this->image);
         return;
     }
 
