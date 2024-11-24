@@ -2,8 +2,6 @@
 #define WORKSPACE_H
 
 #include "../data/SessionData.h"
-
-#include <memory>
 #include <mutex>
 
 class Workspace
@@ -12,16 +10,18 @@ private:
     Workspace() = default;
 
 public:
-    ~Workspace() = default;
+    ~Workspace();
 
+    static Workspace* Instance();
     SessionData& getActiveSession();
-    static std::unique_ptr<Workspace>& Instance();
-	
+
+    static void destroyInstance();
+
 private:
     SessionData _activeSession;
 
-    static std::unique_ptr<Workspace> m_instance;
-    static std::mutex m_mutex;
+    static Workspace* m_instance;
+    static std::recursive_mutex m_mutex;
 };
 
 #endif // WORKSPACE_H

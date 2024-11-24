@@ -65,6 +65,9 @@ Image::~Image() {
   for (auto it = _states.begin(); it != _states.end(); ++it) {
     (*it)->Image.release();
   }
+  for (auto it = _redo.begin(); it != _redo.end(); ++it) {
+    (*it)->Image.release();
+  }
 }
 
 bool Image::load(const std::filesystem::path path) {

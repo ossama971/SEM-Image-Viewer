@@ -284,7 +284,7 @@ void MenuBarWidget::saveSession() {
     );
 
     post(ThreadPool::instance(), [directoryPath, jsonFilePath, progressbarID]() {
-        JsonVisitor visitor(directoryPath, jsonFilePath, progressbarID);
+        JsonVisitor visitor(directoryPath.string(), jsonFilePath.string(), progressbarID);
         Workspace::Instance()->getActiveSession().accept(visitor);
         visitor.write_json();
     });

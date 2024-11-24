@@ -16,6 +16,7 @@
 #include "widgets/SaveSessionDialog.h"
 #include "core/engines/JsonVisitor.h"
 #include "core/engines/Workspace.h"
+#include "core/engines/ThreadPool.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -198,37 +199,40 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    if (saveThread && saveThread->isRunning()) {
-        QMessageBox::information(this, "Save", "A save operation is already in progress.");
-        return;
-    }
-
     SaveSessionDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
+        auto directoryPath = dialog.getDirectoryPath();
+        auto jsonFilePath = dialog.getJsonFilePath();
 
-      auto directoryPath = dialog.getDirectoryPath().string();
-      auto jsonFilePath = dialog.getJsonFilePath().string();
+        int progressbarID = Logger::instance()->logMessageWithProgressBar(
+            Logger::MessageTypes::INFO,
+            Logger::MessageID::SAVING_SESSION,
+            Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+            { QString::fromStdString(jsonFilePath.string()) },
+            Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount(),
+            QString("Saving Images Data to %1 .... ").arg(QString::fromStdString(directoryPath.string()))
+        );
 
-      saveThread = new QThread(this);
-      QObject *worker = new QObject();
-      worker->moveToThread(saveThread);
+        auto saveTask = post(ThreadPool::instance(), use_future([directoryPath, jsonFilePath, progressbarID]() {
+            try {
+                JsonVisitor visitor(directoryPath.string(), jsonFilePath.string(), progressbarID);
+                Workspace::Instance()->getActiveSession().accept(visitor);
+                visitor.write_json();
+            } catch (const std::exception &e) {
+                qDebug() << "Failed to save session: " << e.what();
+                throw;
+            }
+        }));
 
-      connect(saveThread, &QThread::started, worker, [worker, directoryPath, jsonFilePath]() {
-          JsonVisitor visitor(directoryPath, jsonFilePath);
-          Workspace::Instance()->getActiveSession().accept(visitor);
-          visitor.write_json();
-          });
-
-      connect(worker, &QObject::destroyed, saveThread, &QThread::quit);
-      connect(saveThread, &QThread::finished, saveThread, &QThread::deleteLater);
-      connect(saveThread, &QThread::finished, worker, &QObject::deleteLater);
-
-      connect(saveThread, &QThread::finished, this, [this]() {
-          QMessageBox::information(nullptr, "Save", "Changes have been saved.");
-          QApplication::quit();
-          });
-
-      saveThread->start();
+        try {
+            saveTask.get();
+            QMessageBox::information(this, "Save", "Changes have been saved.");
+            ThreadPool::instance().join();
+            QApplication::quit();
+            qDebug() << "Save successful. Exiting application.";
+        } catch (const std::exception &e) {
+            QMessageBox::critical(this, "Save Error", QString("Failed to save changes: %1").arg(e.what()));
+        }
     }
 }
 
@@ -246,15 +250,10 @@ void MainWindow::applyTheme() {
 
     isDarkMode = !isDarkMode;
 }
+
 MainWindow::~MainWindow()
 {
-    // If the saveThread is running, quit and wait for it to finish
-    if (saveThread && saveThread->isRunning()) {
-        saveThread->quit();  // Request the thread to quit
-        saveThread->wait();  // Wait for the thread to finish
-    }
-    
-    delete ui;  // Call the default destructor to clean up the UI
+    delete ui;
 }
 
 

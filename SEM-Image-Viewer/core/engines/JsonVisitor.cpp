@@ -101,7 +101,7 @@ void JsonVisitor::visit(const ImageRepository &repo) {
   for (std::size_t i = 0; i < total_images; i += batch_size) {
     auto start = images.begin() + i;
     auto end = (i + batch_size < total_images) ? start + batch_size : images.end();
-    std::vector<std::shared_ptr<Image>> batch(start, end);
+    std::vector<Image*> batch(start, end);
 
     auto future = post(ThreadPool::instance(),
       use_future([

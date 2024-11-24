@@ -24,6 +24,8 @@ public:
   ThreadPool(ThreadPool &&) = delete;
   ThreadPool &operator=(ThreadPool &&) = delete;
 
+  void join();
+
 private:
   explicit ThreadPool();
   void run() noexcept;

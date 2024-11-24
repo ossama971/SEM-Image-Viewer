@@ -27,6 +27,7 @@ struct ImageState : public Visitable {
   std::string ImageExtension;
 
   ImageState();
+  ~ImageState() = default;
   ImageState(ImageStateSource state, cv::Mat image, std::string imageExtension);
 
   bool save(const std::string &path) const;

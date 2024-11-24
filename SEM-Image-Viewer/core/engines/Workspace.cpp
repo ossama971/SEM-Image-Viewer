@@ -1,17 +1,32 @@
 #include "Workspace.h"
+#include <QDebug>
+#include <mutex>
 
-std::unique_ptr<Workspace> Workspace::m_instance = nullptr;
-std::mutex Workspace::m_mutex;
+Workspace* Workspace::m_instance = nullptr;
+std::recursive_mutex Workspace::m_mutex;
 
-SessionData &Workspace::getActiveSession() {
-  std::scoped_lock<std::mutex> lock(m_mutex);
-  return _activeSession;
+Workspace* Workspace::Instance() {
+    std::scoped_lock lock(m_mutex);
+    if (!m_instance) {
+        m_instance = new Workspace();
+        std::atexit(destroyInstance);
+    }
+    return m_instance;
 }
 
-std::unique_ptr<Workspace> &Workspace::Instance() {
-  std::scoped_lock<std::mutex> lock(m_mutex);
-  if (!m_instance) {
-    m_instance = std::unique_ptr<Workspace>(new Workspace());
-  }
-  return m_instance;
+void Workspace::destroyInstance() {
+    std::scoped_lock lock(m_mutex);
+    if (m_instance) {
+        delete m_instance;
+        m_instance = nullptr;
+    }
 }
+
+SessionData& Workspace::getActiveSession() {
+    std::scoped_lock lock(m_mutex);
+    return _activeSession;
+}
+
+Workspace::~Workspace() {
+}
+

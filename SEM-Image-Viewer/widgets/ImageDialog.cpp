@@ -12,7 +12,7 @@ void ImageDialog::openFolder(ImageRepository *imageRepo, QWidget *parent) {
 
   // It might be necessary to have this call in another thread espcially if the
   // loaded folder contains a lot of images
-  post(ThreadPool::instance(), [&imageRepo, folderPath]() {
+  post(ThreadPool::instance(), [imageRepo, folderPath]() {
     imageRepo->load_directory(folderPath.toStdString());
   });
 }

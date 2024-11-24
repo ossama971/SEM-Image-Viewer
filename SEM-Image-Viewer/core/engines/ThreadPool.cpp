@@ -13,12 +13,17 @@ ThreadPool::ThreadPool() {
   }
 }
 
-ThreadPool::~ThreadPool() {
+void ThreadPool::join() {
   is_active = false;
   cv.notify_all();
   for (auto &th : pool) {
-    th.join();
+    if (th.joinable())
+      th.join();
   }
+}
+
+ThreadPool::~ThreadPool() {
+  join();
 }
 
 void ThreadPool::post(std::packaged_task<void()> job) {

@@ -63,8 +63,6 @@ private:
     MenuBarWidget *menuBarWidget;
     MiniGrid *miniGrid;
     ToolbarWidget *toolbarWidget;
-
-    QThread *saveThread = nullptr;
 };
 
 
