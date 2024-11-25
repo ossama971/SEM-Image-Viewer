@@ -18,13 +18,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     toggleButton = new QToolButton(this);
     toggleButton->setArrowType(Qt::DownArrow);
 
-    toggleButton->setStyleSheet(
-        "QToolButton { "
-        "   border: none; "
-        "   background-color: transparent; "
-        "}"
-        );
-    headerLayout->addWidget(toggleButton);
+
     // Create header label
 
     headerLabel = new QLabel("History", this);
@@ -51,7 +45,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
         "}"
         );
     headerLayout->addWidget(redoButton);
-
+    headerLayout->addWidget(toggleButton);
     // Add header layout to main layout
     mainLayout->addLayout(headerLayout);
 
@@ -96,6 +90,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     connect(redoButton, &QPushButton::clicked, this, &HistoryWidget::redoAction);
     connect(toggleButton,&QToolButton::clicked,this,&HistoryWidget::showAndHideList);
     // Set the main layout
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     setLayout(mainLayout);
 }
@@ -131,7 +126,7 @@ void HistoryWidget::redoAction(){
 }
 void HistoryWidget::showAndHideList(){
     if (toggleButton->arrowType() == Qt::DownArrow) {
-        toggleButton->setArrowType(Qt::RightArrow);
+        toggleButton->setArrowType(Qt::UpArrow);
         listContainer->hide();
     } else {
         toggleButton->setArrowType(Qt::DownArrow);

@@ -9,7 +9,7 @@ ActionListWidget::ActionListWidget(QWidget* parent)
     // Main layout
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    mainLayout->setContentsMargins(5, 10, 10, 20);
 
     // Title
     auto titleLabel = new QLabel("Actions", this);
@@ -21,17 +21,10 @@ ActionListWidget::ActionListWidget(QWidget* parent)
     auto containerLayout = new QHBoxLayout(container);
     containerLayout->setContentsMargins(0, 5, 0, 0);
 
-    // Add vertical line
-    auto line = new QFrame(container);
-    line->setFrameShape(QFrame::VLine);
-    line->setFrameShadow(QFrame::Plain);
-    line->setStyleSheet("color: #404040;"); // Dark gray line
-    containerLayout->addWidget(line);
-
     // Container for items
     auto itemsContainer = new QWidget(container);
     m_itemsLayout = new QVBoxLayout(itemsContainer);
-    m_itemsLayout->setContentsMargins(5, 0, 0, 0);
+    m_itemsLayout->setContentsMargins(0, 0, 0, 0);
     m_itemsLayout->setSpacing(5);
 
     containerLayout->addWidget(itemsContainer);

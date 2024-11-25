@@ -28,16 +28,18 @@ border: 1px solid #CCCCCC;
 
 /* Tool buttons in the toolbar */
 QToolButton {
-background-color: #F1F1F1;
+background-color: transparent;
 color: #333333;
 border: none;
 font-family: 'Roboto';
 }
 QToolButton:hover {
 background-color: #DDDDDD;
+border-radius: 4px;
 }
 QToolButton:checked {
 background-color: #CCCCCC;
+border-radius: 4px;
 }
 /* Styling for QSplitter */
 QSplitter {
@@ -118,6 +120,11 @@ border-radius: 4px;
 }
 QPushButton:pressed {
 background-color: #CCCCCC;
+}
+
+QPushButton:toolTip {
+background-color: transparent;
+color: #333333;
 }
 
 
@@ -267,6 +274,16 @@ QToolButton#diff{
 }
 QToolButton#view{
     qproperty-icon: url(:/icons/image-icon-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
+
+QToolButton#up{
+    qproperty-icon: url(:/icons/none-filled-arrow-up-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
+
+QToolButton#down{
+    qproperty-icon: url(:/icons/none-filled-arrow-down-light.svg);
      qproperty-iconSize: 17px 17px;
 }
 QPushButton#zoom-in {

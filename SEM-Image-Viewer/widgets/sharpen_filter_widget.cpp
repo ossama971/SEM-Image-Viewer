@@ -29,9 +29,8 @@ SharpenWidget::SharpenWidget(QWidget *parent)
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0,10,0,10);
     mainLayout->addLayout(compactLayout);
-
-
 
     setLayout(mainLayout);
 

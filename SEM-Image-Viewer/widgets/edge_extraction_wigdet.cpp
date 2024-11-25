@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QFrame>
+#include <QStyle>
 
 EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     : QWidget(parent),
@@ -13,14 +14,14 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
 {
     // Compact layout
     QHBoxLayout *compactLayout = new QHBoxLayout();
-    toggleButton->setText("Options ...");
+    toggleButton->setObjectName("down");
     toggleButton->setCheckable(true);
     toggleButton->setStyleSheet(
-        "QToolButton { "
-        "padding:2px"
+        "QToolButton {"
+        "    border: none;"
+        "    font-size: 12px;"  // Adjust font size as needed
         "}"
         );
-
     label->setText("Edge Extraction");
     label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
@@ -36,6 +37,7 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     compactLayout->addWidget(applyButton);
     compactLayout->addStretch();
     compactLayout->setSpacing(5);
+    compactLayout->addWidget(toggleButton);
 
     QWidget *optionsContainer = new QWidget(this);
     QHBoxLayout *optionsLayout = new QHBoxLayout(optionsContainer);
@@ -52,8 +54,7 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     QVBoxLayout *optionsContentLayout = new QVBoxLayout(optionsContent);
     optionsContentLayout->setContentsMargins(10, 0, 0, 0);
 
-    // Move toggleButton and slidersWidget to optionsContent
-    optionsContentLayout->addWidget(toggleButton);
+    // Move slidersWidget to optionsContent
     optionsContentLayout->addWidget(slidersWidget);
 
     // Add line and content to options container
@@ -62,6 +63,7 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0,10,0,10);
     mainLayout->addLayout(compactLayout);
     mainLayout->addWidget(optionsContainer);
 
@@ -113,15 +115,16 @@ EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
 void EdgeExtractionWidget::expandCollapseSliders(bool checked)
 {
     if (checked) {
-        toggleButton->setText("");
-        toggleButton->setArrowType(Qt::UpArrow);
+         toggleButton->setObjectName("up");
         slidersWidget->show(); // Show sliders when checked
     }
-    else {
-        toggleButton->setText("Options ...");
-        toggleButton->setArrowType(Qt::NoArrow);
+    else {       
+         toggleButton->setObjectName("down");
         slidersWidget->hide(); // Hide sliders when unchecked
     }
+    toggleButton->style()->unpolish(toggleButton);
+    toggleButton->style()->polish(toggleButton);
+    toggleButton->update();
 }
 
 void EdgeExtractionWidget::handleApplyFilter()

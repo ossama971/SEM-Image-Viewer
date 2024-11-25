@@ -1,20 +1,24 @@
 #include "heat_map_widget.h"
 #include "../core/engines/workspace.h"
 #include <QHBoxLayout>
-
+#include <QLabel>
 HeatMapWidget::HeatMapWidget(QWidget *parent)
     :QWidget(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
+    // QLabel *label = new QLabel(this);
+    // label->setText("Edge Extraction");
+    // label->setStyleSheet("QLabel {background-color:transparent}");
     heatmapButton = new QToolButton(this);
     heatmapButton->setText("Heat Map");
     heatmapButton->setCheckable(true);
 
-    auto buttonStyle =  "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
-                        "QToolButton:checked { border-radius: 4px; padding: 0px 3px 0px 3px;}"
-                        "QToolButton:hover { border-radius: 4px; padding: 0px 3px 0px 3px;}";
+    auto buttonStyle =  "QToolButton {  border: none; }"
+                        "QToolButton:checked { padding: 0px 3px 0px 3px;}"
+                        "QToolButton:hover { padding: 0px 3px 0px 3px;}";
     heatmapButton->setStyleSheet(buttonStyle);
 
+    layout->setContentsMargins(0,10,0,10);
     layout->addWidget(heatmapButton);
     layout->setAlignment(Qt::AlignLeft);
     setLayout(layout);

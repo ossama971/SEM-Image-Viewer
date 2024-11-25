@@ -32,14 +32,13 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     GrayScaleWidget *_grayScaleWidget = new GrayScaleWidget();
     NoiseReductionWidget *_noiseReductionWidget = new NoiseReductionWidget();
     _historyWidget = new HistoryWidget();
-    _progressBar = new ProgressBarComponent();
 
     ActionListWidget *list=new ActionListWidget();
     list->addWidget(_sharpenWidget);
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
-
+    rightSidebarLayout->setContentsMargins(10, 0, 0, 0);
     rightSidebarLayout->addWidget(list);
 
     HeatMapWidget *_heatmapWidget = new HeatMapWidget();

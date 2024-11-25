@@ -57,6 +57,10 @@
         <file>icons/pen-icon.svg</file>
         <file>icons/copy-icon-dark.svg</file>
         <file>icons/copy-icon-light.svg</file>
+        <file>icons/none-filled-arrow-up-light.svg</file>
+        <file>icons/none-filled-arrow-down-light.svg</file>
+        <file>icons/none-filled-arrow-up-dark.svg</file>
+        <file>icons/none-filled-arrow-down-dark.svg</file>
         <file>icons/link-external-dark-mode.svg</file>
         <file>icons/link-external-light-mode.svg</file>
     </qresource>

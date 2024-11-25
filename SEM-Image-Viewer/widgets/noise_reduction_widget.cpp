@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QStyle>
 
 NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
     : QWidget(parent),
@@ -11,13 +12,8 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
 {
     // Compact layout
     QHBoxLayout *compactLayout = new QHBoxLayout();
-    toggleButton->setText("Options ...");
+    toggleButton->setObjectName("down");
     toggleButton->setCheckable(true);
-    toggleButton->setStyleSheet(
-        "QToolButton { "
-        "padding:2px"
-        "}"
-        );
     label->setText("Noise Reduction");
     label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
@@ -33,6 +29,7 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
     compactLayout->addWidget(applyButton);
     compactLayout->addStretch();
     compactLayout->setSpacing(5);
+    compactLayout->addWidget(toggleButton);
 
     QWidget *optionsContainer = new QWidget(this);
     QHBoxLayout *optionsLayout = new QHBoxLayout(optionsContainer);
@@ -50,7 +47,7 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
     optionsContentLayout->setContentsMargins(10, 0, 0, 0);
 
     // Move toggleButton and slidersWidget to optionsContent
-    optionsContentLayout->addWidget(toggleButton);
+
     optionsContentLayout->addWidget(slidersWidget);
 
     // Add line and content to options container
@@ -59,6 +56,7 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
 
     // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->addLayout(compactLayout);
     mainLayout->addWidget(optionsContainer);
 
@@ -95,15 +93,16 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
 void NoiseReductionWidget::expandCollapseSliders(bool checked)
 {
     if (checked) {
-        toggleButton->setText("");
-        toggleButton->setArrowType(Qt::UpArrow);
+        toggleButton->setObjectName("up");
         slidersWidget->show(); // Show sliders when checked
     }
     else {
-        toggleButton->setText("Options ...");
-        toggleButton->setArrowType(Qt::NoArrow);
+        toggleButton->setObjectName("down");
         slidersWidget->hide(); // Hide sliders when unchecked
     }
+    toggleButton->style()->unpolish(toggleButton);
+    toggleButton->style()->polish(toggleButton);
+    toggleButton->update();
 }
 
 void NoiseReductionWidget::handleApplyFilter()
