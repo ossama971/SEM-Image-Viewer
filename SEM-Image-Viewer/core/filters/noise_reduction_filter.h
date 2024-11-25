@@ -2,7 +2,6 @@
 #define DENOISE_FILTER_H
 
 #include "image_filter.h"
-#include "../engines/logger.h"
 
 
 class NoiseReductionFilter : public ImageFilter {
@@ -12,7 +11,7 @@ public:
     cv::Mat applyFilter(const Image& inputImage) const override;
 
     ImageStateSource getImageSource() const override;
-    double getIntensity() const;
+    const double getIntensity() const;
 
 private:
     double _intensity;

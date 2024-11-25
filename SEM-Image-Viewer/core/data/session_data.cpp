@@ -6,11 +6,11 @@ SessionData::SessionData() : _batchFilter() {
     connect(&_batchFilter, &BatchFilter::onFinish, this, &SessionData::onBatchFilterApplied);
 }
 
-void SessionData::loadDirectory(const std::string path) {
+void SessionData::loadDirectory(const std::string &path) {
     _imageRepo.load_directory(path);
 }
 
-void SessionData::loadImage(const std::string path) {
+void SessionData::loadImage(const std::string &path) {
     _imageRepo.load_image(path);
 
     Image* selectedImage = _imageRepo.getImage();
@@ -26,7 +26,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
         return;
 
     selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
-    emit updateActionList(selectedImage->GetCurrentAction());
+    emit updateActionList(selectedImage->getCurrentAction());
 }
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices) {
@@ -38,7 +38,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<i
     _batchFilter.apply(std::move(filter), batchInput);
 }
 
-void SessionData::onBatchFilterApplied(std::vector<Image*> input, std::vector<cv::Mat> output, ImageStateSource stateSource) {
+void SessionData::onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource) {
     for (int i = 0; i < input.size(); ++i)
         input[i]->setImage(output[i], stateSource);
 
@@ -103,7 +103,7 @@ bool SessionData::redo(){
 
 
     if(selectedImage->redo()){
-        emit updateActionList(selectedImage->GetCurrentAction());
+        emit updateActionList(selectedImage->getCurrentAction());
     }
     return true;
 }

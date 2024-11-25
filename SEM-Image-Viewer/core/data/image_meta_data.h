@@ -15,15 +15,15 @@ public:
     void load(const std::string &path, const cv::Mat &image);
 
 private:
-    ImageFormat getImageFormat(const std::string &path);
+    const ImageFormat getImageFormat(const std::string &path);
     bool isGreyScale(const cv::Mat &image);
 
 public:
-    int getWidth() const;
-    int getHeight() const;
-    ImageFormat getFormat() const;
-    ColorSpace getColorSpace() const;
-    std::filesystem::file_time_type getDateModified() const;
+    const int getWidth() const;
+    const int getHeight() const;
+    const ImageFormat getFormat() const;
+    const ColorSpace getColorSpace() const;
+    const std::filesystem::file_time_type getDateModified() const;
 
     void accept(Visitor &v) const override;
 

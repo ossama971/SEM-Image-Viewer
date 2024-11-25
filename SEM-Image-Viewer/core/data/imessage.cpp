@@ -1,17 +1,17 @@
 #include "imessage.h"
 
 
-IMessage::IMessage(int msgId,int type,QString msg) : _id(msgId),_type(type),_msg(msg){
+IMessage::IMessage(int msgId,int type,const QString &msg) : _id(msgId),_type(type),_msg(msg){
 
 }
 IMessage::~IMessage(void) {
 }
 
-int IMessage::GetId(void) const {
+const int IMessage::GetId(void) const {
   return _id;
 }
 
-QString IMessage::GetType(void) const {
+const QString IMessage::GetType(void) const {
   switch (_type) {
   case 0:
     return "Error";
@@ -24,18 +24,18 @@ QString IMessage::GetType(void) const {
   }
 }
 
-QString IMessage::GetMessage() const{
+const QString IMessage::GetMessage() const{
     return _msg;
 }
-QString IMessage::GetBody() const  {
+const QString IMessage::GetBody() const  {
     return _body;
 }
-QString IMessage::GetPath() const  {
+const QString IMessage::GetPath() const  {
     return _path;
 }
-void IMessage::SetPath(QString path){
+void IMessage::SetPath(const QString &path){
     this->_path=path;
 }
-void IMessage::SetBody(QString body){
+void IMessage::SetBody(const QString &body){
     this->_body=body;
 }

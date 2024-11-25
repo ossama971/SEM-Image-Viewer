@@ -1,7 +1,7 @@
 #ifndef IMAGE_COLOR_SPACE_H
 #define IMAGE_COLOR_SPACE_H
 
-#include <boost/algorithm/string.hpp>
+
 #include <string>
 
 enum class ColorSpace { RGB, Gray };

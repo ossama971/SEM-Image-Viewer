@@ -4,6 +4,7 @@
 #include "core/engines/json_vsitor.h"
 #include "core/engines/workspace.h"
 #include "core/engines/thread_pool.h"
+#include "core/engines/logger.h"
 
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -19,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ui->setupUi(this);
 
-    // resize(1000, 800);  // Adjust this size as needed
     this->setWindowState(Qt::WindowMaximized);
 
     QWidget *centralWidget = new QWidget(this);

@@ -25,12 +25,12 @@ public:
     ~Image();
 
     bool load(const std::filesystem::path path);
-    bool setImage(cv::Mat image, ImageStateSource newState = ImageStateSource::Origin);
+    bool setImage(const cv::Mat &image, ImageStateSource newState = ImageStateSource::Origin);
 
-    void addRedo(cv::Mat image, ImageStateSource newState);
+    void addRedo(const cv::Mat &image, ImageStateSource newState);
 
     bool isLoaded() const;
-    cv::Mat& getImageMat() const;
+    const cv::Mat& getImageMat() const;
     ImageStateSource getImageState() const;
     std::filesystem::path getPath() const;
     ImageMetadata getMetadata() const;
@@ -40,10 +40,10 @@ public:
 
     void accept(Visitor &v) const override;
 
-    QString GetCurrentAction() const;
+    const QString getCurrentAction() const;
     bool undo();
     bool redo();
-    QList<QString> getHistory();
+    const QList<QString> getHistory();
 
 signals:
     void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);

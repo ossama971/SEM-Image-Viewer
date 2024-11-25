@@ -2,7 +2,7 @@
 #include "../engines/logger.h"
 #include "../engines/thread_pool.h"
 
-void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, std::vector<Image*> input) {
+void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<Image*> &input) {
   if (input.empty() || !filter)
     return;
 

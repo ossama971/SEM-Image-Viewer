@@ -1,4 +1,5 @@
 #include "image_format.h"
+#include <boost/algorithm/string.hpp>
 
 std::string imageFormatToString(ImageFormat imageFormat) {
     switch (imageFormat) {

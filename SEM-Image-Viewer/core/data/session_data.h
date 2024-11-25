@@ -12,8 +12,8 @@ class SessionData : public QObject, public Visitable {
 public:
     SessionData();
 
-    void loadDirectory(const std::string path);
-    void loadImage(const std::string path);
+    void loadDirectory(const std::string &path);
+    void loadImage(const std::string &path);
     void applyFilter(std::unique_ptr<ImageFilter> filter);
     void applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices);
 
@@ -30,19 +30,18 @@ public:
     void accept(Visitor &v) const override;
 
 signals:
-    void loadActionList(QList<QString> actions);
-    void updateActionList(QString action);
+    void loadActionList(const QList<QString> &actions);
+    void updateActionList(const QString &action);
     void popActionList();
 
     void onBatchFilterStarted(int maxIterations);
     void onBatchFilterFinished();
 
 private slots:
-    void onBatchFilterApplied(std::vector<Image*> input, std::vector<cv::Mat> output, ImageStateSource stateSource);
+    void onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource);
 
 private:
     ImageRepository _imageRepo;
-    //UndoManager _undoManager;
     BatchFilter _batchFilter;
 };
 

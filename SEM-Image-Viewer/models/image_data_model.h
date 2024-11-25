@@ -18,7 +18,7 @@ public:
     void loadImages(int startIndex, int endIndex);  // New function to load images in chunks
 
 public slots:
-    void updateImages(const std::string newDir, std::vector<Image*> newImages, bool image_load);  // Slot to receive images from ImageRepository
+    void updateImages(const std::string &newDir, const std::vector<Image*> &newImages, bool image_load);  // Slot to receive images from ImageRepository
     void updateImagesAfterFilter(std::vector<std::unique_ptr<ImageState>>& states);
 
 private:

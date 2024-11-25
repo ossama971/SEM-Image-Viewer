@@ -1,5 +1,6 @@
 #include "image_meta_data.h"
 #include <boost/algorithm/string.hpp>
+#include <opencv2/opencv.hpp>
 
 void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
   _width = image.cols;
@@ -9,7 +10,7 @@ void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
   _dateModified = std::filesystem::last_write_time(path);
 }
 
-ImageFormat ImageMetadata::getImageFormat(const std::string &path) {
+const ImageFormat ImageMetadata::getImageFormat(const std::string &path) {
   std::string::size_type i = path.find_last_of(".");
   if (i == std::string::npos || i + 1 >= path.length())
     return ImageFormat::Unknown;
@@ -49,15 +50,15 @@ bool ImageMetadata::isGreyScale(const cv::Mat &image) {
   return true;
 }
 
-int ImageMetadata::getWidth() const { return _width; }
+const int ImageMetadata::getWidth() const { return _width; }
 
-int ImageMetadata::getHeight() const { return _height; }
+const int ImageMetadata::getHeight() const { return _height; }
 
-ImageFormat ImageMetadata::getFormat() const { return _format; }
+const ImageFormat ImageMetadata::getFormat() const { return _format; }
 
-ColorSpace ImageMetadata::getColorSpace(void) const { return _colorSpace; }
+const ColorSpace ImageMetadata::getColorSpace(void) const { return _colorSpace; }
 
-std::filesystem::file_time_type ImageMetadata::getDateModified() const {
+const std::filesystem::file_time_type ImageMetadata::getDateModified() const {
   return _dateModified;
 }
 

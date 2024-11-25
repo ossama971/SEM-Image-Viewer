@@ -82,7 +82,7 @@ bool Image::load(const std::filesystem::path path) {
   return true;
 }
 
-bool Image::setImage(cv::Mat image, ImageStateSource newState) {
+bool Image::setImage(const cv::Mat &image, ImageStateSource newState) {
     if (image.empty()){
         return false;
     }
@@ -92,7 +92,7 @@ bool Image::setImage(cv::Mat image, ImageStateSource newState) {
   return true;
 }
 
-void Image::addRedo(cv::Mat image, ImageStateSource newState) {
+void Image::addRedo(const cv::Mat &image, ImageStateSource newState) {
   std::string imageExtension = this->_path.extension().string();
   _states.push_back(std::make_unique<ImageState>(newState, std::move(image), imageExtension));
 }
@@ -138,7 +138,7 @@ bool  Image::redo(){
     return true;
 }
 
-QList<QString> Image::getHistory(){
+const QList<QString> Image::getHistory(){
     QList<QString> actionsList;
 
     for(int i=0;i<_states.size();i++){
@@ -158,7 +158,7 @@ QList<QString> Image::getHistory(){
     return actionsList;
 }
 
-cv::Mat& Image::getImageMat() const {
+const cv::Mat& Image::getImageMat() const {
     // qDebug() << "num of states in the image: "<<_states.size()<<" alooo";
     return _states.back()->Image;
 }
@@ -167,7 +167,7 @@ ImageStateSource Image::getImageState() const {
     return _states.back()->State;
 }
 
-QString Image::GetCurrentAction() const {
+const QString Image::getCurrentAction() const {
     if(_states.back()->State==ImageStateSource::GrayScaleFilter){
         return "Gray Scale Filter";
     }

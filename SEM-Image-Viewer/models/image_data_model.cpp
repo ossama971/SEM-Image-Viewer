@@ -9,39 +9,22 @@
 ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent) {
     // Connect the repository's signal to the data model's slot
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
-                     this, &ImageDataModel::updateImages);
-
-
-    // Image* selectedImage = Workspace::Instance()->getActiveSession().getImageRepo().getImage();
-
-    // if(!selectedImage){
-    //     qDebug()<<"selected image is nullllllllllllllll------------------";
-    // }else{
-    //     QObject::connect(selectedImage, &Image::onImageStateUpdated,
-    //                      this, &ImageDataModel::updateImagesAfterFilter);
-    // }
+                    this, &ImageDataModel::updateImages);
 
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(),
-                     &ImageRepository::onImageChanged,
-                     this, [this](Image* newImage) {
-                         if (newImage) {
-                             QObject::connect(newImage, &Image::onImageStateUpdated,
-                                              this, &ImageDataModel::updateImagesAfterFilter,Qt::UniqueConnection);
-                         } else {
-                             qDebug() << "New selected image is null; no signal connection.";
-                         }
-                     });
-
-
+                    &ImageRepository::onImageChanged,
+                    this, [this](Image* newImage) {
+                        if (newImage) {
+                            QObject::connect(newImage, &Image::onImageStateUpdated,
+                                            this, &ImageDataModel::updateImagesAfterFilter,Qt::UniqueConnection);
+                        }
+                    });
 }
 
 void ImageDataModel::updateImagesAfterFilter(std::vector<std::unique_ptr<ImageState>>& states) {
-    qDebug()<<"alooooooooooooo------------------";
     // beginResetModel();
     // m_thumbnails.clear();
     std::vector<Image*> newImages =Workspace::Instance()->getActiveSession().getImageRepo().getImages();
-    qDebug()<<newImages.size();
-    qDebug()<<"in updated ";
     updateImages("", newImages, false);
 
 
@@ -49,13 +32,11 @@ void ImageDataModel::updateImagesAfterFilter(std::vector<std::unique_ptr<ImageSt
 }
 
 
-void ImageDataModel::updateImages(const std::string newDir, std::vector<Image*> newImages, bool image_load) {
+void ImageDataModel::updateImages(const std::string &newDir, const std::vector<Image*> &newImages, bool image_load) {
     beginResetModel();
     images.clear();
     m_thumbnails.clear();
     images = QList<Image*>(newImages.begin(), newImages.end());
-    qDebug()<<"in directoryyyyy ";
-    qDebug()<<images.size();
     endResetModel();
     loadImages(0, 20);
 
@@ -137,8 +118,6 @@ void ImageDataModel::loadImages(int startIndex, int endIndex) {
 
 Image* ImageDataModel::getImageAt(int index) const {
     if (0 <= index && index < images.size()) {
-        qDebug() << "ImageDataModel::getImageAt() -> " << index;
-        qDebug() << "ImageDataModel::getImageAt() -> " << images[index]->getPath().string().c_str();
         return images[index];
     }
     return nullptr; // Return a default/empty Image if index is out of bounds

@@ -1,4 +1,5 @@
 #include "noise_reduction_filter.h"
+#include "../engines/logger.h"
 
 NoiseReductionFilter::NoiseReductionFilter(double intensity) {
     if (intensity < 0)
@@ -29,6 +30,6 @@ ImageStateSource NoiseReductionFilter::getImageSource() const {
     return ImageStateSource::NoiseReductionFilter;
 }
 
-double NoiseReductionFilter::getIntensity(void) const {
+const double NoiseReductionFilter::getIntensity(void) const {
     return _intensity;
 }

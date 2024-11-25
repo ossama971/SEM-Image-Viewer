@@ -1,4 +1,5 @@
 #include "image_color_space.h"
+#include <boost/algorithm/string.hpp>
 
 std::string colorSpaceToString(ColorSpace colorSpace) {
     switch (colorSpace) {

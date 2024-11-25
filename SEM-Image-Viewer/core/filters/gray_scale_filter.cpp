@@ -1,6 +1,5 @@
 #include "gray_scale_filter.h"
-
-
+#include "../engines/logger.h"
 
 cv::Mat GrayScaleFilter::applyFilter(const Image &inputImage) const
 {

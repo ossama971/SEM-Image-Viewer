@@ -2,7 +2,6 @@
 #define CONTOURS_FILTER_H
 
 #include "image_filter.h"
-#include "../engines/logger.h"
 
 
 class EdgeDetectionFilter : public ImageFilter {
@@ -10,8 +9,8 @@ private:
     int threshold_low=50;
     int threshold_high=150;
 
-    cv::Mat Denoise(const cv::Mat &image) const;
-    cv::Mat ToGrayscale(const cv::Mat &image) const;
+    cv::Mat denoise(const cv::Mat &image) const;
+    cv::Mat toGrayscale(const cv::Mat &image) const;
 public:
     EdgeDetectionFilter();
     void setThresholdLow(int threshold);

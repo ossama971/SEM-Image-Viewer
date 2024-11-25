@@ -2,7 +2,7 @@
 
 ImageState::ImageState() {}
 
-ImageState::ImageState(ImageStateSource state, cv::Mat image, std::string imageExtension)
+ImageState::ImageState(ImageStateSource state, const cv::Mat &image, const std::string &imageExtension)
     : State(state), Image(image), ImageExtension(imageExtension) {}
 
 void ImageState::accept(Visitor &v) const { v.visit(*this); }

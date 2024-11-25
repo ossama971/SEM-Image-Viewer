@@ -14,16 +14,16 @@ public:
 
 public:
 
-    IMessage(int msgId,int type,QString msg);
+    IMessage(int msgId,int type,const QString &msg);
    ~IMessage();
 
-   int GetId() const;
-   QString GetType() const;
-   QString GetMessage() const;
-   QString GetBody() const  ;
-   QString GetPath() const  ;
-   void SetPath(QString path)  ;
-   void SetBody(QString body)  ;
+   const int GetId() const;
+   const QString GetType() const;
+   const QString GetMessage() const;
+   const QString GetBody() const  ;
+   const QString GetPath() const  ;
+   void SetPath(const QString &path)  ;
+   void SetBody(const QString &body)  ;
 
 protected:
   int _id;

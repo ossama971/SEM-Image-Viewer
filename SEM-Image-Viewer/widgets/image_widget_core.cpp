@@ -252,7 +252,6 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
   return QWidget::eventFilter(obj, event);
 }
 void ImageWidgetCore::loadAndDisplayImage(const Image &image) {
-  qDebug() << "Loading and displaying image";
   auto pixmap = loadAndPrepareImage(image, graphicsView->size());
   if (pixmap) {
     setImage(*pixmap);

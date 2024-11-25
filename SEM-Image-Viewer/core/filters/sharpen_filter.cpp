@@ -1,4 +1,5 @@
 #include "sharpen_filter.h"
+#include "../engines/logger.h"
 
 cv::Mat SharpenFilter::applyFilter(const Image &inputImage) const
 {

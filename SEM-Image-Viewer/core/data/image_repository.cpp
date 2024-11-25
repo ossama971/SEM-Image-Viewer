@@ -3,7 +3,6 @@
 
 #include <QDebug>
 #include <QVector>
-#include <filesystem>
 #include <regex>
 
 #include "../engines/logger.h"
@@ -191,7 +190,7 @@ Image *ImageRepository::getImage(const std::size_t index) {
   return nullptr;
 }
 
-std::vector<Image *> ImageRepository::getImages() const {
+const std::vector<Image *> ImageRepository::getImages() const {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
   std::vector<Image *> images;
   for (const auto &image : _images) {
@@ -200,7 +199,7 @@ std::vector<Image *> ImageRepository::getImages() const {
   return images;
 }
 
-std::vector<Image *>
+const std::vector<Image *>
 ImageRepository::getImages(const std::vector<int> &indices) const {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
   std::vector<Image *> result;
@@ -213,7 +212,7 @@ ImageRepository::getImages(const std::vector<int> &indices) const {
   return result;
 }
 
-std::string ImageRepository::getFolderPath() const {
+const std::string ImageRepository::getFolderPath() const {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
   return _folderPath;
 }
@@ -230,5 +229,3 @@ void ImageRepository::setUnsavedChanges() {
 bool ImageRepository::getHasUnsavedChanges(){
     return _hasUnsavedChanges;
 }
-
-
