@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+
 class GrayScaleWidget : public QWidget
 {
     Q_OBJECT

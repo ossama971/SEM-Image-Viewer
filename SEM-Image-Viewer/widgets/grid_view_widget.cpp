@@ -3,11 +3,10 @@
 #include "thumbnail_delegate.h"
 
 #include <QVBoxLayout>
-#include <QHeaderView>
 #include <QMenu>
 #include <QCheckBox>
-#include <QStyle>
-#include <QDebug>
+#include <QScrollBar>
+
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -95,17 +94,7 @@ void GridView::initializeGrid() {
 }
 
 void GridView::onImageChanged(Image* newImage) {
-    // if (selectedIndex >= 0 && selectedIndex < imageDataModel->rowCount()) {
-    //     QModelIndex modelIndex = imageDataModel->index(selectedIndex, 0);
 
-    //     // Set the new selection in listView
-    //     listView->selectionModel()->setCurrentIndex(
-    //         modelIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows
-    //         );
-
-    //     // Scroll to the selected item to bring it into view if needed
-    //     listView->scrollTo(modelIndex);
-    // }
 }
 
 void GridView::onScroll(int value) {

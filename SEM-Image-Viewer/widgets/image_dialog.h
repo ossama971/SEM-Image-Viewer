@@ -3,7 +3,6 @@
 
 #include "../core/data/image_repository.h"
 #include <QWidget>
-#include <QString>
 
 class ImageDialog : public QWidget
 {

@@ -1,5 +1,6 @@
 #include "image_dialog.h"
 #include <QFileDialog>
+#include <QString>
 
 #include "../core/engines/thread_pool.h"
 

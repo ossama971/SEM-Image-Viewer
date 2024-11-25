@@ -8,17 +8,17 @@
 ImageFilterProxyModel::ImageFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent) {}
 
-void ImageFilterProxyModel::setRootDir(QDir root_dir) {
+void ImageFilterProxyModel::setRootDir(const QDir &root_dir) {
     _rootDir = root_dir;
 }
 
-void ImageFilterProxyModel::setImageFilter(QString image_path) {
+void ImageFilterProxyModel::setImageFilter(const QString &image_path) {
     _imageFilter = image_path;
 
     invalidateFilter();
 }
 
-void ImageFilterProxyModel::setSearchText(QString search_text) {
+void ImageFilterProxyModel::setSearchText(const QString &search_text) {
     _searchText = search_text;
 
     invalidateFilter();

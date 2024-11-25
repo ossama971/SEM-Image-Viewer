@@ -4,10 +4,9 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QListWidget>
-#include <QVBoxLayout>
 #include <QLabel>
-#include <QStack>
 #include <QToolButton>
+
 class HistoryWidget : public QWidget {
     Q_OBJECT
 
@@ -18,15 +17,15 @@ signals:
     void undo();
     void redo();
 private:
-    QLabel *headerLabel;
-    QPushButton *undoButton;
-    QPushButton *redoButton;
-    QListWidget *actionList;
-    QToolButton* toggleButton;
-    QWidget* listContainer;
+    QLabel *headerLabel = nullptr;
+    QPushButton *undoButton = nullptr;
+    QPushButton *redoButton = nullptr;
+    QListWidget *actionList = nullptr;
+    QToolButton* toggleButton = nullptr;
+    QWidget* listContainer = nullptr;
 public slots:
-    void loadActionList(QList<QString> actions);
-    void updateActionList(QString action);
+    void loadActionList(const QList<QString> &actions);
+    void updateActionList(const QString &action);
     void popAction();
 public slots:
     void undoAction();

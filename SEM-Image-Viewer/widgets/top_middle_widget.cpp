@@ -1,6 +1,9 @@
 #include "top_middle_widget.h"
 #include "controller_widget.h"
 
+#include <QGuiApplication>
+#include <QScreen>
+
 TopMiddleWidget::TopMiddleWidget(QWidget *parent)
   : QWidget(parent) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();

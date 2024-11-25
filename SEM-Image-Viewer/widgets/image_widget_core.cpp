@@ -6,6 +6,9 @@
 #include <QtCharts/QCategoryAxis>
 #include <QGraphicsProxyWidget>
 #include <vector>
+#include <QGraphicsSceneMouseEvent>
+#include <QVBoxLayout>
+
 
 using namespace cv;
 using namespace std;
@@ -387,7 +390,7 @@ void ImageWidgetCore::onupdateImageState(
   updateImage(states.back()->Image);
 }
 
-void ImageWidgetCore::handleHeatmap(const cv::Mat image,bool checked)
+void ImageWidgetCore::handleHeatmap(const cv::Mat &image,bool checked)
 {
     QPixmap pixmap=matToQPixmap(image);
     if(!heatmap)
@@ -421,7 +424,7 @@ void ImageWidgetCore::setIntensityPlotMode(bool enabled) {
     }
 }
 
-QPixmap ImageWidgetCore::matToQPixmap(cv::Mat image)
+QPixmap ImageWidgetCore::matToQPixmap(const cv::Mat &image)
 {
     QImage qImage;
     if (image.channels() == 1) {

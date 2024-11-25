@@ -21,15 +21,15 @@ private slots:
     void cancel();
 
 private:
-    QLabel *folderLabel;
-    QLabel *sessionFolderLabel;
-    QLabel *fileLabel;
-    QLineEdit *folderEdit;
-    QLineEdit *sessionFolderEdit;
-    QLineEdit *fileEdit;
-    QPushButton *browseButton;
-    QPushButton *saveButton;
-    QPushButton *cancelButton;
+    QLabel *folderLabel = nullptr;
+    QLabel *sessionFolderLabel = nullptr;
+    QLabel *fileLabel = nullptr;
+    QLineEdit *folderEdit = nullptr;
+    QLineEdit *sessionFolderEdit = nullptr;
+    QLineEdit *fileEdit = nullptr;
+    QPushButton *browseButton = nullptr;
+    QPushButton *saveButton = nullptr;
+    QPushButton *cancelButton = nullptr;
 
     std::filesystem::path directoryPath;
     std::filesystem::path sessionFolderPath;

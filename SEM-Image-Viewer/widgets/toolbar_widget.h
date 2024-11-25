@@ -3,8 +3,6 @@
 
 #include <QWidget>
 #include <QToolButton>
-#include <QHBoxLayout>
-#include <QButtonGroup>
 
 class ToolbarWidget : public QWidget
 {
@@ -12,18 +10,18 @@ class ToolbarWidget : public QWidget
 
 public:
     explicit ToolbarWidget(QWidget *parent = nullptr);
-    QToolButton *imageViewButton;
-    QToolButton *diffViewButton;
-    QToolButton *gridViewButton;
-    QToolButton *saveButton;
-    QToolButton *redoButton;
-    QToolButton *undoButton;
-    QToolButton *minimizeToolbarButton;
-    QToolButton *minimizeLoggerButton;
+    QToolButton *imageViewButton = nullptr;
+    QToolButton *diffViewButton = nullptr;
+    QToolButton *gridViewButton = nullptr;
+    QToolButton *saveButton = nullptr;
+    QToolButton *redoButton = nullptr;
+    QToolButton *undoButton = nullptr;
+    QToolButton *minimizeToolbarButton = nullptr;
+    QToolButton *minimizeLoggerButton = nullptr;
 
 private:
-    QToolButton *seperatorIcon;
-    QToolButton *seperatorIcon2;
+    QToolButton *seperatorIcon = nullptr;
+    QToolButton *seperatorIcon2 = nullptr;
 
 public slots:
     void onSelectDiffView();

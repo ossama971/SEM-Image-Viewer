@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QListView>
-#include <QScrollBar>
 #include <QCheckBox>
 #include <QItemSelectionModel>
 
@@ -18,7 +17,6 @@ signals:
 
 public:
     explicit GridView(QWidget *parent = nullptr);
-
     std::vector<int> getSelectedImages();
 
 private slots:
@@ -30,14 +28,13 @@ private slots:
     void openInDiffView();
 
 private:
-    QListView *listView;
-    ImageDataModel *imageDataModel;
-
+    QListView *listView = nullptr;
+    ImageDataModel *imageDataModel = nullptr;
+    Image* firstImage = nullptr;
+    Image* secondImage = nullptr;
     void setModel(ImageDataModel *model);
     void loadImages(const QString &path);
     void initializeGrid();
-    Image* firstImage;
-    Image* secondImage;
 };
 
 #endif // GRID_VIEW_WIDGET_H

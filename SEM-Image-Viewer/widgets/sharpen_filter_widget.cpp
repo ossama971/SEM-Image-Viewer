@@ -2,8 +2,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QMenu>
-#include <QIcon>
+
 
 SharpenWidget::SharpenWidget(QWidget *parent)
     : QWidget(parent),

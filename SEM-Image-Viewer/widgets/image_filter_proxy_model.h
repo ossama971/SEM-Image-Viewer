@@ -14,9 +14,9 @@ private:
 public:
     ImageFilterProxyModel(QObject *parent = nullptr);
 
-    void setRootDir(QDir root_dir);
-    void setImageFilter(QString image_path);
-    void setSearchText(QString search_text);
+    void setRootDir(const QDir &root_dir);
+    void setImageFilter(const QString &image_path);
+    void setSearchText(const QString &search_text);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;

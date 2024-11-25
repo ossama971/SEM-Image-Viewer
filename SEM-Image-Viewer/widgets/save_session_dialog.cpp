@@ -3,9 +3,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDir>
 #include <QString>
-#include <filesystem>
 
 SaveSessionDialog::SaveSessionDialog(QWidget *parent)
     : QDialog(parent) {

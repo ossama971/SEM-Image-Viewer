@@ -16,9 +16,9 @@ public:
     void setImageSize(int width, int height); // New method to set image size
 
 private:
-    QLabel *dimensionsLabel;
-    QLabel *zoomLabel;
-    QLabel *positionLabel;
+    QLabel *dimensionsLabel = nullptr;
+    QLabel *zoomLabel = nullptr;
+    QLabel *positionLabel = nullptr;
     int imageWidth;  // Store image width
     int imageHeight; // Store image height
 };

@@ -2,18 +2,6 @@
 #define BOTTOM_MIDDLE_WIDGET_H
 
 #include <QWidget>
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QApplication>
-#include <QMainWindow>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QGuiApplication>
-#include <QScreen>
-
-
 
 class BottomMiddleWidget : public QWidget
 {

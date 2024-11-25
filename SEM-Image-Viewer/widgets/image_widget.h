@@ -2,13 +2,7 @@
 #define IMAGEWIDGET_H
 
 #include <QWidget>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QPinchGesture>
-#include <QWheelEvent>
-#include <QMouseEvent>
 #include <opencv2/opencv.hpp>
-
 #include "image_widget_core.h"
 
 class ImageWidget : public QWidget
@@ -26,7 +20,7 @@ private slots:
 
 public slots:
   void updateImage(const cv::Mat &image);
-  void handleHeatmap(cv::Mat heatmap,bool checked);
+  void handleHeatmap(const cv::Mat &heatmap,bool checked);
 
 };
 

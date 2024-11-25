@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
-#include <QSplitter>
 #include "widgets/bottom_middle_widget.h"
 #include "widgets/left_side_bar_widget.h"
 #include "widgets/right_side_bar_widget.h"
@@ -12,17 +9,11 @@
 #include "widgets/exit_dialog_widget.h"
 #include "widgets/mini_grid_widget.h"
 #include "widgets/toolbar_widget.h"
-// #include "core/engines/JsonVisitor.h"
 
-#include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QIcon>
 #include <QCloseEvent>
-#include <QMessageBox>
+#include <QSplitter>
 
 #include "widgets/image_widget.h"
 
@@ -44,6 +35,7 @@ public slots:
     void onShowImageClicked(bool isChecked);
     void showMiniGridClicked(bool isChecked);
     void onSaveChangesClicked();
+    void onCloseAllClicked();
 
 private slots:
     void applyTheme();
@@ -51,18 +43,17 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    Ui::MainWindow *ui;
-    ImageWidget *imageWidget;
-
-    LeftSidebarWidget *leftSidebarWidget;
-    RightSidebarWidget *rightSidebarWidget;
-    TopMiddleWidget *topMiddleWidget;
-    BottomMiddleWidget *bottomMiddleWidget;
-    QSplitter *middleSplitter;
-    QSplitter *mainSplitter;
-    MenuBarWidget *menuBarWidget;
-    MiniGrid *miniGrid;
-    ToolbarWidget *toolbarWidget;
+    Ui::MainWindow *ui = nullptr;
+    ImageWidget *imageWidget = nullptr;
+    LeftSidebarWidget *leftSidebarWidget = nullptr;
+    RightSidebarWidget *rightSidebarWidget = nullptr;
+    TopMiddleWidget *topMiddleWidget = nullptr;
+    BottomMiddleWidget *bottomMiddleWidget = nullptr;
+    QSplitter *middleSplitter = nullptr;
+    QSplitter *mainSplitter = nullptr;
+    MenuBarWidget *menuBarWidget = nullptr;
+    MiniGrid *miniGrid = nullptr;
+    ToolbarWidget *toolbarWidget = nullptr;
 };
 
 

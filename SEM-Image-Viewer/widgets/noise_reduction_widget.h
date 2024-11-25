@@ -14,11 +14,11 @@ public:
     int getIntensity() const;
 
 private:
-    QLabel *label;
-    QToolButton *toggleButton;
-    QSlider *IntensitySlider;
-    QWidget *slidersWidget;
-    QLabel *intensity;
+    QLabel *label = nullptr;
+    QToolButton *toggleButton = nullptr;
+    QSlider *IntensitySlider = nullptr;
+    QWidget *slidersWidget = nullptr;
+    QLabel *intensity = nullptr;
 
 signals:
     void intensityChanged(int value);

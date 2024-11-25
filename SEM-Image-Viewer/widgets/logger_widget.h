@@ -2,20 +2,15 @@
 #define LOGGER_WIDGET_H
 
 #include <QWidget>
-#include <QListView>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QLabel>
 #include <QStackedWidget>
 #include <QListWidget>
-
-#include <QListWidgetItem>
-
 #include "../core/engines/logger.h"
 #include "log_card_widget.h"
+
 class LoggerWidget : public QWidget
 {
     Q_OBJECT
@@ -33,27 +28,25 @@ private slots:
     void createButtons();
 
 signals:
-    void showSelectedType(QString type, QString _searchText);
+    void showSelectedType(const QString &type, const QString &_searchText);
 
 private:
-    QPushButton *allShowButton;
-    QPushButton *infoShowButton;
-    QPushButton *errorsShowButton;
-    QPushButton *warningsShowButton;
+    QPushButton *allShowButton = nullptr;
+    QPushButton *infoShowButton = nullptr;
+    QPushButton *errorsShowButton = nullptr;
+    QPushButton *warningsShowButton = nullptr;
+    QPushButton *switchLayoutButtonFull = nullptr;
+    QPushButton *switchLayoutButtonCompact = nullptr;
 
-    QPushButton *switchLayoutButtonFull;
-    QPushButton *switchLayoutButtonCompact;
-    QVBoxLayout *fullLayout;
-    QVBoxLayout *compactLayout;
-    QStackedWidget *stackedWidget;
-    bool isExpanded;
+    QVBoxLayout *fullLayout = nullptr;
+    QVBoxLayout *compactLayout = nullptr;
+    QHBoxLayout *layout = nullptr;
 
-    QLineEdit *searchLineEdit;
-    QHBoxLayout *layout;
+    QStackedWidget *stackedWidget = nullptr;
+    QLineEdit *searchLineEdit = nullptr;
+    QListWidget *logListLayout = nullptr;
 
-    QListWidget *logListLayout;
-
-
+    bool isExpanded = true;
 
 signals:
     void layoutSwitched(bool isExpanded);

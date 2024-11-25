@@ -1,7 +1,7 @@
 #include "zoom_widget.h"
 #include <QHBoxLayout>
 #include <QIcon>
-#include <QDir>
+
 ZoomWidget::ZoomWidget(QWidget *parent)
     : QWidget(parent), zoomInButton(new QPushButton(this)), zoomOutButton(new QPushButton(this))
 {

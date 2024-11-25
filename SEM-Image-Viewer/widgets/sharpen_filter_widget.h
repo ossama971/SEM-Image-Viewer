@@ -4,8 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QToolButton>
-#include <QStackedWidget>
-#include <QSlider>
+
 
 
 class SharpenWidget:public QWidget
@@ -16,9 +15,9 @@ public:
 
 
 private:
-    QLabel *label;
-    QToolButton *toggleButton;
-    QWidget *slidersWidget;
+    QLabel *label = nullptr;
+    QToolButton *toggleButton = nullptr;
+    QWidget *slidersWidget = nullptr;
 signals:
     void applyFilter();
 

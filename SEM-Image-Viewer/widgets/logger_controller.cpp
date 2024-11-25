@@ -13,16 +13,12 @@ loggerController &loggerController::instance()
     return instance;
 }
 
-
-
 void loggerController::setLoggerWidget(LoggerWidget *widget){
     _loggerWidgetPtr=widget;
     if(_loggerWidgetPtr){
         connect(_loggerWidgetPtr,&LoggerWidget::showSelectedType,this,&loggerController::FilterMessagesByType);
     }
 }
-
-
 
 void loggerController::createLogMessage( IMessage* msg){
     LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),msg->GetBody(),false,msg->GetPath());
@@ -32,8 +28,6 @@ void loggerController::createLogMessage( IMessage* msg){
 
 }
 
-
-
 void loggerController::createLogMessageWithProgressBar( IMessage* msg,int itemCount){
     LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),msg->GetBody(),true,msg->GetPath());
     _card->getProgressBar()->setMaxIterations(itemCount);
@@ -42,6 +36,7 @@ void loggerController::createLogMessageWithProgressBar( IMessage* msg,int itemCo
     _messageList.append(msg);
 
 }
+
 void loggerController::updateProgressBar(int id,int value){
     LoggerCards[id]->getProgressBar()->incrementProgress();
 }
@@ -54,7 +49,7 @@ loggerController::~loggerController(){
     }
 }
 
-void loggerController::FilterMessagesByType(QString type,QString _text){
+void loggerController::FilterMessagesByType(const QString &type, const QString &_text){
 
     for(auto msg :_messageList )  {
         if(msg->GetType()==type ||type==""){

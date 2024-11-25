@@ -1,4 +1,7 @@
 #include "left_side_bar_widget.h"
+#include <QVBoxLayout>
+#include <QGuiApplication>
+#include <QScreen>
 
 
 LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent) {
@@ -7,12 +10,7 @@ LeftSidebarWidget::LeftSidebarWidget(QWidget *parent) : QWidget(parent) {
     setMinimumWidth(mainScreenWidth*0.05);
     setMaximumWidth(mainScreenWidth*0.3);
 
-
     QVBoxLayout *leftSidebarLayout = new QVBoxLayout();
-
-
-    /*QWidget *leftContent = new QWidget(parent);
-    leftSidebarLayout->addWidget(leftContent);*/
 
     _fileBrowser = new FileBrowserWidget();
     connect(_fileBrowser, &FileBrowserWidget::expand, this, &LeftSidebarWidget::expand);

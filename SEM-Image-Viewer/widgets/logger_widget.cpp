@@ -1,6 +1,7 @@
 #include "logger_widget.h"
+#include <QLabel>
+#include <QListWidgetItem>
 
-#include <QScrollArea>
 LoggerWidget::LoggerWidget(QWidget *parent)
     : QWidget(parent)
 {

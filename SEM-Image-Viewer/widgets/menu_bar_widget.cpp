@@ -3,11 +3,15 @@
 #include "../core/engines/workspace.h"
 #include "../core/engines/logger.h"
 #include "../core/utils.h"
-
 #include "image_dialog.h"
 #include "load_session_dialog.h"
 #include "save_session_dialog.h"
 #include "menu_bar_widget.h"
+#include <QMenu>
+#include <QImage>
+#include <QFileDialog>
+#include <QApplication>
+
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
@@ -38,6 +42,7 @@ void MenuBarWidget::fileMenu() {
 
   QAction *saveSessionAction = new QAction("Save Session", this);
   QAction *loadSessionAction = new QAction("Load Session", this);
+  QAction *closeAllAction = new QAction("Close All", this);
 
   QAction *JPGAllAction = new QAction("JPG", this);
   QAction *PNGAllAction = new QAction("PNG", this);
@@ -60,6 +65,7 @@ void MenuBarWidget::fileMenu() {
   fileMenu->addSeparator();
   fileMenu->addAction(saveSessionAction);
   fileMenu->addAction(loadSessionAction);
+  fileMenu->addAction(closeAllAction);
 
   connect(openImageAction, &QAction::triggered, this, [=]() {
     imageDialog->openFile(
@@ -69,6 +75,8 @@ void MenuBarWidget::fileMenu() {
     imageDialog->openFolder(
         &Workspace::Instance()->getActiveSession().getImageRepo(), this);
   });
+  connect(closeAllAction, &QAction::triggered, this,
+          &MenuBarWidget::closeAll);
 
   connect(JPGAllAction, &QAction::triggered, this,
           [=]() { exportImages("jpg"); });
@@ -91,16 +99,12 @@ void MenuBarWidget::fileMenu() {
           [=]() { loadSession(); });
 }
 
-void MenuBarWidget::exportSelectedImage(QString format) {
-    qDebug("exporting  selected img");
+void MenuBarWidget::exportSelectedImage(const QString &format) {
   Image *image =
       Workspace::Instance()->getActiveSession().getImageRepo().getImage();
 
-
-
   if(image==nullptr){
       //TODO: use logger to inform user that there is no image to export
-      qDebug("No selected image to export");
       return;
   }
   string fileName = image->getPath().filename().string();
@@ -148,7 +152,7 @@ void MenuBarWidget::exportSelectedImage(QString format) {
   auto result = Utils::prepareImageForExport(
       image, QFileInfo(directoryPath).path(), format);
   if (!result) {
-    qDebug() << "Failed to prepare image for export.";
+    //TODO: use logger to inform user that there is an error in exporting the image
     return;
   }
 
@@ -159,7 +163,7 @@ void MenuBarWidget::exportSelectedImage(QString format) {
            [qImg, numberedFileName]() { qImg.save(numberedFileName); }));
 }
 
-void MenuBarWidget::exportImages(const QString format) {
+void MenuBarWidget::exportImages(const QString &format) {
   QString directoryPath = QFileDialog::getExistingDirectory(
       this, tr("Select Directory to Save Images"));
 
@@ -187,7 +191,7 @@ void MenuBarWidget::exportImages(const QString format) {
           Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
       auto result = Utils::prepareImageForExport(image, directoryPath, format);
       if (!result) {
-        qDebug() << "Failed to prepare image for export at index:" << i;
+        //TODO: use logger Failed to prepare image for export at index num i
         continue;
       }
 
@@ -214,14 +218,9 @@ void MenuBarWidget::editMenu() {
 
   QAction *undoAction = new QAction("Undo", this);
   QAction *redoAction = new QAction("Redo", this);
-  QAction *saveAction = new QAction("Save", this);
-  QAction *findAction = new QAction("Find In Files", this);
 
   editMenu->addAction(undoAction);
   editMenu->addAction(redoAction);
-  editMenu->addAction(saveAction);
-  editMenu->addSeparator();
-  editMenu->addAction(findAction);
 
   connect(undoAction,&QAction::triggered,this,&MenuBarWidget::undoChecked);
   connect(redoAction,&QAction::triggered,this,&MenuBarWidget::redoChecked);
@@ -230,9 +229,6 @@ void MenuBarWidget::editMenu() {
 void MenuBarWidget::viewMenu() {
   QMenu *viewMenu = this->addMenu("View");
 
-  explorerAction = new QAction("Explorer", this);
-  heatMapAction = new QAction("HeatMap", this);
-  intensityPlotAction = new QAction("Intensity Plot", this);
   showLeftSidebarAction = new QAction("Show Left Sidebar", this);
   showRightSidebarAction = new QAction("Show Right Sidebar", this);
   showLoggerAction = new QAction("Show Logger Sidebar", this);
@@ -248,7 +244,6 @@ void MenuBarWidget::viewMenu() {
   showLoggerAction->setChecked(true);
   showImageAction->setChecked(true);
 
-  // showLeftSidebarAction->setChecked(false);
   connect(showLeftSidebarAction, &QAction::triggered, this,
           &MenuBarWidget::showLeftSidebarClicked);
   connect(showRightSidebarAction, &QAction::triggered, this,
@@ -262,21 +257,14 @@ void MenuBarWidget::viewMenu() {
   viewMenu->addAction(showRightSidebarAction);
   viewMenu->addAction(showLoggerAction);
   viewMenu->addAction(showImageAction);
-  viewMenu->addSeparator();
-  viewMenu->addAction(explorerAction);
-  viewMenu->addSeparator();
-  viewMenu->addAction(heatMapAction);
-  viewMenu->addAction(intensityPlotAction);
 }
 
 void MenuBarWidget::optionsMenu() {
   QMenu *optionsMenu = this->addMenu("Options");
-  QMenu *fontMenu = new QMenu("Font", optionsMenu);
 
   darkModeAction = new QAction(this);
   darkModeAction->setText("Dark Mode");
   optionsMenu->addAction(darkModeAction);
-  optionsMenu->addMenu(fontMenu);
   connect(darkModeAction, &QAction::triggered, this,
           &MenuBarWidget::onThemeActionTriggered);
 }

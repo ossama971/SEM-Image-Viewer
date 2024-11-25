@@ -3,11 +3,6 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QGuiApplication>
-#include <QScreen>
-#include <QToolButton>
 
 #include "image_widget.h"
 #include "grid_view_widget.h"
@@ -34,11 +29,11 @@ public slots:
     void ongridViewButtonClicked();
 
 private:
-    ToolbarWidget *toolbar;
-    ImageWidget *image;
-    GridView *gridView;
-    DiffViewWidget *diffView;
-    QVBoxLayout *topMiddleLayout;
+    ToolbarWidget *toolbar = nullptr;
+    ImageWidget *image = nullptr;
+    GridView *gridView = nullptr;
+    DiffViewWidget *diffView = nullptr;
+    QVBoxLayout *topMiddleLayout = nullptr;
 
 signals:
     void selectDiffView();

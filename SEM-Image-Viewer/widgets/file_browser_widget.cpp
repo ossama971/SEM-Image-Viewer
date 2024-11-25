@@ -4,6 +4,7 @@
 #include "image_dialog.h"
 #include "../core/engines/workspace.h"
 #include <QVBoxLayout>
+#include <QPushButton>
 
 FileBrowserWidget::FileBrowserWidget(QWidget *parent)
     : QWidget{parent}, _rootDir(""), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
@@ -159,7 +160,7 @@ void FileBrowserWidget::Initialize() {
     setLayout(mainLayout);
 }
 
-void FileBrowserWidget::setRoot(QString path) {
+void FileBrowserWidget::setRoot(const QString &path) {
     _rootDir = path;
 
     model->setRootPath(_rootDir.path());

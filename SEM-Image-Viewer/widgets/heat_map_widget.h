@@ -10,9 +10,9 @@ class HeatMapWidget : public QWidget
 public:
     explicit HeatMapWidget(QWidget *parent = nullptr);
 private:
-    QToolButton *heatmapButton;
+    QToolButton *heatmapButton = nullptr;
 signals:
-    void applyHeatMap(cv::Mat heatmap,bool checked);
+    void applyHeatMap(const cv::Mat &heatmap,bool checked);
 public slots:
     void handleApplyHeatMap(bool checked);
     void resetToggle();

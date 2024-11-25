@@ -1,4 +1,6 @@
 #include "toolbar_widget.h"
+#include <QHBoxLayout>
+#include <QButtonGroup>
 
 ToolbarWidget::ToolbarWidget(QWidget *parent)
     : QWidget(parent) {

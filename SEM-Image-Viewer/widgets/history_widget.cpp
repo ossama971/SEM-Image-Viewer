@@ -1,5 +1,7 @@
 #include "history_widget.h"
 #include <QToolButton>
+#include <QVBoxLayout>
+
 HistoryWidget::HistoryWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -89,8 +91,6 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     listContainerLayout->addWidget(listContentContainer);
     mainLayout->addWidget(listContainer);
 
-
-
     // Connect buttons to slots
     connect(undoButton, &QPushButton::clicked, this, &HistoryWidget::undoAction);
     connect(redoButton, &QPushButton::clicked, this, &HistoryWidget::redoAction);
@@ -100,15 +100,12 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     setLayout(mainLayout);
 }
 
-
-
-
-void HistoryWidget::updateActionList(QString action)
+void HistoryWidget::updateActionList(const QString &action)
 {
-        actionList->addItem(action);
+    actionList->addItem(action);
 }
 
-void HistoryWidget::loadActionList(QList<QString> actions){
+void HistoryWidget::loadActionList(const QList<QString> &actions){
 
     actionList->clear();
 

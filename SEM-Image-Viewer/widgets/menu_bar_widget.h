@@ -2,7 +2,6 @@
 #define MENU_BAR_WIDGET_H
 
 #include <QMenuBar>
-#include <QMenu>
 #include <QAction>
 #include <QWidget>
 #include <QMainWindow>
@@ -40,8 +39,9 @@ signals:
     void themeToggled();
     void undoChecked();
     void redoChecked();
+    void closeAll();
 private slots:
-    void exportImages(QString format);
+    void exportImages(const QString &format);
     void onThemeActionTriggered();
 
 public slots:
@@ -49,18 +49,18 @@ public slots:
     void onRightSidebarViewChanged(bool state);
     void onImageViewChanged(bool state);
     void onLoggerViewChanged(bool state);
-    void exportSelectedImage(const QString format);
+    void exportSelectedImage(const QString &format);
 
 private:
-    QAction *explorerAction;
-    QAction *heatMapAction;
-    QAction *intensityPlotAction;
-    QAction *showLeftSidebarAction;
-    QAction *showRightSidebarAction;
-    QAction *showLoggerAction;
-    QAction *showImageAction;
-    QAction *darkModeAction;
-    ImageDialog *imageDialog;
+    QAction *explorerAction = nullptr;
+    QAction *heatMapAction = nullptr;
+    QAction *intensityPlotAction = nullptr;
+    QAction *showLeftSidebarAction = nullptr;
+    QAction *showRightSidebarAction = nullptr;
+    QAction *showLoggerAction = nullptr;
+    QAction *showImageAction = nullptr;
+    QAction *darkModeAction = nullptr;
+    ImageDialog *imageDialog = nullptr;
     bool isDarkMode = false;
 };
 

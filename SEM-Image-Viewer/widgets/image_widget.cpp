@@ -1,5 +1,6 @@
 #include "image_widget.h"
 #include "../core/engines/workspace.h"
+#include <QVBoxLayout>
 
 ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent), core(new ImageWidgetCore(this))
@@ -29,7 +30,7 @@ void ImageWidget::updateImage(const cv::Mat &image)
   this->core->updateImage(image);
 }
 
-void ImageWidget :: handleHeatmap(cv::Mat heatmap,bool checked)
+void ImageWidget :: handleHeatmap(const cv::Mat &heatmap,bool checked)
 {
     this->core->handleHeatmap(heatmap,checked);
 }

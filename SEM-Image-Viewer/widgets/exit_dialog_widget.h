@@ -1,10 +1,8 @@
 #ifndef ExitDialogWidget_H
 #define ExitDialogWidget_H
 
+#include <QWidget>
 #include <QDialog>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QLabel>
 
 class ExitDialogWidget : public QDialog {
     Q_OBJECT

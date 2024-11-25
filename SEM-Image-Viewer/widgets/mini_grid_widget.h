@@ -13,10 +13,10 @@ public:
     explicit MiniGrid(QWidget *parent = nullptr);
 
 private:
-    QListView *listView;
-    ImageDataModel *imageDataModel;
-    QPushButton *leftButton;
-    QPushButton *rightButton;
+    QListView *listView = nullptr;
+    ImageDataModel *imageDataModel = nullptr;
+    QPushButton *leftButton = nullptr;
+    QPushButton *rightButton = nullptr;
 
     void setModel(ImageDataModel *model);
     void initializeMiniGrid();

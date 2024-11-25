@@ -6,6 +6,7 @@
 #include "logger_widget.h"
 #include "log_card_widget.h"
 #include "../core/engines/logger.h"
+
 class loggerController :public QObject
 {
     Q_OBJECT
@@ -16,19 +17,16 @@ private:
     loggerController();
     loggerController(const loggerController &) = delete;
     loggerController &operator=(const loggerController &) = delete;
-
-
-    LoggerWidget *_loggerWidgetPtr;
+    LoggerWidget *_loggerWidgetPtr = nullptr;
 
 public:
     static loggerController &instance();
-
-
     void setLoggerWidget(LoggerWidget *widget);
     ~loggerController();
+
 public slots:
 
-    void FilterMessagesByType(QString type, QString _text);
+    void FilterMessagesByType(const QString &type, const QString &_text);
     void createLogMessage( IMessage* msg);
     void createLogMessageWithProgressBar( IMessage* msg,int itemCount);
     void updateProgressBar(int id,int value);

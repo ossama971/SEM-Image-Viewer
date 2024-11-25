@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+
 class OtherListWidget : public QWidget {
     Q_OBJECT
 public:
@@ -12,7 +13,7 @@ public:
     void addWidget(QWidget* widget);
 
 private:
-    QVBoxLayout* m_itemsLayout;
+    QVBoxLayout* m_itemsLayout = nullptr;
 };
 
 #endif // HEATMAP_INTENSITY_WIDGET_H

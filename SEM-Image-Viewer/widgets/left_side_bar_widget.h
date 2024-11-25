@@ -35,7 +35,7 @@ private slots:
     void collapse();
 
 private:
-    FileBrowserWidget* _fileBrowser;
+    FileBrowserWidget* _fileBrowser = nullptr;
 };
 
 #endif // LEFT_SIDE_BAR_WIDGET_H

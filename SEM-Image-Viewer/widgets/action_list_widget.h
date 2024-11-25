@@ -12,6 +12,6 @@ public:
     void addWidget(QWidget* widget);
 
 private:
-    QVBoxLayout* m_itemsLayout;
+    QVBoxLayout* m_itemsLayout=nullptr;
 };
 #endif // ACTION_LIST_WIDGET_H

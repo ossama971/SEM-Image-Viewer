@@ -2,7 +2,6 @@
 #define PROGRESS_BAR_H
 #include <QWidget>
 #include <QProgressBar>
-#include <QVBoxLayout>
 
 class ProgressBarComponent : public QProgressBar  {
     Q_OBJECT
@@ -16,6 +15,6 @@ public slots:
     void hideProgressBar();
 
 private:
-    QProgressBar *progressBar;
+    QProgressBar *progressBar = nullptr;
 };
 #endif // PROGRESS_BAR_H

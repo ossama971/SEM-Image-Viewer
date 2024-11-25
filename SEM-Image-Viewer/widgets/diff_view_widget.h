@@ -1,10 +1,7 @@
 #ifndef DIFF_VIEW_WIDGET_H
 #define DIFF_VIEW_WIDGET_H
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QWidget>
-
 #include "image_widget_core.h"
 
 class DiffViewWidget : public QWidget {
@@ -21,9 +18,9 @@ public slots:
   void resetDiff();
 
 private:
-  ImageWidgetCore *upperImageWidget;
-  ImageWidgetCore *lowerImageWidget;
-  ImageWidgetCore *diffImageWidget;
+  ImageWidgetCore *upperImageWidget = nullptr;
+  ImageWidgetCore *lowerImageWidget = nullptr;
+  ImageWidgetCore *diffImageWidget = nullptr;
 
   int threshold = 30;
 

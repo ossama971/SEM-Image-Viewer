@@ -29,10 +29,6 @@ MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
     mainLayout->addLayout(buttonLayout);
     setLayout(mainLayout);
 
-    // Set a fixed height for the list view
-    // int rowHeight = 80;
-    // listView->setFixedHeight(rowHeight);
-
 
     // Connect buttons to slots
     connect(leftButton, &QPushButton::clicked, this, &MiniGrid::scrollLeft);

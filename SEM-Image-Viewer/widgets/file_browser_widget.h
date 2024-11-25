@@ -5,7 +5,6 @@
 #include "image_filter_proxy_model.h"
 #include "../core/data/image_repository.h"
 #include <QWidget>
-#include <QPushButton>
 #include <QTreeView>
 #include <QDir>
 #include <QFileSystemModel>
@@ -22,7 +21,7 @@ private:
     void Initialize();
 
 public:
-    void setRoot(QString path);
+    void setRoot(const QString &path);
     void setImageFilter(std::filesystem::path path);
 
 private slots:
@@ -39,14 +38,13 @@ signals:
 
 private:
     QDir _rootDir;
-    ImageRepository* _imageRepo;
-
-    QTreeView *treeView;
-    QFileSystemModel *model;
-    FileIconHider *iconProvider;
-    ImageFilterProxyModel *proxyModel;
-    QLineEdit *searchBox;
-    class ImageDialog* imageDialog;
+    ImageRepository* _imageRepo = nullptr;
+    QTreeView *treeView = nullptr;
+    QFileSystemModel *model = nullptr;
+    FileIconHider *iconProvider = nullptr;
+    ImageFilterProxyModel *proxyModel = nullptr;
+    QLineEdit *searchBox = nullptr;
+    class ImageDialog* imageDialog = nullptr;
 };
 
 #endif // FILE_BROWSER_WIDGET_H

@@ -16,8 +16,8 @@ signals:
     void zoomOutRequested();
 
 private:
-    QPushButton *zoomInButton;
-    QPushButton *zoomOutButton;
+    QPushButton *zoomInButton = nullptr;
+    QPushButton *zoomOutButton = nullptr;
 
     void setupLayout();
 };

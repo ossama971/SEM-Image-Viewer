@@ -1,23 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "widgets/save_session_dialog.h"
+#include "core/engines/json_vsitor.h"
+#include "core/engines/workspace.h"
+#include "core/engines/thread_pool.h"
+
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QSplitter>
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-
-#include "widgets/save_session_dialog.h"
-#include "core/engines/json_vsitor.h"
-#include "core/engines/workspace.h"
-#include "core/engines/thread_pool.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -113,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(menuBarWidget,&MenuBarWidget::undoChecked,historyWidget,&HistoryWidget::undoAction);
     connect(menuBarWidget,&MenuBarWidget::redoChecked,historyWidget,&HistoryWidget::redoAction);
+
+    connect(menuBarWidget, &MenuBarWidget::closeAll, this, &MainWindow::onCloseAllClicked);
     // Manually setting cursor for splitter handles
     for (int i = 0; i < finalSplitter->count(); ++i) {
         QSplitterHandle *handle = finalSplitter->handle(i);
@@ -189,6 +184,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
             event->accept();  // Close the application if the user clicked "Save" or "Don't Save"
         }
     }
+}
+
+void MainWindow::onCloseAllClicked() {
+    this->close();
 }
 
 void MainWindow::onSaveChangesClicked() {

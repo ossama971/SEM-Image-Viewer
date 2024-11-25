@@ -3,8 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QMenu>
-#include <QIcon>
+#include <QFrame>
 
 EdgeExtractionWidget::EdgeExtractionWidget(QWidget *parent)
     : QWidget(parent),

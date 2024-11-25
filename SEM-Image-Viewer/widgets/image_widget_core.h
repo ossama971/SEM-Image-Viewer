@@ -3,13 +3,8 @@
 
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
-#include <QMouseEvent>
-#include <QPinchGesture>
-#include <QScrollBar>
 #include <QShowEvent>
-#include <QVBoxLayout>
 #include <QWheelEvent>
 #include <QWidget>
 #include <opencv2/opencv.hpp>
@@ -27,41 +22,37 @@ public:
   void loadAndDisplayImage(const Image &image);
   cv::Mat getImage() const;
   void setIntensityPlotMode(bool enabled);
-  void handleHeatmap(const cv::Mat heatmap,bool checked);
+  void handleHeatmap(const cv::Mat &heatmap,bool checked);
   void resetView();
 protected:
   void showEvent(QShowEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
-
-
   bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-  QGraphicsView *graphicsView;
-  QGraphicsScene *scene;
-  ZoomWidget *zoomWidget;
-
-  QChartView *chartView;
-  std::optional<QPixmap> loadAndPrepareImage(const Image &image,
-                                             const QSize &targetSize);
-  void setImage(const QPixmap &pixmap);
-  QPixmap matToQPixmap(cv::Mat image);
-  void clearSceneToDefault();
-  ImageInfoBar *infoBar;
+  QGraphicsView *graphicsView = nullptr;
+  QGraphicsScene *scene = nullptr;
+  ZoomWidget *zoomWidget = nullptr;
+  QChartView *chartView = nullptr;
+  ImageInfoBar *infoBar = nullptr;
   cv::Mat currentImage;
   QPoint lastMousePosition;
   bool isPanning = false;
   double zoomFactor = 1.0;
   QGraphicsPixmapItem *image= nullptr;
   QGraphicsPixmapItem *heatmap = nullptr;
-
   bool intensityPlotMode = false;
   QGraphicsLineItem* intensityLine = nullptr;
   QPointF lineStart;
   QPointF lineEnd;
   int xStart;
   int xEnd;
+
+  std::optional<QPixmap> loadAndPrepareImage(const Image &image, const QSize &targetSize);
+  void setImage(const QPixmap &pixmap);
+  QPixmap matToQPixmap(const cv::Mat &image);
+  void clearSceneToDefault();
   void drawIntensityPlot(int y,int xStart, int xEnd);
 
 private slots:

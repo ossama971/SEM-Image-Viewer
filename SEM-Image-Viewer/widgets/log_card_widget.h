@@ -4,8 +4,6 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
-#include <QVBoxLayout>
-
 #include "progress_bar.h"
 class LogCard : public QWidget
 {
@@ -13,7 +11,7 @@ class LogCard : public QWidget
 
 public:
 
-    explicit LogCard(const QString typeOfMessage,const QString &headerText, const QString &detailsText, bool progressBarFlag,const QString & path, QWidget *parent=nullptr);
+    explicit LogCard(const QString &typeOfMessage,const QString &headerText, const QString &detailsText, bool progressBarFlag,const QString & path, QWidget *parent=nullptr);
     ProgressBarComponent * getProgressBar();
     QString getType();
 signals:
@@ -23,13 +21,13 @@ private slots:
     void onCopyContent();
     void onClickOnPath();
 private:
-    QLabel *headerLabel;
-    QLabel *detailsLabel;
-    QWidget* detailsContainer;
-    QPushButton *detailsBtn;
-    QPushButton * copyBtn;
-    ProgressBarComponent * progressBar;
-    bool detailsVisible;
+    QLabel *headerLabel = nullptr;
+    QLabel *detailsLabel = nullptr;
+    QWidget* detailsContainer = nullptr;
+    QPushButton *detailsBtn = nullptr;
+    QPushButton * copyBtn = nullptr;
+    ProgressBarComponent * progressBar = nullptr;
+    bool detailsVisible = false;
     QString _type;
     QString _path;
 };

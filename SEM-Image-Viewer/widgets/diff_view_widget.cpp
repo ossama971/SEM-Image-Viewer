@@ -1,7 +1,8 @@
 #include "diff_view_widget.h"
 #include "../core/utils.h"
 #include "../core/engines/workspace.h"
-#include <QDebug>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 DiffViewWidget::DiffViewWidget(QWidget *parent)
     : QWidget(parent), upperImageWidget(new ImageWidgetCore(this)),
@@ -38,15 +39,12 @@ void DiffViewWidget::updateDiffImage() {
 }
 
 void DiffViewWidget::setImages(Image *upperImage, Image *lowerImage) {
-  qDebug() << "Setting images in diff view";
-  qDebug() << "Upper image path: " << upperImage->getPath().string().c_str();
-  qDebug() << "Lower image path: " << lowerImage->getPath().string().c_str();
   upperImageWidget->loadAndDisplayImage(*upperImage);
   lowerImageWidget->loadAndDisplayImage(*lowerImage);
 }
 
 void DiffViewWidget::resetDiff(){
-    upperImageWidget->resetView();
-    lowerImageWidget->resetView();
-    diffImageWidget->resetView();
+  upperImageWidget->resetView();
+  lowerImageWidget->resetView();
+  diffImageWidget->resetView();
 }

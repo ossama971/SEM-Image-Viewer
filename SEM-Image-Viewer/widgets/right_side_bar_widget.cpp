@@ -9,6 +9,11 @@
 #include "heatmap_intensity_widget.h"
 #include "../core/engines/workspace.h"
 
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGuiApplication>
+#include <QScreen>
+
 RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();

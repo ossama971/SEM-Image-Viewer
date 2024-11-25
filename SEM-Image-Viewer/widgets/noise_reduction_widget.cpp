@@ -75,13 +75,10 @@ NoiseReductionWidget::NoiseReductionWidget(QWidget *parent)
     sliderlabelLayout->addWidget(IntensitySlider);
     sliderlabelLayout->addWidget(intensity);
 
-
-
     // Intensity slider with label
     QLabel *intensityLabel = new QLabel("Intensity", this);
     slidersLayout->addWidget(intensityLabel);
     slidersLayout->addLayout(sliderlabelLayout);
-
 
     slidersWidget->setLayout(slidersLayout);
     mainLayout->addWidget(slidersWidget);

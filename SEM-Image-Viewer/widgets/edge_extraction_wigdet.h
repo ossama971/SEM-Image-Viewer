@@ -1,13 +1,10 @@
 #ifndef EDGE_EXTRACTION_WIGDET_H
 #define EDGE_EXTRACTION_WIGDET_H
 
-
 #include <QWidget>
 #include <QLabel>
 #include <QToolButton>
-#include <QStackedWidget>
 #include <QSlider>
-
 
 class EdgeExtractionWidget:public QWidget
 {
@@ -18,13 +15,13 @@ public:
     int getHighThreshold() const;
 
 private:
-    QLabel *label;
-    QToolButton *toggleButton;
-    QSlider *lowThresholdSlider;
-    QSlider *highThresholdSlider;
-    QWidget *slidersWidget;
-    QLabel *low;
-    QLabel *high;
+    QLabel *label = nullptr;
+    QToolButton *toggleButton = nullptr;
+    QSlider *lowThresholdSlider = nullptr;
+    QSlider *highThresholdSlider = nullptr;
+    QWidget *slidersWidget = nullptr;
+    QLabel *low = nullptr;
+    QLabel *high = nullptr;
 signals:
     void thresholdLowChanged(int value);
     void thresholdHighChanged(int value);

@@ -1,9 +1,9 @@
 #include "log_card_widget.h"
 #include <QGuiApplication>
 #include <QClipboard>
-#include <QTimer>
 #include <QDesktopServices>
-LogCard::LogCard(const QString typeOfMessage,const QString &headerText, const QString &detailsText, bool progressBarFlag,const QString & path, QWidget *parent)
+#include <QVBoxLayout>
+LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, const QString &detailsText, bool progressBarFlag,const QString & path, QWidget *parent)
     : QWidget(parent), detailsVisible(false)
 {
 

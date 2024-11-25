@@ -21,11 +21,11 @@ private slots:
     void load();
 
 private:
-    QLabel *fileLabel;
-    QLineEdit *fileEdit;
-    QPushButton *browseButton;
-    QPushButton *loadButton;
-    QPushButton *cancelButton;
+    QLabel *fileLabel = nullptr;
+    QLineEdit *fileEdit = nullptr;
+    QPushButton *browseButton = nullptr;
+    QPushButton *loadButton = nullptr;
+    QPushButton *cancelButton = nullptr;
 
     std::filesystem::path jsonFilePath;
 };

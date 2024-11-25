@@ -1,6 +1,5 @@
 #include "image_info_bar.h"
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QString>
 #include <QSpacerItem>
 
