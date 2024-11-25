@@ -261,7 +261,9 @@ QPushButton#undoButton {
 QPushButton#copyBtn {
     qproperty-icon: url(:/icons/copy-icon-dark.svg);
 }
-
+QPushButton#pathBtn {
+    qproperty-icon: url(:/icons/link-external-dark-mode.svg);
+}
 QToolButton#redoButton {
     qproperty-icon: url(:/icons/redo.svg);
     qproperty-iconSize: 16px 16px;

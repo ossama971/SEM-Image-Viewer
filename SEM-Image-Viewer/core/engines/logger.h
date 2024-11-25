@@ -11,45 +11,49 @@ class Logger : public QObject
 {
     Q_OBJECT
 public:
-
-    enum class MessageTypes {
-        ERROR,
-        WRANING,
-        INFO
-    };
-    enum class MessageOptian{
-        WITH_DETAILS_AND_PATH,
-        WITH_DETAILS,
-        WITHOUT_DETIALS
-    };
-    enum class MessageID{
-        FILTER_APPLIED,
-        IMAGES_LOADING_STARTED,
-        IMAGES_LOADING_FINISHED,
-        UNDO_APPLIED,
-        REDO_APPLIED,
-        UNDO_STACK_IS_EMPTY,
-        REDO_STACK_IS_EMPTY,
-        EXPORTING_IMAGES,
-        BATCH_FILTER_APPLIED,
-        SAVING_SESSION,
-        LOADING_SESSION,
+    enum class MessageTypes
+    {
+        error,
+        warning,
+        info
     };
 
-    static QMap<MessageID,QString> LoggerMap;
+    enum class MessageOption
+    {
+        with_path,
+        without_path,
+    };
+
+    enum class MessageID
+    {
+        filter_applied,
+        images_loading_started,
+        images_loading_finished,
+        undo_applied,
+        redo_applied,
+        undo_stack_is_empty,
+        redo_stack_is_empty,
+        exporting_images,
+        batch_filter_applied,
+        saving_session,
+        loading_session,
+        differerence_images,
+    };
+
+    static QMap<MessageID, QString> LoggerMap;
 
     ~Logger();
 
     // Singleton access method
-    static Logger* instance();
+    static Logger *instance();
 
-    void logMessage(Logger::MessageTypes msgtype,Logger::MessageID msgID,Logger::MessageOptian msgOptians,QVector<QString> args,QString details="",QString path="");
-    int logMessageWithProgressBar(Logger::MessageTypes,Logger::MessageID,Logger::MessageOptian,QVector<QString> args,int itemCount,QString details="",QString path="");
+    void logMessage(Logger::MessageTypes msgtype, Logger::MessageID msgID, Logger::MessageOption msgOptians, QVector<QString> args, QString path = "");
+    int logMessageWithProgressBar(Logger::MessageTypes, Logger::MessageID, Logger::MessageOption, QVector<QString> args, int itemCount, QString path = "");
     void updateProgressBar(int id, int value);
 
 signals:
-    void onCreateLogMessage( IMessage* msg);
-    void onCreateLogMessageWithProgressBar( IMessage* msg,int itemCount);
+    void onCreateLogMessage(IMessage *msg);
+    void onCreateLogMessageWithProgressBar(IMessage *msg, int itemCount);
     void onupdateProgressBar(int id, int value);
 
 private:
@@ -57,15 +61,14 @@ private:
 
     static void destroyInstance();
 
-
     int getNextMessageId();
 
-    QString CreateMessage(MessageID msgCode,QVector<QString> &args);
+    QString CreateMessage(MessageID msgCode, QVector<QString> &args);
 
-    static Logger* m_instance;
+    static Logger *m_instance;
     static std::recursive_mutex m_mutex;
     static std::atomic<int> m_nextMessageId;
-    static QList<QWidget*> m_widgets;
+    static QList<QWidget *> m_widgets;
     std::atomic<int> m_messageIdCounter{0};
 };
 

@@ -175,12 +175,11 @@ void MenuBarWidget::exportImages(const QString &format) {
       Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount();
 
   int progressbarID = Logger::instance()->logMessageWithProgressBar(
-      Logger::MessageTypes::INFO,
-      Logger::MessageID::EXPORTING_IMAGES,
-      Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+      Logger::MessageTypes::info,
+      Logger::MessageID::exporting_images,
+      Logger::MessageOption::with_path,
       { directoryPath },
       images_count,
-      "Loading .... ",
       QString("file:///%1").arg(directoryPath)
   );
 
@@ -302,12 +301,11 @@ void MenuBarWidget::saveSession() {
     auto jsonFilePath = dialog.getJsonFilePath();
 
     int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::INFO,
-        Logger::MessageID::SAVING_SESSION,
-        Logger::MessageOptian::WITH_DETAILS_AND_PATH,
+        Logger::MessageTypes::info,
+        Logger::MessageID::saving_session,
+        Logger::MessageOption::without_path,
         { QString::fromStdString(jsonFilePath.string()) },
-        Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount(),
-        QString("Saving Images Data to %1 .... ").arg(QString::fromStdString(directoryPath.string()))
+        Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount()
     );
 
     post(ThreadPool::instance(), [directoryPath, jsonFilePath, progressbarID]() {

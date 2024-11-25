@@ -9,12 +9,11 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
   startTime = QDateTime::currentDateTime();
   
   int progressbarID = Logger::instance()->logMessageWithProgressBar(
-      Logger::MessageTypes::INFO,
-      Logger::MessageID::BATCH_FILTER_APPLIED,
-      Logger::MessageOptian::WITHOUT_DETIALS,
+      Logger::MessageTypes::info,
+      Logger::MessageID::batch_filter_applied,
+      Logger::MessageOption::without_path,
       {  },
-      input.size(),
-      ""
+      input.size()
   );
 
   post(ThreadPool::instance(), [this, filter = std::move(filter), input = std::move(input), progressbarID]() {

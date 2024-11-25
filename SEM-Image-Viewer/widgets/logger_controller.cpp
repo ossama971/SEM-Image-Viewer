@@ -21,7 +21,7 @@ void loggerController::setLoggerWidget(LoggerWidget *widget){
 }
 
 void loggerController::createLogMessage( IMessage* msg){
-    LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),msg->GetBody(),false,msg->GetPath());
+    LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),false,msg->GetId()%2,msg->GetPath());
     LoggerCards[msg->GetId()]=_card;
     _loggerWidgetPtr->addLogCard(_card);
     _messageList.append(msg);
@@ -29,7 +29,7 @@ void loggerController::createLogMessage( IMessage* msg){
 }
 
 void loggerController::createLogMessageWithProgressBar( IMessage* msg,int itemCount){
-    LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),msg->GetBody(),true,msg->GetPath());
+    LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),true,msg->GetId()%2,msg->GetPath());
     _card->getProgressBar()->setMaxIterations(itemCount);
     LoggerCards[msg->GetId()]=_card;
     _loggerWidgetPtr->addLogCard(_card);
@@ -49,15 +49,23 @@ loggerController::~loggerController(){
     }
 }
 
-void loggerController::FilterMessagesByType(const QString &type, const QString &_text){
 
-    for(auto msg :_messageList )  {
-        if(msg->GetType()==type ||type==""){
-            if(_text==""||msg->GetMessage().contains(_text)){
-             LogCard * _card=new LogCard(msg->GetType(),msg->GetMessage(),msg->GetBody(),false,msg->GetPath());
-            _loggerWidgetPtr->addLogCard(_card);
+void loggerController::FilterMessagesByType(const QString &type, const QString &_text) {
+    for (auto msg : _messageList) {
+
+        if (type.isEmpty() || msg->GetType() == type) {
+
+            if (_text.isEmpty() || msg->GetMessage().contains(_text)) {
+
+                LogCard *_card = new LogCard(
+                    msg->GetType(),
+                    msg->GetMessage(),
+                    false,
+                    msg->GetId() % 2,
+                    msg->GetPath()
+                    );
+                _loggerWidgetPtr->addLogCard(_card);
             }
         }
     }
-
 }

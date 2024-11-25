@@ -62,9 +62,10 @@ void LoggerWidget::createButtons()
     searchContainerLayout->setContentsMargins(5, 5, 5, 5); // Padding inside the border
     searchContainerLayout->setSpacing(0);
     layout = new QHBoxLayout(searchWidget);
-    layout->setContentsMargins(0, 0, 0, 0);
     searchLineEdit = new QLineEdit(this);
     searchLineEdit->setPlaceholderText("Search log message");
+    searchWidget->setMinimumWidth(300);
+    searchWidget->setMaximumWidth(400);
     // Set a fixed width (e.g., 200 pixels)
     // searchLineEdit->setFixedWidth(300);
     // Set the style sheet for rounded borders and other properties
@@ -130,7 +131,7 @@ void LoggerWidget::createLayouts()
     topLayoutFull->addWidget(infoShowButton);
     topLayoutFull->addWidget(warningsShowButton);
     topLayoutFull->addWidget(errorsShowButton);
-    topLayoutFull->addSpacing(50);
+    topLayoutFull->addStretch(1);
     topLayoutFull->addWidget(layoutContainer);
     topLayoutFull->addWidget(switchLayoutButtonFull);
 
@@ -146,12 +147,13 @@ void LoggerWidget::createLayouts()
     fullLayout->addWidget(line);
 
     logListLayout = new QListWidget();
+    logListLayout->setSpacing(0);
+    logListLayout->setContentsMargins(0, 0, 0, 0);
 
 
-    // logListLayout->setModel()
 
     fullLayout->addWidget(logListLayout);
-    //fullLayout->addStretch(1);
+
 
     // Set the initial layout
     stackedWidget = new QStackedWidget(this);
@@ -175,7 +177,7 @@ void LoggerWidget::createLayouts()
 
 void LoggerWidget::filterLogs()
 {
-    QString filterText = searchLineEdit->text().toLower();
+    QString filterText = searchLineEdit->text();
     QString selectedType = "";
     QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
 
@@ -215,13 +217,11 @@ void LoggerWidget::addLogCard(LogCard *card)
 {
 
     QListWidgetItem *item = new QListWidgetItem(logListLayout);
+
     item->setSizeHint(card->sizeHint());
     logListLayout->addItem(item);
     logListLayout->setItemWidget(item, card);
 
-    connect(card, &LogCard::sizeChanged, this, [this, item, card]() {
-        item->setSizeHint(card->sizeHint());
-    });
 }
 
 

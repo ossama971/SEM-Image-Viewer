@@ -43,8 +43,13 @@ cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
     }
     detected_edges = denoise(detected_edges);
     cv::Canny(detected_edges, detected_edges, threshold_low, threshold_high);
-    //
-    // Logger::instance()->logMessage("F211",{"Edge Detection","Edge Detection finished "});
+
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageOption::with_path,
+        {"Edge Detection"},
+        "https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html");
+
     return detected_edges;
 }
 

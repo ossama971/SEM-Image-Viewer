@@ -20,16 +20,13 @@ public:
    const int GetId() const;
    const QString GetType() const;
    const QString GetMessage() const;
-   const QString GetBody() const  ;
    const QString GetPath() const  ;
    void SetPath(const QString &path)  ;
-   void SetBody(const QString &body)  ;
 
 protected:
   int _id;
   int _type;
   QString _msg;
-  QString _body;
   QString _path;
 };
 

@@ -27,15 +27,11 @@ const QString IMessage::GetType(void) const {
 const QString IMessage::GetMessage() const{
     return _msg;
 }
-const QString IMessage::GetBody() const  {
-    return _body;
-}
+
 const QString IMessage::GetPath() const  {
     return _path;
 }
 void IMessage::SetPath(const QString &path){
     this->_path=path;
 }
-void IMessage::SetBody(const QString &body){
-    this->_body=body;
-}
+

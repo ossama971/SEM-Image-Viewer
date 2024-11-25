@@ -11,23 +11,19 @@ class LogCard : public QWidget
 
 public:
 
-    explicit LogCard(const QString &typeOfMessage,const QString &headerText, const QString &detailsText, bool progressBarFlag,const QString & path, QWidget *parent=nullptr);
+    explicit LogCard(const QString &typeOfMessage,const QString &headerText, bool progressBarFlag,bool colorFlag,const QString & path, QWidget *parent=nullptr);
     ProgressBarComponent * getProgressBar();
     QString getType();
 signals:
      void sizeChanged();
 private slots:
-    void toggleDetails();
     void onCopyContent();
     void onClickOnPath();
 private:
     QLabel *headerLabel = nullptr;
-    QLabel *detailsLabel = nullptr;
-    QWidget* detailsContainer = nullptr;
-    QPushButton *detailsBtn = nullptr;
     QPushButton * copyBtn = nullptr;
+     QPushButton * pathBtn = nullptr;
     ProgressBarComponent * progressBar = nullptr;
-    bool detailsVisible = false;
     QString _type;
     QString _path;
 };

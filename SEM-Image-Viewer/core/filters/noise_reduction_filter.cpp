@@ -1,7 +1,8 @@
 #include "noise_reduction_filter.h"
 #include "../engines/logger.h"
 
-NoiseReductionFilter::NoiseReductionFilter(double intensity) {
+NoiseReductionFilter::NoiseReductionFilter(double intensity)
+{
     if (intensity < 0)
         _intensity = 0;
     else if (intensity > 100)
@@ -10,7 +11,8 @@ NoiseReductionFilter::NoiseReductionFilter(double intensity) {
         _intensity = intensity;
 }
 
-cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
+cv::Mat NoiseReductionFilter::applyFilter(const Image &inputImage) const
+{
     cv::Mat image = inputImage.getImageMat();
     cv::Mat res;
 
@@ -22,14 +24,20 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image& inputImage) const {
     {
         cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(res), _intensity, _intensity);
     }
-    //Logger::instance()->logMessage("F201",{"Noise Reduction "});
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageOption::with_path,
+        {"Noise Reduction"},
+        "https://docs.opencv.org/4.x/d5/d69/tutorial_py_non_local_means.html");
     return res;
 }
 
-ImageStateSource NoiseReductionFilter::getImageSource() const {
+ImageStateSource NoiseReductionFilter::getImageSource() const
+{
     return ImageStateSource::NoiseReductionFilter;
 }
 
-const double NoiseReductionFilter::getIntensity(void) const {
+const double NoiseReductionFilter::getIntensity(void) const
+{
     return _intensity;
 }

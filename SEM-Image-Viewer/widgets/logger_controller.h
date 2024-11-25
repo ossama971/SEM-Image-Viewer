@@ -18,7 +18,7 @@ private:
     loggerController(const loggerController &) = delete;
     loggerController &operator=(const loggerController &) = delete;
     LoggerWidget *_loggerWidgetPtr = nullptr;
-
+    bool logCardColor;
 public:
     static loggerController &instance();
     void setLoggerWidget(LoggerWidget *widget);

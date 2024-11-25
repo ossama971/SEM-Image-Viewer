@@ -15,52 +15,69 @@
 #include <boost/property_tree/ptree.hpp>
 
 cv::Mat Utils::diffTwoImages(const cv::Mat &image1, const cv::Mat &image2,
-                             const int threshold) {
-    cv::Mat diff;
-    cv::Mat image_one = image1.clone();
-    cv::Mat image_two = image2.clone();
+                             const int threshold)
+{
+  cv::Mat diff;
+  cv::Mat image_one = image1.clone();
+  cv::Mat image_two = image2.clone();
 
-    // Ensure both images are of the same type
-    if (image1.channels() == 1 && image2.channels() != 1) {
-        cv::cvtColor(image2, image_two, cv::COLOR_BGR2GRAY);
-    }
-    if (image1.channels() != 1 && image2.channels() == 1) {
-        cv::cvtColor(image1, image_one, cv::COLOR_BGR2GRAY);
-    }
+  // Ensure both images are of the same type
+  if (image1.channels() == 1 && image2.channels() != 1)
+  {
+    cv::cvtColor(image2, image_two, cv::COLOR_BGR2GRAY);
+  }
+  if (image1.channels() != 1 && image2.channels() == 1)
+  {
+    cv::cvtColor(image1, image_one, cv::COLOR_BGR2GRAY);
+  }
 
-    // Compute absolute difference
-    cv::absdiff(image_one, image_two, diff);
+  // Compute absolute difference
+  cv::absdiff(image_one, image_two, diff);
 
-    // Create a binary mask based on the threshold
-    cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
+  // Create a binary mask based on the threshold
+  cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
 
-    if (diff.channels() == 1) { // Grayscale images
-        for (int j = 0; j < diff.rows; ++j) {
-            for (int i = 0; i < diff.cols; ++i) {
-                int val = diff.at<unsigned char>(j, i);
-                if (val > threshold) {
-                    mask.at<unsigned char>(j, i) = 255;
-                }
-            }
+  if (diff.channels() == 1)
+  { // Grayscale images
+    for (int j = 0; j < diff.rows; ++j)
+    {
+      for (int i = 0; i < diff.cols; ++i)
+      {
+        int val = diff.at<unsigned char>(j, i);
+        if (val > threshold)
+        {
+          mask.at<unsigned char>(j, i) = 255;
         }
-    } else if (diff.channels() == 3) { // Color images
-        for (int j = 0; j < diff.rows; ++j) {
-            for (int i = 0; i < diff.cols; ++i) {
-                cv::Vec3b pix = diff.at<cv::Vec3b>(j, i);
-                int val = pix[0] + pix[1] + pix[2];
-                if (val > threshold) {
-                    mask.at<unsigned char>(j, i) = 255;
-                }
-            }
-        }
+      }
     }
+  }
+  else if (diff.channels() == 3)
+  { // Color images
+    for (int j = 0; j < diff.rows; ++j)
+    {
+      for (int i = 0; i < diff.cols; ++i)
+      {
+        cv::Vec3b pix = diff.at<cv::Vec3b>(j, i);
+        int val = pix[0] + pix[1] + pix[2];
+        if (val > threshold)
+        {
+          mask.at<unsigned char>(j, i) = 255;
+        }
+      }
+    }
+  }
 
-    cv::Mat res;
-    cv::bitwise_and(image_one, image_one, res, mask);
-    return res;
+  cv::Mat res;
+  cv::bitwise_and(image_one, image_one, res, mask);
+  Logger::instance()->logMessage(
+      Logger::MessageTypes::info, Logger::MessageID::differerence_images,
+      Logger::MessageOption::without_path,
+      {});
+  return res;
 }
 
-std::string Utils::generateString(size_t length) {
+std::string Utils::generateString(size_t length)
+{
   std::string out;
   out.reserve(length);
   static const char alphanum[] = "0123456789"
@@ -71,7 +88,8 @@ std::string Utils::generateString(size_t length) {
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);
 
-  for (size_t i = 0; i < length; ++i) {
+  for (size_t i = 0; i < length; ++i)
+  {
     char c = alphanum[dis(gen)];
     out.push_back(c);
   }
@@ -80,25 +98,31 @@ std::string Utils::generateString(size_t length) {
 
 cv::Mat Utils::heatmap(const cv::Mat &image)
 {
-    cv::Mat gray = image;
-    if(image.channels()!=1)
-    {
-        cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-    }
-    cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
-    return gray;
+  cv::Mat gray = image;
+  if (image.channels() != 1)
+  {
+    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+  }
+  cv::applyColorMap(gray, gray, cv::COLORMAP_JET);
+  return gray;
 }
 
-bool Utils::createDirectory(const std::string &path) {
-  if (std::filesystem::exists(path)) {
+bool Utils::createDirectory(const std::string &path)
+{
+  if (std::filesystem::exists(path))
+  {
     return true;
-  } else {
+  }
+  else
+  {
     // create the directory
     qDebug() << "Creating directory: " << path.c_str();
-    if (std::filesystem::create_directory(path)) {
+    if (std::filesystem::create_directory(path))
+    {
       return true;
     }
-    else {
+    else
+    {
       // Logger::instance()->log(std::make_unique<ErrorMessage>(
       //     1, boost::format("Error creating directory: %1%") % path));
       return false;
@@ -106,16 +130,21 @@ bool Utils::createDirectory(const std::string &path) {
   }
 }
 
-void Utils::loadSessionJson(const std::string &filename) {
+void Utils::loadSessionJson(const std::string &filename)
+{
   boost::property_tree::ptree root;
-  try {
+  try
+  {
     boost::property_tree::read_json(filename, root);
-  } catch (const boost::property_tree::json_parser_error &e) {
+  }
+  catch (const boost::property_tree::json_parser_error &e)
+  {
     // Handle JSON parsing error
     return;
   }
 
-  try {
+  try
+  {
     const auto &session_data = root.get_child("SessionData");
     const auto &repo_data = session_data.get_child("ImageRepository");
 
@@ -127,33 +156,35 @@ void Utils::loadSessionJson(const std::string &filename) {
     const std::size_t batch_size = 17;
 
     std::vector<boost::property_tree::ptree> image_nodes;
-    for (const auto &image_node : images) {
+    for (const auto &image_node : images)
+    {
       image_nodes.push_back(image_node.second);
     }
 
     int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::INFO,
-        Logger::MessageID::LOADING_SESSION,
-        Logger::MessageOptian::WITH_DETAILS_AND_PATH,
-        { QString::fromStdString(filename) },
-        total_images,
-        "Loading images states .... "
+        Logger::MessageTypes::info,
+        Logger::MessageID::loading_session,
+        Logger::MessageOption::without_path,
+        {QString::fromStdString(filename)},
+        total_images
+
     );
 
     std::vector<std::future<void>> futures;
     std::atomic<size_t> processed_images{0};
 
-    for (std::size_t i = 0; i < total_images; i += batch_size) {
+    for (std::size_t i = 0; i < total_images; i += batch_size)
+    {
       auto start = image_nodes.begin() + i;
       auto end = (i + batch_size < total_images) ? start + batch_size : image_nodes.end();
       std::vector<boost::property_tree::ptree> batch(start, end);
 
-      futures.push_back(post(ThreadPool::instance(), use_future([
-        progressbarID,
-        folderPath,
-        batch,
-        &processed_images,
-        total_images]() {
+      futures.push_back(post(ThreadPool::instance(), use_future([progressbarID,
+                                                                 folderPath,
+                                                                 batch,
+                                                                 &processed_images,
+                                                                 total_images]()
+                                                                {
         for (const auto &node : batch) {
           try {
             std::string imagePath = node.get<std::string>("_path");
@@ -186,21 +217,25 @@ void Utils::loadSessionJson(const std::string &filename) {
           processed_images++;
           float progress = static_cast<float>(processed_images.load()) / total_images;
           Logger::instance()->updateProgressBar(progressbarID, progress);
-        }
-      })));
+        } })));
     }
 
-    for (auto &future : futures) {
+    for (auto &future : futures)
+    {
       future.get();
     }
-  } catch (const boost::property_tree::ptree_error &e) {
+  }
+  catch (const boost::property_tree::ptree_error &e)
+  {
     // Handle other JSON structure errors
   }
 }
 
 std::optional<std::pair<QImage, QString>> Utils::prepareImageForExport(
-    const Image *image, const QString &directoryPath, const QString &format) {
-  if (!image) {
+    const Image *image, const QString &directoryPath, const QString &format)
+{
+  if (!image)
+  {
     qDebug() << "Invalid image.";
     return std::nullopt;
   }
@@ -208,7 +243,8 @@ std::optional<std::pair<QImage, QString>> Utils::prepareImageForExport(
   // Extract base name
   std::string fileName = image->getPath().filename().string();
   size_t lastDot = fileName.find_last_of('.');
-  if (lastDot != std::string::npos) {
+  if (lastDot != std::string::npos)
+  {
     fileName = fileName.substr(0, lastDot); // Remove the extension
   }
   QString baseName = QString::fromStdString(fileName);
@@ -216,14 +252,19 @@ std::optional<std::pair<QImage, QString>> Utils::prepareImageForExport(
   // Convert cv::Mat to QImage
   cv::Mat matImg = image->getImageMat();
   QImage qImg;
-  if (matImg.channels() == 3) {
+  if (matImg.channels() == 3)
+  {
     qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0],
                   QImage::Format_RGB888)
                .rgbSwapped();
-  } else if (matImg.channels() == 1) {
+  }
+  else if (matImg.channels() == 1)
+  {
     qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step[0],
                   QImage::Format_Grayscale8);
-  } else {
+  }
+  else
+  {
     qDebug() << "Unsupported image format.";
     return std::nullopt;
   }

@@ -47,12 +47,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     otherList->addWidget(_heatmapWidget);
     rightSidebarLayout->addWidget(otherList);
 
-    QWidget *progressBarContainer = new QWidget();
-    QHBoxLayout *progressBarLayout = new QHBoxLayout();
-    progressBarLayout->addWidget(_progressBar);
-    progressBarContainer->setLayout(progressBarLayout);
-    rightSidebarLayout->addWidget(progressBarContainer);
-    progressBarContainer->setContentsMargins(3, 0, 3, 0);
+
     rightSidebarLayout->addItem(new QSpacerItem(1, 2, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 
     rightSidebarLayout->addWidget(_historyWidget);

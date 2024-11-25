@@ -36,9 +36,9 @@ bool ImageRepository::load_directory(const std::string &path) {
       return false;
 
     int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::INFO, Logger::MessageID::IMAGES_LOADING_STARTED,
-        Logger::MessageOptian::WITH_DETAILS_AND_PATH,
-        {QString::fromStdString(path)}, image_paths.size(), "Loading .... ",
+        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageOption::with_path,
+        {QString::fromStdString(path)}, image_paths.size(),
         QString("file:///%1").arg(QString::fromStdString(path)));
 
     // Prepare for new data
