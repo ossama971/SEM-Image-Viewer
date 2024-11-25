@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if(PROJECT_IS_TOP_LEVEL AND UNIX)
   # Create symlink to compile_commands.json for IDE to pick it up
@@ -179,6 +179,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(SEM-Image-Viewer MANUAL_FINALIZATION ${PROJECT_SOURCES}
       core/filters/batch_filter.cpp core/filters/batch_filter.h
+      widgets/horizontal_intensity_plot.h widgets/horizontal_intensity_plot.cpp
 
 
 

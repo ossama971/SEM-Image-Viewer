@@ -120,3 +120,8 @@ Image* SessionData::getSelectedImage(void) {
 void SessionData::accept(Visitor &v) const {
     v.visit(*this);
 }
+
+void SessionData::toggleHorizontalPlotMode()
+{
+    horizontalIntensityPlotMode = !horizontalIntensityPlotMode;
+}

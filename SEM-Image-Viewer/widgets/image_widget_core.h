@@ -21,7 +21,6 @@ public:
   explicit ImageWidgetCore(QWidget *parent = nullptr);
   void loadAndDisplayImage(const Image &image);
   cv::Mat getImage() const;
-  void setIntensityPlotMode(bool enabled);
   void handleHeatmap(const cv::Mat &heatmap,bool checked);
   void resetView();
 protected:
@@ -54,6 +53,10 @@ private:
   QPixmap matToQPixmap(const cv::Mat &image);
   void clearSceneToDefault();
   void drawIntensityPlot(int y,int xStart, int xEnd);
+  QGraphicsProxyWidget *proxyWidget = nullptr;
+  bool isPlotting = false;
+
+  void customClearScene();
 
 private slots:
   void zoomIn();

@@ -29,6 +29,9 @@ public:
 
     void accept(Visitor &v) const override;
 
+    bool horizontalIntensityPlotMode = false;
+    void toggleHorizontalPlotMode();
+
 signals:
     void loadActionList(const QList<QString> &actions);
     void updateActionList(const QString &action);

@@ -1,4 +1,5 @@
 #include "right_side_bar_widget.h"
+#include "horizontal_intensity_plot.h"
 #include "sharpen_filter_widget.h"
 #include "controller_widget.h"
 #include "edge_extraction_wigdet.h"
@@ -42,9 +43,11 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     rightSidebarLayout->addWidget(list);
 
     HeatMapWidget *_heatmapWidget = new HeatMapWidget();
+    horizontal_intensity_plot *_horizontal_intensity_widget = new horizontal_intensity_plot();
 
     OtherListWidget *otherList = new OtherListWidget();
     otherList->addWidget(_heatmapWidget);
+    otherList->addWidget(_horizontal_intensity_widget);
     rightSidebarLayout->addWidget(otherList);
 
 

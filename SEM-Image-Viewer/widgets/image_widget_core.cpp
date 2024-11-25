@@ -1,4 +1,5 @@
 #include "image_widget_core.h"
+#include "../core/engines/workspace.h"
 #include <QDebug>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -118,7 +119,7 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     chartView->setStyleSheet("background: transparent;");
 
     // Create a proxy widget to embed the chart view into the scene
-    QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget();
+    proxyWidget = new QGraphicsProxyWidget();
     proxyWidget->setWidget(chartView);
 
     // Get the pixmap item's position in the scene
@@ -143,6 +144,7 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     // Set the geometry using the QRectF
     proxyWidget->setGeometry(chartRect);
 
+
     // Add the proxy widget to the scene
     scene->addItem(proxyWidget);
     // Set custom cursor for the plot
@@ -150,13 +152,17 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     QSize cursorSize(20, 20); // Adjust size as needed
     QPixmap scaledCursor = cursorPixmap.scaled(cursorSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     chartView->setCursor(QCursor(scaledCursor));
+
 }
 
 
 
 bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
     if (obj == scene) {
+        intensityPlotMode = (Workspace::Instance()->getActiveSession().horizontalIntensityPlotMode);
+
         if (intensityPlotMode) {
+
             graphicsView->setDragMode(QGraphicsView::NoDrag); // Disable drag in intensity plot mode
             static bool customCursorSet = false;
             if (!customCursorSet) {
@@ -171,30 +177,47 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
             if (event->type() == QEvent::GraphicsSceneMousePress) {
                 auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
                 if (mouseEvent) {
+
+                    isPlotting = true;
                     // Capture starting point for the line
                     lineStart = mouseEvent->scenePos();
                     qDebug() << "Mouse Press at:" << lineStart;
 
                     // Delete the previous line from the scene
-                    if (intensityLine) {
-                        scene->removeItem(intensityLine);
-                        delete intensityLine;
-                        intensityLine = nullptr;
-                    }
-                    // Create a temporary line item if it doesn't exist
-                    if (!intensityLine) {
-                        intensityLine = new QGraphicsLineItem();
-                        intensityLine->setPen(QPen(Qt::red, 2));
-                        scene->addItem(intensityLine);
-                    }
+                    if(intensityLine)
+                        customClearScene();
+                    // if (intensityLine->isVisible()) {
+                    //     if(proxyWidget->isVisible())
+                    //     {
+                    //         qDebug()<<"chart found";
+                    //         delete proxyWidget;
+                    //         qDebug()<<"chart deleted";
+                    //         proxyWidget= nullptr;
+                    //         qDebug()<<"chart nulled";
+                    //     }
+                    //     qDebug()<<"line found";
+                    //         // scene->removeItem(intensityLine);
+                    //         delete intensityLine;
+                    //         intensityLine = nullptr;
+                    // }
 
-                    // Initialize the line position
+
+
+                    intensityLine = new QGraphicsLineItem();
+                    intensityLine->setPen(QPen(Qt::red, 2));
+                    scene->addItem(intensityLine);
+
+
+
+
+                    // // Initialize the line position
                     intensityLine->setLine(lineStart.x(), lineStart.y(), lineStart.x(), lineStart.y());
                     return true;
                 }
             } else if (event->type() == QEvent::GraphicsSceneMouseMove) {
                 auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event);
-                if (mouseEvent && intensityLine) {
+
+                if (mouseEvent && intensityLine && isPlotting) {
                     // Update the line's endpoint in real-time, keeping the Y-coordinate fixed
                     QPointF scenePos = mouseEvent->scenePos();
                     intensityLine->setLine(lineStart.x(), lineStart.y(), scenePos.x(), lineStart.y());
@@ -227,16 +250,24 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
 
                     // Optional: Clear the temporary line if not needed after plotting
                     // delete intensityLine;
-                    intensityLine = nullptr;
+                    // intensityLine = nullptr;
                     graphicsView->unsetCursor();
                     customCursorSet = false;
+                    isPlotting= false;
+                    Workspace::Instance()->getActiveSession().toggleHorizontalPlotMode();
 
 
                     return true;
                 }
             }
         }
+        else
+        {
+            graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+            if (event->type() == QEvent::GraphicsSceneMousePress)
+                customClearScene();
 
+        }
 
 
     if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
@@ -322,6 +353,7 @@ void ImageWidgetCore::resizeEvent(QResizeEvent *event) {
 }
 
 void ImageWidgetCore::wheelEvent(QWheelEvent *event) {
+   customClearScene();
   if (event->modifiers() & Qt::ControlModifier) {
 
     const qreal zoomIncrement = 1.1;
@@ -345,25 +377,39 @@ void ImageWidgetCore::wheelEvent(QWheelEvent *event) {
 }
 
 void ImageWidgetCore::zoomIn() {
-  const qreal zoomIncrement = 1.1;
-  zoomFactor *= zoomIncrement;
+    customClearScene();
+    const qreal zoomIncrement = 1.1;
+    qreal factor = zoomIncrement; // Similar to wheelEvent
+    zoomFactor *= factor;
 
-  // Limit zoom factor to a maximum
-  zoomFactor = qMin(zoomFactor, 10.0);
+    // Optional: Limit the zoom factor to a maximum
+    zoomFactor = qMin(zoomFactor, 10.0);
 
-  graphicsView->setTransform(QTransform().scale(zoomFactor, zoomFactor));
-  infoBar->setZoomPercentage(zoomFactor); // Update zoom percentage
+    // Maintain the view center
+    QPointF viewCenter = graphicsView->mapToScene(graphicsView->viewport()->rect().center());
+    graphicsView->scale(factor, factor);
+    graphicsView->centerOn(viewCenter);
+
+    // Update the zoom percentage
+    infoBar->setZoomPercentage(zoomFactor);
 }
 
 void ImageWidgetCore::zoomOut() {
-  const qreal zoomIncrement = 1.1;
-  zoomFactor /= zoomIncrement;
+    customClearScene();
+    const qreal zoomIncrement = 1.1;
+    qreal factor = 1 / zoomIncrement; // Similar to wheelEvent
+    zoomFactor *= factor;
 
-  // Limit zoom factor to a minimum
-  zoomFactor = qMax(zoomFactor, 0.1);
+    // Optional: Limit the zoom factor to a minimum
+    zoomFactor = qMax(zoomFactor, 0.1);
 
-  graphicsView->setTransform(QTransform().scale(zoomFactor, zoomFactor));
-  infoBar->setZoomPercentage(zoomFactor); // Update zoom percentage
+    // Maintain the view center
+    QPointF viewCenter = graphicsView->mapToScene(graphicsView->viewport()->rect().center());
+    graphicsView->scale(factor, factor);
+    graphicsView->centerOn(viewCenter);
+
+    // Update the zoom percentage
+    infoBar->setZoomPercentage(zoomFactor);
 }
 
 void ImageWidgetCore::updateImage(const cv::Mat &image) {
@@ -412,16 +458,6 @@ cv::Mat ImageWidgetCore::getImage() const {
 }
 
 
-void ImageWidgetCore::setIntensityPlotMode(bool enabled) {
-    intensityPlotMode = enabled;
-
-    // Clear existing line if the mode is disabled
-    if (!enabled && intensityLine) {
-        scene->removeItem(intensityLine);
-        delete intensityLine;
-        intensityLine = nullptr;
-    }
-}
 
 QPixmap ImageWidgetCore::matToQPixmap(const cv::Mat &image)
 {
@@ -442,6 +478,9 @@ QPixmap ImageWidgetCore::matToQPixmap(const cv::Mat &image)
 
 void ImageWidgetCore::clearSceneToDefault() {
     // Clear all items from the scene
+    for (QGraphicsItem *item : scene->items()) {
+        delete item;
+    }
     scene->clear();
 }
 
@@ -450,4 +489,12 @@ void ImageWidgetCore::resetView() {
     infoBar-> setDimensions(0, 0);
     infoBar->setZoomPercentage(1.0);
     infoBar->setMousePosition(0, 0);
+}
+
+void ImageWidgetCore::customClearScene(){
+    for (QGraphicsItem *item : scene->items()) {
+        if(item->type() == QGraphicsPixmapItem::Type)
+            continue;
+        delete item;
+    }
 }
