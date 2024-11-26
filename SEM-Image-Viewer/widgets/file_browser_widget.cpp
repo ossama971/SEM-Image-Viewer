@@ -125,11 +125,12 @@ void FileBrowserWidget::Initialize() {
     connect(treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(onTreeClick(QModelIndex)));
 
 
-    QFrame* separator = new QFrame();
-    separator->resize(searchBoxHolder->geometry().width() + 20, 1);
-    separator->setFixedHeight(1);
+    QFrame* separator = new QFrame(this);
+    separator->resize(geometry().width(), 5);
+    separator->setFixedHeight(5);
+    separator->move(0, 30);
     separator->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    //separator->setStyleSheet(QString("background-color: white;"));
+    separator->setObjectName("fileBrowserSeparator");
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
     //buttonsLayout->addSpacing(50);
@@ -151,7 +152,7 @@ void FileBrowserWidget::Initialize() {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(buttonsLayout);
-    mainLayout->addWidget(separator);
+    mainLayout->addSpacing(12);
     mainLayout->addWidget(searchBoxHolder);
     mainLayout->addWidget(treeView);
 

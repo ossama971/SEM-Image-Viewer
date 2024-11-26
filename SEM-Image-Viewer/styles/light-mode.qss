@@ -228,15 +228,15 @@ background-color: transparent;
 }
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-light.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 QPushButton#newFileBtn {
    qproperty-icon: url(:/icons/new-file-light.svg);
-   qproperty-iconSize: 20px 20px;
+   qproperty-iconSize: 20px 16px;
 }
 QPushButton#collapseBtn {
   qproperty-icon: url(:/icons/nav-arrow-light.svg);
-  qproperty-iconSize: 20px 20px;
+  qproperty-iconSize: 20px 16px;
 }
 QPushButton#redoButton {
  qproperty-icon: url(:/icons/redo-icon.svg);
@@ -360,6 +360,9 @@ QProgressBar::text {
 
 QFrame {
     border-radius: 8px;
+}
+QFrame#fileBrowserSeparator {
+    background-color: #CCCCCC;
 }
 
 QCheckBox {

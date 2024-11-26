@@ -247,17 +247,17 @@ QPushButton:hover#searchButton2 {
 
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#newFileBtn {
     qproperty-icon: url(:/icons/new-file-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#collapseBtn {
     qproperty-icon: url(:/icons/nav-arrow-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#redoButton {
@@ -384,6 +384,9 @@ QProgressBar::text {
 }
 QFrame {
     border-radius: 8px;
+}
+QFrame#fileBrowserSeparator {
+    background-color: #1E1E1E;
 }
 QCheckBox {
     color: white;
