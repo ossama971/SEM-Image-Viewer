@@ -308,10 +308,10 @@ void MenuBarWidget::saveSession() {
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
          });
-        Logger::instance()->logMessage(
-                    Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
-                    Logger::MessageOption::without_path,
-                    {});
+        // Logger::instance()->logMessage(
+        //             Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
+        //             Logger::MessageOption::without_path,
+        //             {});
   } catch (const std::exception &e) {
     Logger::instance()->logMessage(
         Logger::MessageTypes::error, Logger::MessageID::error_in_save,

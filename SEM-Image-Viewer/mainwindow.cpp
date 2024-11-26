@@ -230,12 +230,10 @@ void MainWindow::onSaveChangesClicked() {
 
   // Check if the session folder already exists
   if (std::filesystem::exists(jsonFilePath)) {
-    // TODO: use logger instead of QMessageBox
-    QMessageBox::warning(
-        this, "Folder Exists",
-        QString("The folder '%1' already exists. Please choose a different "
-                "location or delete the existing folder.")
-            .arg(QString::fromStdString(sessionFolderPath.string())));
+    Logger::instance()->logMessage(
+    Logger::MessageTypes::warning, Logger::MessageID::file_already_exists,
+    Logger::MessageOption::with_path,
+    {QString::fromStdString(sessionFolderPath.string())});
     return;
   }
 
