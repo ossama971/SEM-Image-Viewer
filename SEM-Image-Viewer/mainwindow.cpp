@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   toolbarWidget = new ToolbarWidget(this);
 
-  topMiddleWidget = new TopMiddleWidget(this);
+  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget);
   bottomMiddleWidget = new BottomMiddleWidget(this);
   miniGrid = new MiniGrid(this);
   miniGrid->setMinimumHeight(90);

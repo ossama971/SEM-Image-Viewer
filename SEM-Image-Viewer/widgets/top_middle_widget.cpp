@@ -4,8 +4,8 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-TopMiddleWidget::TopMiddleWidget(QWidget *parent)
-  : QWidget(parent) {
+TopMiddleWidget::TopMiddleWidget(QWidget *parent, ToolbarWidget *toolbarWidget)
+  : QWidget(parent), toolbar(toolbarWidget) {
     int mainScreenWidth = QGuiApplication::primaryScreen()->geometry().width();
     int mainScreenHeight = QGuiApplication::primaryScreen()->geometry().height();
     setMinimumWidth(mainScreenWidth*0.3);
@@ -15,7 +15,6 @@ TopMiddleWidget::TopMiddleWidget(QWidget *parent)
     gridView = new GridView();
     diffView = new DiffViewWidget();
     topMiddleLayout = new QVBoxLayout();
-    toolbar = new ToolbarWidget();
     topMiddleLayout->addWidget(image, 1);
     topMiddleLayout->setContentsMargins(0, 0, 0, 0);
     topMiddleLayout->setSpacing(0);
