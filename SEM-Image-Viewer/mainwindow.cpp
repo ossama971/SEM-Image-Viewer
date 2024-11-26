@@ -218,12 +218,8 @@ void MainWindow::onCloseAllClicked() { this->close(); }
 
 void MainWindow::onSaveChangesClicked() {
   // Open a folder browser to select the base directory
-  QString baseDirectory = QFileDialog::getExistingDirectory(
-      this, "Select Base Directory to Save Session");
+  QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
   if (baseDirectory.isEmpty()) {
-    // TODO: use logger instead of QMessageBox
-    QMessageBox::warning(this, "No Directory Selected",
-                         "You must select a directory to save the session.");
     return;
   }
 
@@ -264,12 +260,16 @@ void MainWindow::onSaveChangesClicked() {
                visitor.write_json();
              }));
     saveTask.get();
-    // TODO: use logger instead of QMessageBox
-    QMessageBox::information(this, "Save Successful",
-                             "Session has been successfully saved.");
+    Logger::instance()->logMessage(
+                Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
+                Logger::MessageOption::without_path,
+                {});
     QApplication::quit();
   } catch (const std::exception &e) {
-    // TODO: use logger instead of QMessageBox
+    Logger::instance()->logMessage(
+                Logger::MessageTypes::error, Logger::MessageID::error_in_save,
+                Logger::MessageOption::without_path,
+                {});
   }
 }
 

@@ -23,6 +23,11 @@ Logger *Logger::instance()
     LoggerMap[MessageID::saving_session] = "Saving session to %1 file";
     LoggerMap[MessageID::loading_session] = "Loading session from %1 file";
     LoggerMap[MessageID::differerence_images] = "Difference Images feature has been applied successfully";
+    LoggerMap[MessageID::already_applied] = "Filter %1 already applied";
+    LoggerMap[MessageID::no_image_selected] = "No image selected";
+    LoggerMap[MessageID::error_in_save] = "Error in saving session";
+    LoggerMap[MessageID::saved_successfully] = "Session saved successfully";
+    LoggerMap[MessageID::file_already_exists] = "Json file %1 already exists in the directory";
     std::atexit(destroyInstance);
   }
   return m_instance;

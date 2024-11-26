@@ -284,7 +284,10 @@ void MenuBarWidget::saveSession() {
 
   // Check if the session folder already exists
   if (std::filesystem::exists(jsonFilePath)) {
-    // TODO: use logger instead of QMessageBox
+    Logger::instance()->logMessage(
+    Logger::MessageTypes::warning, Logger::MessageID::file_already_exists,
+    Logger::MessageOption::with_path,
+    {QString::fromStdString(sessionFolderPath.string())});
     return;
   }
 
@@ -305,8 +308,15 @@ void MenuBarWidget::saveSession() {
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
          });
+        Logger::instance()->logMessage(
+                    Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
+                    Logger::MessageOption::without_path,
+                    {});
   } catch (const std::exception &e) {
-    // TODO: use logger instead of QMessageBox
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::error, Logger::MessageID::error_in_save,
+        Logger::MessageOption::without_path,
+        {});
   }
 }
 
