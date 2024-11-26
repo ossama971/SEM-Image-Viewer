@@ -11,6 +11,7 @@
 #include <QImage>
 #include <QFileDialog>
 #include <QApplication>
+#include <boost/format.hpp>
 
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
@@ -87,11 +88,11 @@ void MenuBarWidget::fileMenu() {
 
   // selected image
   connect(JPGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage(".jpg"); });
+          [=]() { exportSelectedImage("jpg"); });
   connect(PNGAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage(".png"); });
+          [=]() { exportSelectedImage("png"); });
   connect(BMPAction, &QAction::triggered, this,
-          [=]() { exportSelectedImage(".bmp"); });
+          [=]() { exportSelectedImage("bmp"); });
 
   connect(saveSessionAction, &QAction::triggered, this,
           [=]() { saveSession(); });
@@ -100,67 +101,40 @@ void MenuBarWidget::fileMenu() {
 }
 
 void MenuBarWidget::exportSelectedImage(const QString &format) {
-  Image *image =
-      Workspace::Instance()->getActiveSession().getImageRepo().getImage();
+  const Image *const image =
+    Workspace::Instance()->getActiveSession().getImageRepo().getImage();
 
-  if(image==nullptr){
-      //TODO: use logger to inform user that there is no image to export
-      return;
-  }
-  string fileName = image->getPath().filename().string();
-  size_t lastDot = fileName.find_last_of('.');
-  QString baseName = QString::fromStdString(fileName);
-
-  if (lastDot != string::npos) {
-    fileName = fileName.substr(0, lastDot); // Remove the extension
-  }
-
-  QString directoryPath = QFileDialog::getSaveFileName(
-      this, tr("Save Image File"),
-      QString::fromStdString(image->getPath().filename().stem().string()),
-      tr("Images (*.%1)").arg(format));
-
-  QString baseFileName = QFileDialog::getSaveFileName(
-      this, tr("Save Image File"), baseName, tr("Images (%1)").arg(format));
-
-  if (!baseFileName.isEmpty()) {
-    QFileInfo fileInfo(baseFileName);
-    QString extension = fileInfo.completeSuffix();
-    QString filePath = fileInfo.path();
-
-    cv::Mat matImg = image->getImageMat();
-    QImage qImg;
-    if (matImg.type() == CV_8UC1) {
-        // Grayscale image
-        qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step, QImage::Format_Grayscale8);
-    } else if (matImg.type() == CV_8UC3) {
-        // RGB image (already 3 channels)
-        qImg = QImage(matImg.data, matImg.cols, matImg.rows, matImg.step, QImage::Format_RGB888).rgbSwapped();
-    } else {
-        // Convert other types if necessary
-        cv::Mat convertedImg;
-        cv::cvtColor(matImg, convertedImg, cv::COLOR_BGR2RGB); // Assuming BGR format
-        qImg = QImage(convertedImg.data, convertedImg.cols, convertedImg.rows, convertedImg.step, QImage::Format_RGB888);
-    }
-
-    QString numberedFileName =
-        QString("%1/%2.%3").arg(filePath).arg(baseName).arg(extension);
-
-    qImg.save(numberedFileName);
-  }
-
-  auto result = Utils::prepareImageForExport(
-      image, QFileInfo(directoryPath).path(), format);
-  if (!result) {
-    //TODO: use logger to inform user that there is an error in exporting the image
+  if (image == nullptr) {
+    // TODO: use logger to inform user that there is no image to export
     return;
   }
 
-  const auto qImg = result->first;
-  const auto numberedFileName = result->second;
+  const std::string originalFileName = image->getPath().filename().string();
+  const size_t lastDot = originalFileName.find_last_of('.');
+  const std::string baseFileName =
+    (lastDot != std::string::npos) ? originalFileName.substr(0, lastDot) : originalFileName;
+
+  QString saveFilePath = QFileDialog::getSaveFileName(
+      this, tr("Save Image File"),
+      QString::fromStdString(baseFileName),
+      tr("Images (*.%1)").arg(format));
+
+  if (saveFilePath.isEmpty()) {
+    // User canceled the dialog
+    return;
+  }
+
+  if (!saveFilePath.endsWith("." + format, Qt::CaseInsensitive)) {
+    saveFilePath += "." + format;
+  }
+
+  const cv::Mat matImg = image->getImageMat();
+
+  // Save the image using OpenCV
+  const std::string saveFileName = saveFilePath.toStdString();
   post(ThreadPool::instance(),
-       std::packaged_task<void()>(
-           [qImg, numberedFileName]() { qImg.save(numberedFileName); }));
+      std::packaged_task<void()>(
+        [matImg, saveFileName]() { cv::imwrite(saveFileName, matImg); }));
 }
 
 void MenuBarWidget::exportImages(const QString &format) {
@@ -186,16 +160,23 @@ void MenuBarWidget::exportImages(const QString &format) {
   auto saveImagesSubset = [this, directoryPath, format, progressbarID](size_t start,
                                                         size_t end) {
     for (size_t i = start; i < end; ++i) {
-      auto image =
+      const auto image =
           Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
-      auto result = Utils::prepareImageForExport(image, directoryPath, format);
-      if (!result) {
-        //TODO: use logger Failed to prepare image for export at index num i
-        continue;
-      }
-
-      const auto &[qImg, numberedFileName] = *result;
-      qImg.save(numberedFileName);
+        if (!image) {
+          // use logger to inform that there is an error/warn in exporting the image
+          continue;
+        }
+        std::string fileName = image->getPath().filename().string();
+        const size_t lastDot = fileName.find_last_of('.');
+        if (lastDot != std::string::npos) {
+          fileName = fileName.substr(0, lastDot);
+        }
+        const cv::Mat matImg = image->getImageMat();
+        const std::string numberedFileName =
+            (boost::format("%1%/%2%.%3%") % directoryPath.toStdString() %
+             fileName % format.toStdString())
+                .str();
+      cv::imwrite(numberedFileName, matImg);
       Logger::instance()->updateProgressBar(progressbarID, 1);
     }
   };
@@ -209,8 +190,6 @@ void MenuBarWidget::exportImages(const QString &format) {
                                      saveImagesSubset, startIdx, endIdx)));
   }
 }
-
-
 
 void MenuBarWidget::editMenu() {
   QMenu *editMenu = this->addMenu("Edit");

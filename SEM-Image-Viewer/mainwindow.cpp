@@ -211,7 +211,7 @@ void MainWindow::onSaveChangesClicked() {
                 Workspace::Instance()->getActiveSession().accept(visitor);
                 visitor.write_json();
             } catch (const std::exception &e) {
-                qDebug() << "Failed to save session: " << e.what();
+                // qDebug() << "Failed to save session: " << e.what();
                 throw;
             }
         }));
@@ -221,7 +221,7 @@ void MainWindow::onSaveChangesClicked() {
             QMessageBox::information(this, "Save", "Changes have been saved.");
             ThreadPool::instance().join();
             QApplication::quit();
-            qDebug() << "Save successful. Exiting application.";
+            // qDebug() << "Save successful. Exiting application.";
         } catch (const std::exception &e) {
             QMessageBox::critical(this, "Save Error", QString("Failed to save changes: %1").arg(e.what()));
         }

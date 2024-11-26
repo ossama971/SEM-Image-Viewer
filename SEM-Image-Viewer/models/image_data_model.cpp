@@ -91,7 +91,7 @@ QImage convertMatToQImage(const cv::Mat &mat)
     }
     else
     {
-        qDebug() << "Unsupported image format. Ensure the cv::Mat is CV_8UC1 or CV_8UC3.";
+        // qDebug() << "Unsupported image format. Ensure the cv::Mat is CV_8UC1 or CV_8UC3.";
         return QImage(); // Return an empty QImage if the format is unsupported
     }
 
