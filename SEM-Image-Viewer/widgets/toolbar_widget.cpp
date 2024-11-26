@@ -32,7 +32,14 @@ ToolbarWidget::ToolbarWidget(QWidget *parent)
     redoButton->setObjectName("redoButton");
     minimizeToolbarButton->setObjectName("arrowup");
     minimizeLoggerButton->setObjectName("closelog");
-
+    imageViewButton->setToolTip("Image View");
+    diffViewButton->setToolTip("Diff View");
+    gridViewButton->setToolTip("Grid View");
+    saveButton->setToolTip("Save");
+    undoButton->setToolTip("Undo");
+    redoButton->setToolTip("Redo");
+    minimizeToolbarButton->setToolTip("Minimize Mini Grid");
+    minimizeLoggerButton->setToolTip("Minimize Logger");
     auto buttonStyle1 = "QToolButton { margin: 0px; padding: 2px 5px 2px 5px; border: none; }"
                         "QToolButton:checked { border-radius: 4px; }"
                         "QToolButton:hover { border-radius: 4px; }";

@@ -39,6 +39,8 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     // Create Redo button with icon
     redoButton = new QPushButton(this);
     redoButton->setObjectName("redoButton");
+    undoButton->setToolTip("Undo");
+    redoButton->setToolTip("Redo");
     redoButton->setStyleSheet(
         "QPushButton { "
         "   padding: 2px;"
@@ -72,6 +74,8 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
     // Create action list
     actionList = new QListWidget(this);
+    actionList->setSelectionMode(QAbstractItemView::NoSelection);
+
     actionList->setStyleSheet(
         "QListWidget {"
         "    background: transparent;" // Makes the background transparent

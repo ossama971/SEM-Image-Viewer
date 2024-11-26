@@ -40,6 +40,11 @@ public:
     void accept(Visitor &v) const override;
     bool getHasUnsavedChanges();
 
+    // Costly operations, should only be used for 
+    // exporting & saving the sessions only
+    std::vector<std::unique_ptr<Image>> cloneImages() const;
+    std::unique_ptr<Image> cloneSelectedImage() const;
+
 signals:
     void onDirectoryChanged(const std::string &newDir, const std::vector<Image*> &newImages, bool image_load);
     void onImageChanged(Image* newImage);

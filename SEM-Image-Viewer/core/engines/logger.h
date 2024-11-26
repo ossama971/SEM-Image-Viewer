@@ -27,6 +27,7 @@ public:
     enum class MessageID
     {
         filter_applied,
+        already_applied,
         images_loading_started,
         images_loading_finished,
         undo_applied,
@@ -38,6 +39,10 @@ public:
         saving_session,
         loading_session,
         differerence_images,
+        no_image_selected,
+        error_in_save,
+        saved_successfully,
+        file_already_exists,
     };
 
     static QMap<MessageID, QString> LoggerMap;

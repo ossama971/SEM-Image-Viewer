@@ -88,6 +88,7 @@ void FileBrowserWidget::Initialize() {
     searchBox->setPlaceholderText("File Name");
 
     QPushButton* searchButton = new QPushButton(searchBoxHolder);
+    searchButton->setToolTip("Search");
     searchButton->setObjectName("searchButton");
     searchButton->setStyleSheet(
         "QPushButton {"

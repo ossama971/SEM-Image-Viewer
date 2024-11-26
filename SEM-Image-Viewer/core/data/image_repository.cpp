@@ -288,3 +288,19 @@ void ImageRepository::setUnsavedChanges(Image* image) {
 bool ImageRepository::getHasUnsavedChanges(){
     return _hasUnsavedChanges;
 }
+
+std::vector<std::unique_ptr<Image>> ImageRepository::cloneImages() const {
+    std::unique_lock<std::recursive_mutex> lock(_mutex);
+    std::vector<std::unique_ptr<Image>> clonedImages;
+    for (const auto& image : _images) {
+        clonedImages.push_back(std::make_unique<Image>(*image));
+    }
+    return clonedImages;
+}
+
+std::unique_ptr<Image> ImageRepository::cloneSelectedImage() const {
+  std::unique_lock<std::recursive_mutex> lock(_mutex);
+  if (_selectedImage)
+    return std::make_unique<Image>(*_selectedImage);
+  return nullptr;
+}

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
         a.setStyleSheet(styleSheet);
         file.close();
     } else {
-        qDebug() << "Failed to load stylesheet";
+        // qDebug() << "Failed to load stylesheet";
     }
     MainWindow w;
     w.show();

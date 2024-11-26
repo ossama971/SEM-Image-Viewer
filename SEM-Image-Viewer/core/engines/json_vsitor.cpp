@@ -79,26 +79,29 @@ void JsonVisitor::visit(const ImageRepository &repo) {
 
   const std::size_t batch_size = 17;
   std::vector<std::future<boost::property_tree::ptree>> futures;
-  const auto& images = repo.getImages();
-  const size_t total_images = images.size();
+  const auto& images = std::make_shared<std::vector<std::unique_ptr<Image>>>(repo.cloneImages());
+  if (images->empty()) {
+    return;
+  }
+  const size_t total_images = images->size();
   size_t processed_images = 0;
 
   for (std::size_t i = 0; i < total_images; i += batch_size) {
-    auto start = images.begin() + i;
-    auto end = (i + batch_size < total_images) ? start + batch_size : images.end();
-    std::vector<Image*> batch(start, end);
+    auto start = i;
+    auto end = std::min(i + batch_size, total_images);
 
     auto future = post(ThreadPool::instance(),
       use_future([
+        images, start, end, total_images,
         progressbarID=this->progressbarID,
         session_datapath=this->session_datapath,
         json_filepath=this->json_filepath,
-        batch, total_images,
         &processed_images]() -> boost::property_tree::ptree {
         boost::property_tree::ptree local_images_tree;
 
-        for (const auto &image : batch) {
+        for (std::size_t j = start; j < end; j++) {
           JsonVisitor imageVisitor(session_datapath, json_filepath, progressbarID);
+          const auto& image = (*images)[j];
           image->accept(imageVisitor);
           local_images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
 

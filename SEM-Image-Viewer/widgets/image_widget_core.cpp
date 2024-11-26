@@ -182,7 +182,7 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
                     isPlotting = true;
                     // Capture starting point for the line
                     lineStart = mouseEvent->scenePos();
-                    qDebug() << "Mouse Press at:" << lineStart;
+                    // qDebug() << "Mouse Press at:" << lineStart;
 
                     // Delete the previous line from the scene
                     if(intensityLine)
@@ -233,7 +233,7 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
                 if (mouseEvent && intensityLine) {
                     // Finalize the line
                     lineEnd = mouseEvent->scenePos();
-                    qDebug() << "Mouse Release at:" << lineEnd;
+                    // qDebug() << "Mouse Release at:" << lineEnd;
 
                     // Adjust xStart and xEnd based on the scene's transformations
                     QGraphicsPixmapItem *pixmapItem = dynamic_cast<QGraphicsPixmapItem *>(scene->items().last());
