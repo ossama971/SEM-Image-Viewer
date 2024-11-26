@@ -50,7 +50,7 @@ private:
   int xStart;
   int xEnd;
 
-  std::optional<QPixmap> loadAndPrepareImage(const Image &image, const QSize &targetSize);
+  std::optional<QPixmap> loadAndPrepareImage(Image *selected_image, const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
   QPixmap matToQPixmap(const cv::Mat &image);
   void clearSceneToDefault();

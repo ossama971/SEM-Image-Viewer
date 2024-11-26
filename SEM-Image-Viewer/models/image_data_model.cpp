@@ -61,7 +61,7 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
             return m_thumbnails[index.row()];
 
         // Otherwise, generate and cache the thumbnail
-        QImage thumbnail = generateThumbnail(*images[index.row()]);
+        QImage thumbnail = generateThumbnail(images[index.row()]);
         m_thumbnails[index.row()] = thumbnail;
 
         return thumbnail.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -69,9 +69,9 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QImage ImageDataModel::generateThumbnail(const Image &image) const
+QImage ImageDataModel::generateThumbnail(Image *image) const
 {
-    const QImage &originalImage = image.getQImage(); // Updated to use `getImageMat`
+    const QImage &originalImage = image->getQImage(); // Updated to use `getImageMat`
     if (originalImage.isNull())
         return QImage();
 
@@ -89,7 +89,7 @@ void ImageDataModel::loadImages(int startIndex, int endIndex)
     // Load thumbnails for the specified range of images
     for (int i = startIndex; i <= endIndex; ++i)
     {
-        QImage thumbnail = generateThumbnail(*images[i]);
+        QImage thumbnail = generateThumbnail(images[i]);
         m_thumbnails[i] = thumbnail;
     }
 }

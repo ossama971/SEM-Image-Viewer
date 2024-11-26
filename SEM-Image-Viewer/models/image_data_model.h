@@ -30,7 +30,7 @@ private:
     QList<Image*> images;
     QSize thumbnailSize = QSize(80, 80);
     mutable QHash<int, QImage> m_thumbnails; // Cache for thumbnails
-    QImage generateThumbnail(const Image &image) const;
+    QImage generateThumbnail(Image *image) const;
 };
 
 #endif // IMAGE_DATA_MODEL_H

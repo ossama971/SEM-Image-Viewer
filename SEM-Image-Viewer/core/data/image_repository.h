@@ -56,8 +56,8 @@ public slots:
     void setUnsavedChanges(Image* image);
 
 private slots:
-    void onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat);
-    void onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat);
+    void onCacheImageLoaded(const std::string &path, QImage *image);
+    void onCacheImageRemoved(const std::string &path, QImage *image);
 
 private:
     std::string _folderPath;

@@ -127,7 +127,7 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
     saveFilePath += "." + format;
   }
 
-  const cv::Mat matImg = image->getImageMat();
+  const cv::Mat& matImg = image->getImageMat();
 
   // Save the image using OpenCV
   const std::string saveFileName = saveFilePath.toStdString();

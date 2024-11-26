@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <QFile>
 #include <random>
 #include <string>
 
@@ -229,3 +230,101 @@ void Utils::loadSessionJson(const std::string &filename)
   }
 }
 
+QImage Utils::loadFromQrc(const QString &qrc, const char *extension) {
+    QFile file(qrc);
+    QImage img;
+
+    if(file.open(QIODevice::ReadOnly))
+        img.load(&file, extension);
+
+    return img;
+}
+
+cv::Mat Utils::imageToMat(const QImage &image) {
+    if (image.isNull())
+        return cv::Mat();
+
+    switch (image.format())
+    {
+    case QImage::Format_RGB32:
+    case QImage::Format_ARGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+    {
+        cv::Mat mat(image.height(), image.width(), CV_8UC4, (void*)image.constBits(), image.bytesPerLine());
+        cv::Mat result;
+
+        cv::cvtColor(mat, result, cv::COLOR_BGRA2BGR);
+        return result;
+    }
+
+    case QImage::Format_RGB888:
+    {
+        cv::Mat mat(image.height(), image.width(), CV_8UC3, (void*)image.constBits(), image.bytesPerLine());
+        return mat.clone();
+    }
+
+    case QImage::Format_Indexed8:
+    {
+        if (!image.colorTable().isEmpty())
+        {
+            // Convert to a color-mapped image (indexed colors with a palette)
+            QImage colorMappedImage = image.convertToFormat(QImage::Format_RGB888);
+            cv::Mat mat(colorMappedImage.height(), colorMappedImage.width(), CV_8UC3, (void*)colorMappedImage.constBits(), colorMappedImage.bytesPerLine());
+            return mat.clone();  // Return a deep copy of the color-mapped image
+        }
+
+        // If no color table, treat as grayscale and convert to CV_8UC1
+        cv::Mat mat(image.height(), image.width(), CV_8UC1, (void*)image.constBits(), image.bytesPerLine());
+        return mat.clone();
+    }
+
+    case QImage::Format_RGB16:
+    {
+        cv::Mat mat(image.height(), image.width(), CV_16UC3, (void*)image.constBits(), image.bytesPerLine());
+        return mat.clone();
+    }
+
+    case QImage::Format_ARGB8565_Premultiplied:
+    {
+        cv::Mat mat(image.height(), image.width(), CV_8UC4, (void*)image.constBits(), image.bytesPerLine());
+        return mat.clone();
+    }
+
+    case QImage::Format_Grayscale8:
+    {
+        cv::Mat mat(image.height(), image.width(), CV_8UC1, (void*)image.constBits(), image.bytesPerLine());
+        return mat.clone();
+    }
+
+    default:
+    {
+        // If we encounter any other format, convert to ARGB32 and proceed
+        QImage converted = image.convertToFormat(QImage::Format_ARGB32);
+        cv::Mat mat(converted.height(), converted.width(), CV_8UC4, (void*)converted.constBits(), converted.bytesPerLine());
+        return mat.clone();
+    }
+    }
+}
+
+QImage Utils::matToImage(const cv::Mat &image) {
+    if (image.empty())
+        return QImage();
+
+    // Convert from CV_8UC3 (BGR format) to QImage::Format_RGB888
+    if (image.channels() == 3)
+    {
+        QImage img(image.data, image.cols, image.rows, image.step, QImage::Format_RGB888);
+        return img.rgbSwapped();
+    }
+
+    // Convert from CV_8UC1 (grayscale) to QImage::Format_Indexed8
+    else if (image.channels() == 1)
+        return QImage(image.data, image.cols, image.rows, image.step, QImage::Format_Indexed8);
+
+    // Convert from CV_8UC4 (BGRA format) to QImage::Format_ARGB32
+    else if (image.channels() == 4)
+        return QImage(image.data, image.cols, image.rows, image.step, QImage::Format_ARGB32);
+
+    // If the input cv::Mat is an unsupported format
+    return QImage();
+}

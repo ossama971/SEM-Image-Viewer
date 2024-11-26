@@ -319,7 +319,7 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
   return QWidget::eventFilter(obj, event);
 }
 void ImageWidgetCore::loadAndDisplayImage(const Image &image) {
-  auto pixmap = loadAndPrepareImage(image, graphicsView->size());
+  auto pixmap = loadAndPrepareImage((Image*)&image, graphicsView->size());
   if (pixmap) {
     setImage(*pixmap);
     setDimensions(pixmap->width(), pixmap->height());
@@ -335,9 +335,9 @@ void ImageWidgetCore::setDimensions(int width, int height) {
 }
 
 optional<QPixmap>
-ImageWidgetCore::loadAndPrepareImage(const Image &selected_image,
+ImageWidgetCore::loadAndPrepareImage(Image *selected_image,
                                      const QSize &targetSize) {
-  const Mat& image = readFromCache ? selected_image.getImageMat() : selected_image.readImageMat();
+    const Mat& image = readFromCache ? selected_image->getImageMat() : selected_image->readImageMat();
   currentImage = image;
   if (image.empty()) {
     return nullopt;
