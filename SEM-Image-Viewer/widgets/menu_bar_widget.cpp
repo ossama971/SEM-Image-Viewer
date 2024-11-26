@@ -4,13 +4,12 @@
 #include "../core/engines/logger.h"
 #include "../core/utils.h"
 #include "image_dialog.h"
-#include "load_session_dialog.h"
-#include "save_session_dialog.h"
 #include "menu_bar_widget.h"
 #include <QMenu>
 #include <QImage>
 #include <QFileDialog>
 #include <QApplication>
+#include <QMessageBox>
 
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
@@ -294,36 +293,75 @@ void MenuBarWidget::onThemeActionTriggered() {
 }
 
 void MenuBarWidget::saveSession() {
-  SaveSessionDialog dialog(this);
-  if (dialog.exec() == QDialog::Accepted) {
+  // Open a folder browser to select the base directory
+  QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
+  if (baseDirectory.isEmpty()) {
+      //TODO: use logger instead of QMessageBox
+      QMessageBox::warning(this, "No Directory Selected", "You must select a directory to save the session.");
+      return;
+  }
 
-    auto directoryPath = dialog.getDirectoryPath();
-    auto jsonFilePath = dialog.getJsonFilePath();
+  // Set default session folder name and JSON file name
+  std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString()) / "session_data";
+  std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
 
-    int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::info,
-        Logger::MessageID::saving_session,
-        Logger::MessageOption::without_path,
-        { QString::fromStdString(jsonFilePath.string()) },
-        Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount()
-    );
+  // Check if the session folder already exists
+  if (std::filesystem::exists(sessionFolderPath)) {
+      //TODO: use logger instead of QMessageBox
+      QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
+                               .arg(QString::fromStdString(sessionFolderPath.string())));
+      return;
+  }
 
-    post(ThreadPool::instance(), [directoryPath, jsonFilePath, progressbarID]() {
-        JsonVisitor visitor(directoryPath.string(), jsonFilePath.string(), progressbarID);
-        Workspace::Instance()->getActiveSession().accept(visitor);
-        visitor.write_json();
-    });
+  try {
+      // Log the save action
+      int progressbarID = Logger::instance()->logMessageWithProgressBar(
+          Logger::MessageTypes::info,
+          Logger::MessageID::saving_session,
+          Logger::MessageOption::with_path,
+          { QString::fromStdString(jsonFilePath.string()) },
+          Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount()
+          );
+
+      // Save the session using a thread pool task
+      auto saveTask = post(ThreadPool::instance(), use_future([sessionFolderPath, jsonFilePath, progressbarID]() {
+                               JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
+                               Workspace::Instance()->getActiveSession().accept(visitor);
+                               visitor.write_json();
+                           }));
+      saveTask.get();
+      //TODO: use logger instead of QMessageBox
+      QMessageBox::information(this, "Save Successful", "Session has been successfully saved.");
+      // QApplication::quit(); // Exit the application if save was successful
+  } catch (const std::exception &e) {
+      //TODO: use logger instead of QMessageBox
+      QMessageBox::critical(this, "Save Error", QString("Failed to save session: %1").arg(e.what()));
   }
 }
 
 void MenuBarWidget::loadSession() {
-  LoadSessionDialog dialog(this);
-  if (dialog.exec() == QDialog::Accepted) {
-    auto jsonFilePath = dialog.getJsonFilePath();
+  QString file = QFileDialog::getOpenFileName(this, "Select Session File", QString(), "JSON Files (*.json)");
+  if (file.isEmpty()) {
+      return ; // User canceled
+  }
 
-    post(ThreadPool::instance(), [jsonFilePath]() {
-      Utils::loadSessionJson(jsonFilePath.string());
-    });
+  std::filesystem::path jsonFilePath = std::filesystem::path(file.toStdString());
 
+  // Check if the selected file has a .json extension
+  if (jsonFilePath.extension() != ".json") {
+      //TODO: use logger
+      return ; // Invalid file type
+  }
+
+  try {
+      post(ThreadPool::instance(), [jsonFilePath]() {
+          Utils::loadSessionJson(jsonFilePath.string());
+      });
+
+      //TODO: use logger
+      return ; // Load successful
+  } catch (const std::exception &e) {
+      //TODO: use logger
+      return ; // Load failed
   }
 }
