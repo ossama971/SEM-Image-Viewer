@@ -1,13 +1,15 @@
-#include "../engines/thread_pool.h"
 #include "image_repository.h"
+#include "../engines/thread_pool.h"
+#include "../engines/logger.h"
 
 #include <QDebug>
 #include <QVector>
 #include <regex>
-
-#include "../engines/logger.h"
 #include <boost/algorithm/string.hpp>
-#include <iostream>
+
+#ifndef IMAGE_CACHE
+#include "image_cacheless.h"
+#endif
 
 ImageRepository::ImageRepository() : _selectedImage(nullptr)
 #ifdef IMAGE_CACHE
