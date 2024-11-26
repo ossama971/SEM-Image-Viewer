@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <vector>
+#include <future>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 
@@ -60,6 +61,9 @@ private slots:
     void onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat);
     void onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat);
 
+public:
+    std::atomic_int _current_operations = 0;
+
 private:
     std::string _folderPath;
     mutable std::recursive_mutex _mutex;
@@ -67,7 +71,6 @@ private:
     std::vector<std::unique_ptr<Image>> _images;
     Image* _selectedImage = nullptr;
     bool _hasUnsavedChanges = false; // Tracks whether there are unsaved changes
-    std::atomic_int _imge_repo_version = 0;
 
 #ifdef IMAGE_CACHE
     ImageCachePool _cachePool;

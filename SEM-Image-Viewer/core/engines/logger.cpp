@@ -29,6 +29,7 @@ Logger *Logger::instance()
     LoggerMap[MessageID::saved_successfully] = "Session saved successfully";
     LoggerMap[MessageID::file_already_exists] = "Json file %1 already exists in the directory";
     LoggerMap[MessageID::no_difference] = "No difference between two images";
+    LoggerMap[MessageID::operation_in_progress] = "Can't load images while having batch operation in progress";
     std::atexit(destroyInstance);
   }
   return m_instance;

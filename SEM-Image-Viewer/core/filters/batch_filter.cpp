@@ -1,6 +1,7 @@
 #include "batch_filter.h"
 #include "../engines/logger.h"
 #include "../engines/thread_pool.h"
+#include "../engines/workspace.h"
 
 void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<Image*> &input) {
   if (input.empty() || !filter)
@@ -15,6 +16,8 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
       {  },
       input.size()
   );
+
+  Workspace::Instance()->getActiveSession().getImageRepo()._current_operations.fetch_add(1, std::memory_order_relaxed);
 
   post(ThreadPool::instance(), [this, filter = std::move(filter), input = std::move(input), progressbarID]() {
 
@@ -46,6 +49,8 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
     for (auto& future : futures) {
       future.get();
     }
+
+    Workspace::Instance()->getActiveSession().getImageRepo()._current_operations.fetch_sub(1, std::memory_order_relaxed);
 
     emit onFinish(std::move(input), std::move(output), filter->getImageSource());
   });

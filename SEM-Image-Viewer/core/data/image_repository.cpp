@@ -11,7 +11,7 @@
 #include "image_cacheless.h"
 #endif
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr), _imge_repo_version(0)
+ImageRepository::ImageRepository() : _selectedImage(nullptr)
 #ifdef IMAGE_CACHE
     ,_cachePool(IMAGE_CACHE_SIZE)
 #endif
@@ -23,6 +23,11 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr), _imge_repo_version
 }
 
 bool ImageRepository::load_directory(const std::string &path) {
+  if(_current_operations.load() > 0) {
+    Logger::instance()->logMessage(Logger::MessageTypes::warning, Logger::MessageID::operation_in_progress, Logger::MessageOption::without_path, {});
+    return false;
+  }
+
   std::unique_lock<std::recursive_mutex> lock(_mutex);
 
   try {
@@ -107,6 +112,10 @@ bool ImageRepository::load_directory(const std::string &path) {
 }
 
 bool ImageRepository::load_image(const std::string &path) {
+    if(_current_operations.load() > 0) {
+      Logger::instance()->logMessage(Logger::MessageTypes::warning, Logger::MessageID::operation_in_progress, Logger::MessageOption::without_path, {});
+      return false;
+    }
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     std::filesystem::path fpath(path);
@@ -161,7 +170,6 @@ void ImageRepository::post_directory_change(const std::string &newDir, bool imag
     for (const auto& image : _images) {
         connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
     }
-    _imge_repo_version++;
 
     emit onDirectoryChanged(newDir, getImages(), image_load);
 

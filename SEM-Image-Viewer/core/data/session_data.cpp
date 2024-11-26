@@ -78,6 +78,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<i
         return;
 
     emit onBatchFilterStarted(batchInput.size());
+
     _batchFilter.apply(std::move(filter), batchInput);
 }
 
