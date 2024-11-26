@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
   leftSidebarWidget->setMinimumWidth(160);
 
   rightSidebarWidget = new RightSidebarWidget(this);
-  rightSidebarWidget->setMinimumWidth(190);
+  rightSidebarWidget->setMinimumWidth(210);
 
   toolbarWidget = new ToolbarWidget(this);
 

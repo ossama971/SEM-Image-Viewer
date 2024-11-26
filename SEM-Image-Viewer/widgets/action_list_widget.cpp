@@ -9,7 +9,7 @@ ActionListWidget::ActionListWidget(QWidget* parent)
     // Main layout
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(5, 10, 10, 20);
+    mainLayout->setContentsMargins(0, 10, 10, 20);
 
     // Title
     auto titleLabel = new QLabel("Actions", this);
