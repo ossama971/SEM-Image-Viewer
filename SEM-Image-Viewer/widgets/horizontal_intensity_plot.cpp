@@ -22,7 +22,7 @@ horizontal_intensity_plot::horizontal_intensity_plot(QWidget * parent)
     //Add label and Button to layout
     layout->addWidget(label);
     layout->addWidget(applyButton);
-    layout->setContentsMargins(5,0,0,0);
+    layout->setContentsMargins(0,0,0,0);
     layout->addStretch();
     layout->setSpacing(5);
 
