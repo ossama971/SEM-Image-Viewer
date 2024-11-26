@@ -1,17 +1,16 @@
 #include "../core/engines/json_vsitor.h"
+#include "../core/engines/logger.h"
 #include "../core/engines/thread_pool.h"
 #include "../core/engines/workspace.h"
-#include "../core/engines/logger.h"
 #include "../core/utils.h"
 #include "image_dialog.h"
 #include "menu_bar_widget.h"
-#include <QMenu>
-#include <QImage>
-#include <QFileDialog>
 #include <QApplication>
+#include <QFileDialog>
+#include <QImage>
+#include <QMenu>
 #include <QMessageBox>
 #include <boost/format.hpp>
-
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
@@ -75,8 +74,7 @@ void MenuBarWidget::fileMenu() {
     imageDialog->openFolder(
         &Workspace::Instance()->getActiveSession().getImageRepo(), this);
   });
-  connect(closeAllAction, &QAction::triggered, this,
-          &MenuBarWidget::closeAll);
+  connect(closeAllAction, &QAction::triggered, this, &MenuBarWidget::closeAll);
 
   connect(JPGAllAction, &QAction::triggered, this,
           [=]() { exportImages("jpg"); });
@@ -100,8 +98,10 @@ void MenuBarWidget::fileMenu() {
 }
 
 void MenuBarWidget::exportSelectedImage(const QString &format) {
-  const Image *const image =
-    Workspace::Instance()->getActiveSession().getImageRepo().getImage();
+  const auto image = Workspace::Instance()
+                         ->getActiveSession()
+                         .getImageRepo()
+                         .cloneSelectedImage();
 
   if (image == nullptr) {
     // TODO: use logger to inform user that there is no image to export
@@ -110,12 +110,12 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
 
   const std::string originalFileName = image->getPath().filename().string();
   const size_t lastDot = originalFileName.find_last_of('.');
-  const std::string baseFileName =
-    (lastDot != std::string::npos) ? originalFileName.substr(0, lastDot) : originalFileName;
+  const std::string baseFileName = (lastDot != std::string::npos)
+                                       ? originalFileName.substr(0, lastDot)
+                                       : originalFileName;
 
   QString saveFilePath = QFileDialog::getSaveFileName(
-      this, tr("Save Image File"),
-      QString::fromStdString(baseFileName),
+      this, tr("Save Image File"), QString::fromStdString(baseFileName),
       tr("Images (*.%1)").arg(format));
 
   if (saveFilePath.isEmpty()) {
@@ -132,8 +132,8 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
   // Save the image using OpenCV
   const std::string saveFileName = saveFilePath.toStdString();
   post(ThreadPool::instance(),
-      std::packaged_task<void()>(
-        [matImg, saveFileName]() { cv::imwrite(saveFileName, matImg); }));
+       std::packaged_task<void()>(
+           [matImg, saveFileName]() { cv::imwrite(saveFileName, matImg); }));
 }
 
 void MenuBarWidget::exportImages(const QString &format) {
@@ -144,37 +144,36 @@ void MenuBarWidget::exportImages(const QString &format) {
     return;
   }
 
-  auto images_count =
-      Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount();
+  // TODO: is it better to clone the images in a seperate thread in case of a
+  // large number of images?
+  const auto sh_images = std::make_shared<std::vector<std::unique_ptr<Image>>>(
+      Workspace::Instance()->getActiveSession().getImageRepo().cloneImages());
+  const auto images_count = sh_images->size();
 
   int progressbarID = Logger::instance()->logMessageWithProgressBar(
-      Logger::MessageTypes::info,
-      Logger::MessageID::exporting_images,
-      Logger::MessageOption::with_path,
-      { directoryPath },
-      images_count,
-      QString("file:///%1").arg(directoryPath)
-  );
+      Logger::MessageTypes::info, Logger::MessageID::exporting_images,
+      Logger::MessageOption::with_path, {directoryPath}, images_count,
+      QString("file:///%1").arg(directoryPath));
 
-  auto saveImagesSubset = [this, directoryPath, format, progressbarID](size_t start,
-                                                        size_t end) {
+  auto saveImagesSubset = [this, sh_images, directoryPath, format,
+                           progressbarID](size_t start, size_t end) {
     for (size_t i = start; i < end; ++i) {
-      const auto image =
-          Workspace::Instance()->getActiveSession().getImageRepo().getImage(i);
-        if (!image) {
-          // use logger to inform that there is an error/warn in exporting the image
-          continue;
-        }
-        std::string fileName = image->getPath().filename().string();
-        const size_t lastDot = fileName.find_last_of('.');
-        if (lastDot != std::string::npos) {
-          fileName = fileName.substr(0, lastDot);
-        }
-        const cv::Mat matImg = image->getImageMat();
-        const std::string numberedFileName =
-            (boost::format("%1%/%2%.%3%") % directoryPath.toStdString() %
-             fileName % format.toStdString())
-                .str();
+      const auto &image = (*sh_images)[i];
+      if (!image) {
+        // use logger to inform that there is an error/warn in exporting the
+        // image
+        continue;
+      }
+      std::string fileName = image->getPath().filename().string();
+      const size_t lastDot = fileName.find_last_of('.');
+      if (lastDot != std::string::npos) {
+        fileName = fileName.substr(0, lastDot);
+      }
+      const cv::Mat matImg = image->readImageMat();
+      const std::string numberedFileName =
+          (boost::format("%1%/%2%.%3%") % directoryPath.toStdString() %
+           fileName % format.toStdString())
+              .str();
       cv::imwrite(numberedFileName, matImg);
       Logger::instance()->updateProgressBar(progressbarID, 1);
     }
@@ -199,8 +198,8 @@ void MenuBarWidget::editMenu() {
   editMenu->addAction(undoAction);
   editMenu->addAction(redoAction);
 
-  connect(undoAction,&QAction::triggered,this,&MenuBarWidget::undoChecked);
-  connect(redoAction,&QAction::triggered,this,&MenuBarWidget::redoChecked);
+  connect(undoAction, &QAction::triggered, this, &MenuBarWidget::undoChecked);
+  connect(redoAction, &QAction::triggered, this, &MenuBarWidget::redoChecked);
 }
 
 void MenuBarWidget::viewMenu() {
@@ -275,9 +274,8 @@ void MenuBarWidget::saveSession() {
   // Open a folder browser to select the base directory
   QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
   if (baseDirectory.isEmpty()) {
-      //TODO: use logger instead of QMessageBox
-      QMessageBox::warning(this, "No Directory Selected", "You must select a directory to save the session.");
-      return;
+    // TODO: use logger instead of QMessageBox
+    return;
   }
 
   // Set default session folder name and JSON file name
@@ -286,61 +284,55 @@ void MenuBarWidget::saveSession() {
 
   // Check if the session folder already exists
   if (std::filesystem::exists(jsonFilePath)) {
-      //TODO: use logger instead of QMessageBox
-      QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
-                               .arg(QString::fromStdString(sessionFolderPath.string())));
-      return;
+    // TODO: use logger instead of QMessageBox
+    return;
   }
 
   try {
-      // Log the save action
-      int progressbarID = Logger::instance()->logMessageWithProgressBar(
-          Logger::MessageTypes::info,
-          Logger::MessageID::saving_session,
-          Logger::MessageOption::with_path,
-          { QString::fromStdString(jsonFilePath.string()) },
-          Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount()
-          );
+    // Log the save action
+    int progressbarID = Logger::instance()->logMessageWithProgressBar(
+        Logger::MessageTypes::info, Logger::MessageID::saving_session,
+        Logger::MessageOption::with_path,
+        {QString::fromStdString(jsonFilePath.string())},
+        Workspace::Instance()
+            ->getActiveSession()
+            .getImageRepo()
+            .getImagesCount());
 
-      // Save the session using a thread pool task
-      auto saveTask = post(ThreadPool::instance(), use_future([sessionFolderPath, jsonFilePath, progressbarID]() {
-                               JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
-                               Workspace::Instance()->getActiveSession().accept(visitor);
-                               visitor.write_json();
-                           }));
-      saveTask.get();
-      //TODO: use logger instead of QMessageBox
-      QMessageBox::information(this, "Save Successful", "Session has been successfully saved.");
-      // QApplication::quit(); // Exit the application if save was successful
+    post(ThreadPool::instance(),
+        [sessionFolderPath, jsonFilePath, progressbarID]() {
+           JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
+           Workspace::Instance()->getActiveSession().accept(visitor);
+           visitor.write_json();
+         });
   } catch (const std::exception &e) {
-      //TODO: use logger instead of QMessageBox
-      QMessageBox::critical(this, "Save Error", QString("Failed to save session: %1").arg(e.what()));
+    // TODO: use logger instead of QMessageBox
   }
 }
 
 void MenuBarWidget::loadSession() {
-  QString file = QFileDialog::getOpenFileName(this, "Select Session File", QString(), "JSON Files (*.json)");
+  QString file = QFileDialog::getOpenFileName(this, "Select Session File",
+                                              QString(), "JSON Files (*.json)");
   if (file.isEmpty()) {
-      return ; // User canceled
+    return; // User canceled
   }
 
-  std::filesystem::path jsonFilePath = std::filesystem::path(file.toStdString());
+  std::filesystem::path jsonFilePath =
+      std::filesystem::path(file.toStdString());
 
   // Check if the selected file has a .json extension
   if (jsonFilePath.extension() != ".json") {
-      //TODO: use logger
-      return ; // Invalid file type
+    // TODO: use logger
+    return; // Invalid file type
   }
 
   try {
-      post(ThreadPool::instance(), [jsonFilePath]() {
-          Utils::loadSessionJson(jsonFilePath.string());
-      });
+    post(ThreadPool::instance(), [jsonFilePath]() { Utils::loadSessionJson(jsonFilePath.string()); });
 
-      //TODO: use logger
-      return ; // Load successful
+    // TODO: use logger
+    return; // Load successful
   } catch (const std::exception &e) {
-      //TODO: use logger
-      return ; // Load failed
+    // TODO: use logger
+    return; // Load failed
   }
 }
