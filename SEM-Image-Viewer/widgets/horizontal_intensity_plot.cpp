@@ -11,10 +11,9 @@ horizontal_intensity_plot::horizontal_intensity_plot(QWidget * parent)
 
     label->setText("Intensity Plot");
     label->setStyleSheet("QLabel {background-color:transparent}");
-    applyButton = new QPushButton(this);
-    QPixmap pixmap(":/icons/pen-icon.svg");
-    QIcon ButtonIcon(pixmap);
-    applyButton->setIcon(ButtonIcon);
+    applyButton = new QToolButton(this);
+    applyButton->setObjectName("pen");
+    applyButton->setCheckable(true);
     applyButton->setStyleSheet(
         "QPushButton { "
         "padding:2px"
@@ -30,8 +29,7 @@ horizontal_intensity_plot::horizontal_intensity_plot(QWidget * parent)
     setLayout(layout);
 
 
-    connect(applyButton, &QPushButton::clicked,&Workspace::Instance()->getActiveSession(),&SessionData::toggleHorizontalPlotMode);
-    connect(applyButton, &QPushButton::clicked, this, &horizontal_intensity_plot::toggleStyleSheet);
+    connect(applyButton, &QToolButton::clicked,&Workspace::Instance()->getActiveSession(),&SessionData::toggleHorizontalPlotMode);
 }
 
 

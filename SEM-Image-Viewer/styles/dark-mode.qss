@@ -265,6 +265,7 @@ QPushButton#undoButton {
 
 QPushButton#copyBtn {
     qproperty-icon: url(:/icons/copy-icon-dark.svg);
+    qproperty-iconSize: 16px 16px;
 }
 QPushButton#pathBtn {
     qproperty-icon: url(:/icons/link-external-dark-mode.svg);
@@ -328,6 +329,11 @@ QPushButton#leftbutton {
 }
 QPushButton:hover#leftbutton {
     background-color: #555555;
+}
+
+QToolButton#pen {
+    qproperty-icon: url(:/icons/pen-icon-dark.svg);
+    qproperty-iconSize: 16px 16px;
 }
 
 QToolButton#arrowup {

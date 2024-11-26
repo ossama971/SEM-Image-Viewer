@@ -241,6 +241,7 @@ QPushButton#undoButton {
 }
 QPushButton#copyBtn {
     qproperty-icon: url(:/icons/copy-icon-light.svg);
+     qproperty-iconSize: 16px 16px;
 }
 QPushButton#pathBtn {
     qproperty-icon: url(:/icons/link-external-light-mode.svg);
@@ -317,7 +318,10 @@ QToolButton#arrowup{
     qproperty-icon: url(:/icons/mini-grid-light.svg);
     qproperty-iconSize: 18px 18px;
 }
-
+QToolButton#pen {
+    qproperty-icon: url(:/icons/pen-icon.svg);
+    qproperty-iconSize: 16px 16px;
+}
 QToolButton#closelog{
     qproperty-icon: url(:/icons/close-logger-light.svg);
     qproperty-iconSize: 18px 18px;

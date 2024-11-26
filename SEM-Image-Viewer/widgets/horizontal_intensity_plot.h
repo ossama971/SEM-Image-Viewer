@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QPushButton>
+#include <QToolButton>
 class horizontal_intensity_plot: public QWidget
 {
     Q_OBJECT
@@ -11,7 +11,7 @@ public:
     explicit horizontal_intensity_plot(QWidget *parent=nullptr);
 private:
     QLabel *label = nullptr;
-    QPushButton *applyButton = nullptr;
+    QToolButton *applyButton = nullptr;
     void toggleStyleSheet();
 
 
