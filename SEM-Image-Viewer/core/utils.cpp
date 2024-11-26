@@ -31,10 +31,7 @@ cv::Mat Utils::diffTwoImages(const cv::Mat &image1, const cv::Mat &image2,
     cv::cvtColor(image1, image_one, cv::COLOR_BGR2GRAY);
   }
 
-  // Compute absolute difference
   cv::absdiff(image_one, image_two, diff);
-
-  // Create a binary mask based on the threshold
   cv::Mat mask(diff.rows, diff.cols, CV_8UC1, cv::Scalar(0));
 
   if (diff.channels() == 1)

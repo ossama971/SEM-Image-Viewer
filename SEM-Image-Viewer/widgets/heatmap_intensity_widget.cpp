@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 #include <QFrame>
 
-OtherListWidget::OtherListWidget(QWidget* parent)
+HeatIntensityWidget::HeatIntensityWidget(QWidget* parent)
     : QWidget(parent)
 {
     // Main layout
@@ -36,7 +36,7 @@ OtherListWidget::OtherListWidget(QWidget* parent)
     // setStyleSheet("QWidget { background-color: #2d2d2d; }");
 }
 
-void OtherListWidget::addWidget(QWidget* widget)
+void HeatIntensityWidget::addWidget(QWidget* widget)
 {
     m_itemsLayout->addWidget(widget);
 }

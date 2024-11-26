@@ -1,6 +1,7 @@
 #include "diff_view_widget.h"
 #include "../core/utils.h"
 #include "../core/engines/workspace.h"
+#include "../core/engines/logger.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -32,10 +33,20 @@ void DiffViewWidget::updateDiffImage() {
   cv::Mat upperImage = upperImageWidget->getImage();
   cv::Mat lowerImage = lowerImageWidget->getImage();
 
-  if (!upperImage.empty() && !lowerImage.empty() && upperImage.size() == lowerImage.size()) {
-    cv::Mat diffImage = Utils::diffTwoImages(upperImage, lowerImage, threshold);
-    diffImageWidget->updateImage(diffImage);
+
+  if (upperImage.empty() || lowerImage.empty()) {
+      return;
   }
+  if ((upperImage.cols != lowerImage.cols) || (upperImage.rows != lowerImage.rows)) {
+      diffImageWidget->updateImage(cv::Mat());
+      Logger::instance()->logMessage(
+          Logger::MessageTypes::warning, Logger::MessageID::no_difference,
+          Logger::MessageOption::without_path,
+          {});
+      return;
+  }
+      cv::Mat diffImage = Utils::diffTwoImages(upperImage, lowerImage, threshold);
+      diffImageWidget->updateImage(diffImage);
 }
 
 void DiffViewWidget::setImages(Image *upperImage, Image *lowerImage) {
