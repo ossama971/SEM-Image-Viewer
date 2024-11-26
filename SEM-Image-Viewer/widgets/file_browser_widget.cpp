@@ -131,13 +131,13 @@ void FileBrowserWidget::Initialize() {
     //separator->setStyleSheet(QString("background-color: white;"));
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout();
-    buttonsLayout->addSpacing(50);
+    //buttonsLayout->addSpacing(50);
     buttonsLayout->addWidget(newFolderBtn);
     buttonsLayout->addSpacing(5);
     buttonsLayout->addWidget(newFileBtn);
     buttonsLayout->addSpacing(5);
     buttonsLayout->addWidget(collapseBtn);
-    buttonsLayout->addSpacing(50);
+    //buttonsLayout->addSpacing(50);
     buttonsLayout->setSpacing(0);
 
     QHBoxLayout *searchLayout = new QHBoxLayout();

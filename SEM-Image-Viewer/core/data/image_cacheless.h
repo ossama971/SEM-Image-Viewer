@@ -1,7 +1,7 @@
 #ifndef IMAGE_CACHELESS_H
 #define IMAGE_CACHELESS_H
 
-#include "Image.h"
+#include "image.h"
 
 class ImageCacheless : public Image {
     Q_OBJECT
