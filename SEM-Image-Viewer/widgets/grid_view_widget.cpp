@@ -1,5 +1,6 @@
 #include "grid_view_widget.h"
 #include "../core/engines/workspace.h"
+#include "../models/image_data_model.h"
 #include "thumbnail_delegate.h"
 
 #include <QVBoxLayout>
@@ -7,7 +8,7 @@
 #include <QCheckBox>
 #include <QScrollBar>
 
-GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
+GridView::GridView(QWidget *parent, ImageDataModel *dataModel) : QWidget(parent), imageDataModel(dataModel) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 

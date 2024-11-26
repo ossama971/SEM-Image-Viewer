@@ -13,7 +13,7 @@ class TopMiddleWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TopMiddleWidget(QWidget *parent = nullptr, ToolbarWidget *toolbarWidget = nullptr);
+    explicit TopMiddleWidget(QWidget *parent = nullptr, ToolbarWidget *toolbarWidget = nullptr, class ImageDataModel *gridDataModel = nullptr);
 
 public:
     void setVisible(bool visible) override;

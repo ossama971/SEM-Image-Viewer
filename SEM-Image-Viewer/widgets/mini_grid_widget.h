@@ -4,13 +4,14 @@
 #include <QWidget>
 #include <QListView>
 #include <QPushButton>
-#include "../models/image_data_model.h"
+
+class Image;
 
 class MiniGrid : public QWidget {
     Q_OBJECT
 
 public:
-    explicit MiniGrid(QWidget *parent = nullptr);
+    explicit MiniGrid(QWidget *parent = nullptr, class ImageDataModel *dataModel = nullptr);
 
 private:
     QListView *listView = nullptr;

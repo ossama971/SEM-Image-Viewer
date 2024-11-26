@@ -3,9 +3,10 @@
 #include <QHBoxLayout>
 #include <QScrollBar>
 #include "../core/engines/workspace.h"
+#include "../models/image_data_model.h"
 #include "thumbnail_delegate.h"
 
-MiniGrid::MiniGrid(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
+MiniGrid::MiniGrid(QWidget *parent, ImageDataModel *dataModel) : QWidget(parent), imageDataModel(dataModel) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::SingleSelection); // Enable single selection
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
