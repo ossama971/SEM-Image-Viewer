@@ -138,6 +138,7 @@ void ImageRepository::pre_directory_change(int image_count, const std::string &d
     selectImage(-1);
 
     _folderPath = dir;
+    _hasUnsavedChanges = false;
     _images.clear();
 
 #ifdef IMAGE_CACHE
@@ -207,16 +208,16 @@ void ImageRepository::selectImage(const std::string &path) {
     }
 }
 
-void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
+void ImageRepository::onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat) {
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     for (auto it = _images.begin(); it != _images.end(); ++it)
-        (*it)->onCacheImageLoaded(path, image);
+        (*it)->onCacheImageLoaded(path, image, imageMat);
 }
 
-void ImageRepository::onCacheImageRemoved(const std::string& path, cv::Mat* image) {
+void ImageRepository::onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat) {
     if (!std::filesystem::exists(path))
-        cv::imwrite(path, *image);
+        cv::imwrite(path, *imageMat);
 }
 
 std::size_t ImageRepository::getImagesCount() const {
@@ -279,8 +280,9 @@ void ImageRepository::accept(Visitor &v) const {
   v.visit(*this);
 }
 
-void ImageRepository::setUnsavedChanges() {
-    _hasUnsavedChanges = true; // Set to true when any image state changes
+void ImageRepository::setUnsavedChanges(Image* image) {
+    if (image->isChanged())
+        _hasUnsavedChanges = true; // Set to true when any image state changes
 }
 
 bool ImageRepository::getHasUnsavedChanges(){

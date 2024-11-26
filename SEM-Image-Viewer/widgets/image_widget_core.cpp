@@ -322,7 +322,7 @@ void ImageWidgetCore::loadAndDisplayImage(const Image &image) {
   auto pixmap = loadAndPrepareImage(image, graphicsView->size());
   if (pixmap) {
     setImage(*pixmap);
-    infoBar->setDimensions(pixmap->width(), pixmap->height());
+    setDimensions(pixmap->width(), pixmap->height());
   } else {
     emit imageLoadFailed();
   }
@@ -330,10 +330,14 @@ void ImageWidgetCore::loadAndDisplayImage(const Image &image) {
 
 }
 
+void ImageWidgetCore::setDimensions(int width, int height) {
+    infoBar->setDimensions(width, height);
+}
+
 optional<QPixmap>
 ImageWidgetCore::loadAndPrepareImage(const Image &selected_image,
                                      const QSize &targetSize) {
-  Mat image = selected_image.getImageMat();
+  const Mat& image = selected_image.getImageMat();
   currentImage = image;
   if (image.empty()) {
     return nullopt;
@@ -464,6 +468,7 @@ void ImageWidgetCore::updateImage(const cv::Mat &image) {
   }
   QPixmap pixmap = QPixmap::fromImage(qImage);
   setImage(pixmap);
+  setDimensions(image.cols, image.rows);
 }
 
 void ImageWidgetCore::onupdateImageState(Image* image) {

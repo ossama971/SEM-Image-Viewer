@@ -53,6 +53,10 @@ bool ImageMetadata::isGreyScale(const cv::Mat &image) {
   return true;
 }
 
+bool ImageMetadata::isLoaded() const {
+    return _loaded;
+}
+
 const int ImageMetadata::getWidth() const {
     return _width;
 }

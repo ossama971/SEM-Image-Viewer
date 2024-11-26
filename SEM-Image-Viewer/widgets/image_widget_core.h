@@ -20,6 +20,7 @@ class ImageWidgetCore : public QWidget {
 public:
   explicit ImageWidgetCore(QWidget *parent = nullptr);
   void loadAndDisplayImage(const Image &image);
+  void setDimensions(int width, int height);
   cv::Mat getImage() const;
   void handleHeatmap(const cv::Mat &heatmap,bool checked);
   void resetView();
