@@ -3,9 +3,13 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QVBoxLayout>
+#include <QApplication>
+#include <QPalette>
+
 LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool progressBarFlag,bool colorFlag,const QString & path, QWidget *parent)
     : QWidget(parent)
 {
+
     // Create a container widget
     QWidget *containerWidget = new QWidget(this);
     if(colorFlag){
@@ -20,16 +24,35 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
     // Header horizontal layout
     QHBoxLayout *headerLayout = new QHBoxLayout();
 
+    QString fullText = "["+_type+"] "+headerText;
+    int maxLength = 80;
+
+    QString displayText = fullText;
+    if (fullText.length() > maxLength) {
+        displayText = fullText.left(maxLength) + "...";
+    }
     // Header label
-    headerLabel = new QLabel("["+_type+"] "+headerText, this);
-    headerLabel->setStyleSheet(R"(
-    font-weight: semi-bold;
-    font-size: 12px;
-    background: transparent;
-
-    )");
-
+    headerLabel = new QLabel(displayText, this);
+    headerLabel->setToolTip(fullText);
+    if(colorFlag ){
+        printf("GRR");
+        headerLabel->setStyleSheet(R"(
+        font-weight: semi-bold;
+        font-size: 12px;
+        background: transparent;
+        color: black;
+        )");
+    }
+    else{
+        headerLabel->setStyleSheet(R"(
+        font-weight: semi-bold;
+        font-size: 12px;
+        background: transparent;
+        )");
+    }
+    headerLabel->setObjectName("loggerText");
     headerLayout->addWidget(headerLabel);
+    headerLayout->setContentsMargins(5, 5, 5, 5);
 
     if(path!=""){
         pathBtn= new QPushButton(this);
@@ -54,7 +77,7 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
 
     // Set the main layout for the container
     containerWidget->setLayout(headerLayout);
-
+    containerWidget->setContentsMargins(0, 0, 0, 0);
     // Create a main layout for the entire widget
     QHBoxLayout *mainWidgetLayout = new QHBoxLayout(this);
     mainWidgetLayout->addWidget(containerWidget);

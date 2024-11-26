@@ -148,8 +148,13 @@ void LoggerWidget::createLayouts()
 
     logListLayout = new QListWidget();
     logListLayout->setSpacing(0);
-    logListLayout->setContentsMargins(0, 0, 0, 0);
-
+    logListLayout->setStyleSheet(
+        "QListWidget {"
+        "   padding: 0px; "
+        "   margin: 0px; "
+        "   border: none; "
+        "}"
+        );
 
 
     fullLayout->addWidget(logListLayout);
@@ -217,8 +222,9 @@ void LoggerWidget::addLogCard(LogCard *card)
 {
 
     QListWidgetItem *item = new QListWidgetItem(logListLayout);
-
-    item->setSizeHint(card->sizeHint());
+    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);  // Disable selection
+    item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    item->setSizeHint(QSize(card->sizeHint().width(), card->sizeHint().height()));
     logListLayout->addItem(item);
     logListLayout->setItemWidget(item, card);
 
