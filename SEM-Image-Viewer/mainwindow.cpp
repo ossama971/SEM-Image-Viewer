@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "widgets/save_session_dialog.h"
 #include "core/engines/json_vsitor.h"
 #include "core/engines/workspace.h"
 #include "core/engines/thread_pool.h"
@@ -191,41 +190,50 @@ void MainWindow::onCloseAllClicked() {
 }
 
 void MainWindow::onSaveChangesClicked() {
-    SaveSessionDialog dialog(this);
-    if (dialog.exec() == QDialog::Accepted) {
-        auto directoryPath = dialog.getDirectoryPath();
-        auto jsonFilePath = dialog.getJsonFilePath();
+    // Open a folder browser to select the base directory
+    QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
+    if (baseDirectory.isEmpty()) {
+        //TODO: use logger instead of QMessageBox
+        QMessageBox::warning(this, "No Directory Selected", "You must select a directory to save the session.");
+        return;
+    }
 
+    // Set default session folder name and JSON file name
+    std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString());
+    std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
+
+    // Check if the session folder already exists
+    if (std::filesystem::exists(jsonFilePath)) {
+        //TODO: use logger instead of QMessageBox
+        QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
+                                                        .arg(QString::fromStdString(sessionFolderPath.string())));
+        return;
+    }
+
+    try {
+        // Log the save action
         int progressbarID = Logger::instance()->logMessageWithProgressBar(
             Logger::MessageTypes::info,
             Logger::MessageID::saving_session,
             Logger::MessageOption::with_path,
             { QString::fromStdString(jsonFilePath.string()) },
             Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount()
-
-        );
-
-        auto saveTask = post(ThreadPool::instance(), use_future([directoryPath, jsonFilePath, progressbarID]() {
-            try {
-                JsonVisitor visitor(directoryPath.string(), jsonFilePath.string(), progressbarID);
-                Workspace::Instance()->getActiveSession().accept(visitor);
-                visitor.write_json();
-            } catch (const std::exception &e) {
-                // qDebug() << "Failed to save session: " << e.what();
-                throw;
-            }
-        }));
-
-        try {
-            saveTask.get();
-            QMessageBox::information(this, "Save", "Changes have been saved.");
-            ThreadPool::instance().join();
-            QApplication::quit();
-            // qDebug() << "Save successful. Exiting application.";
-        } catch (const std::exception &e) {
-            QMessageBox::critical(this, "Save Error", QString("Failed to save changes: %1").arg(e.what()));
-        }
+            );
+        // Save the session using a thread pool task
+        auto saveTask = post(ThreadPool::instance(), use_future([sessionFolderPath, jsonFilePath, progressbarID]() {
+                                 JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
+                                 Workspace::Instance()->getActiveSession().accept(visitor);
+                                 visitor.write_json();
+                             }));
+        saveTask.get();
+        //TODO: use logger instead of QMessageBox
+        QMessageBox::information(this, "Save Successful", "Session has been successfully saved.");
+        QApplication::quit(); // Exit the application if save was successful
+    } catch (const std::exception &e) {
+        //TODO: use logger instead of QMessageBox
+        QMessageBox::critical(this, "Save Error", QString("Failed to save session: %1").arg(e.what()));
     }
+
 }
 
 void MainWindow::applyTheme() {

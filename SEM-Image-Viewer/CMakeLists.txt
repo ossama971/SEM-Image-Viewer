@@ -129,8 +129,8 @@ set(PROJECT_SOURCES
     widgets/progress_bar.cpp
     widgets/right_side_bar_widget.cpp
     widgets/right_side_bar_widget.h
-    widgets/load_session_dialog.cpp
-    widgets/load_session_dialog.h
+
+
     widgets/exit_dialog_widget.cpp
     widgets/exit_dialog_widget.h
     widgets/grayscale_widget.cpp
@@ -154,8 +154,8 @@ set(PROJECT_SOURCES
     widgets/image_dialog.h
     widgets/toolbar_widget.cpp
     widgets/toolbar_widget.h
-    widgets/save_session_dialog.cpp
-    widgets/save_session_dialog.h
+
+
     models/image_data_model.cpp
     models/image_data_model.h
 
