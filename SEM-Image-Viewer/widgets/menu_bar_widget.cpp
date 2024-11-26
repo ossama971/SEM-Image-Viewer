@@ -302,11 +302,11 @@ void MenuBarWidget::saveSession() {
   }
 
   // Set default session folder name and JSON file name
-  std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString()) / "session_data";
+  std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString());
   std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
 
   // Check if the session folder already exists
-  if (std::filesystem::exists(sessionFolderPath)) {
+  if (std::filesystem::exists(jsonFilePath)) {
       //TODO: use logger instead of QMessageBox
       QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
                                .arg(QString::fromStdString(sessionFolderPath.string())));
