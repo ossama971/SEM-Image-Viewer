@@ -44,10 +44,10 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     HeatMapWidget *_heatmapWidget = new HeatMapWidget();
     horizontal_intensity_plot *_horizontal_intensity_widget = new horizontal_intensity_plot();
 
-    OtherListWidget *otherList = new OtherListWidget();
-    otherList->addWidget(_heatmapWidget);
-    otherList->addWidget(_horizontal_intensity_widget);
-    rightSidebarLayout->addWidget(otherList);
+    HeatIntensityWidget *list2 = new HeatIntensityWidget();
+    list2->addWidget(_heatmapWidget);
+    list2->addWidget(_horizontal_intensity_widget);
+    rightSidebarLayout->addWidget(list2);
 
 
     rightSidebarLayout->addItem(new QSpacerItem(1, 2, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));

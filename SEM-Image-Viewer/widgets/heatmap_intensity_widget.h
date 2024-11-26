@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-class OtherListWidget : public QWidget {
+class HeatIntensityWidget : public QWidget {
     Q_OBJECT
 public:
-    explicit OtherListWidget(QWidget* parent = nullptr);
+    explicit HeatIntensityWidget(QWidget* parent = nullptr);
 
     // Method to add widgets to the container
     void addWidget(QWidget* widget);
