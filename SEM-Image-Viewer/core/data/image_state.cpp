@@ -2,13 +2,15 @@
 
 ImageState::ImageState() {}
 
-ImageState::ImageState(ImageStateSource state, const cv::Mat &image, const std::string &imageExtension)
-    : State(state), Image(image), ImageExtension(imageExtension) {}
+ImageState::ImageState(ImageStateSource state, const std::string &imagePath, const std::string &imageExtension)
+    : State(state), ImagePath(imagePath), ImageExtension(imageExtension) {}
 
-void ImageState::accept(Visitor &v) const { v.visit(*this); }
+void ImageState::accept(Visitor &v) const {
+    v.visit(*this, nullptr);
+}
 
-bool ImageState::save(const std::string &path) const {
-  return cv::imwrite(path, Image);
+void ImageState::accept(Visitor &v, Image *parent) const {
+    v.visit(*this, parent);
 }
 
 std::string imageStateSourceToString(ImageStateSource state) {

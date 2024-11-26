@@ -200,7 +200,8 @@ void Utils::loadSessionJson(const std::string &filename)
             for (const auto &state_node : node.get_child("states")) {
               std::string state = state_node.second.get<std::string>("state");
               std::string imageFile = state_node.second.get<std::string>("image");
-              image->setImage(cv::imread(imageFile),
+              cv::Mat imageMat = cv::imread(imageFile);
+              image->setImage(&imageMat,
                               imageStateSourceFromString(state));
             }
 

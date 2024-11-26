@@ -10,6 +10,9 @@ void ImageDialog::openFolder(ImageRepository *imageRepo, QWidget *parent) {
   QString folderPath = QFileDialog::getExistingDirectory(
       parent, "Select Folder", QDir::root().path(), QFileDialog::ShowDirsOnly);
 
+    if (!folderPath.size())
+      return;
+
   // It might be necessary to have this call in another thread espcially if the
   // loaded folder contains a lot of images
   post(ThreadPool::instance(), [imageRepo, folderPath]() {
@@ -24,6 +27,8 @@ void ImageDialog::openFile(ImageRepository *imageRepo, QWidget *parent) {
                                    "All Files (*.*);;Text Files (*.txt);;Image "
                                    "Files (*.png *.jpg)");
 
+    if (!fileName.size())
+        return;
+
     imageRepo->load_image(fileName.toStdString());
-    imageRepo->selectImage(fileName.toStdString());
 }

@@ -3,14 +3,13 @@
 
 #include "image.h"
 #include "image_format.h"
+#include "image_cache_pool.h"
+#include "../../image_cache_config.h"
 #include "Visitor.h"
 #include "Visitable.h"
 
-#include <mutex>
 #include <QObject>
-#include <string>
 #include <vector>
-#include <filesystem>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 
@@ -22,6 +21,8 @@ public:
 
     bool load_directory(const std::string &path);
     bool load_image(const std::string &path);
+    void pre_directory_change(int image_count, const std::string &dir);
+    void post_directory_change(const std::string &newDir, bool image_load);
 
     void selectImage(int index);
     void selectImage(const std::string& path);
@@ -38,14 +39,20 @@ public:
 
     void accept(Visitor &v) const override;
     bool getHasUnsavedChanges();
-public slots:
-    void setUnsavedChanges();
 
 signals:
     void onDirectoryChanged(const std::string &newDir, const std::vector<Image*> &newImages, bool image_load);
     void onImageChanged(Image* newImage);
     void onImageSaved(const Image& image, const ImageFormat format, const std::string &path);
     void loadActionList(const QList<QString> &actions);
+    void updateGridView();
+
+public slots:
+    void setUnsavedChanges();
+
+private slots:
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
+    void onCacheImageRemoved(const std::string& path, cv::Mat* image);
 
 private:
     std::string _folderPath;
@@ -54,6 +61,10 @@ private:
     std::vector<std::unique_ptr<Image>> _images;
     Image* _selectedImage=nullptr;
     bool _hasUnsavedChanges = false; // Tracks whether there are unsaved changes
+
+#ifdef IMAGE_CACHE
+    ImageCachePool _cachePool;
+#endif
 };
 
 #endif // IMAGE_REPO_H

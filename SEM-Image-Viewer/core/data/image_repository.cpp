@@ -9,10 +9,20 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr) {}
+ImageRepository::ImageRepository() : _selectedImage(nullptr)
+#ifdef IMAGE_CACHE
+    ,_cachePool(IMAGE_CACHE_SIZE)
+#endif
+{
+#ifdef IMAGE_CACHE
+    connect(&_cachePool, &ImageCachePool::onImageLoaded, this, &ImageRepository::onCacheImageLoaded);
+    connect(&_cachePool, &ImageCachePool::onImageRemoved, this, &ImageRepository::onCacheImageRemoved);
+#endif
+}
 
 bool ImageRepository::load_directory(const std::string &path) {
   std::unique_lock<std::recursive_mutex> lock(_mutex);
+
   try {
     const std::regex filter(IMAGE_FILE_REGEX);
     std::smatch what;
@@ -42,9 +52,7 @@ bool ImageRepository::load_directory(const std::string &path) {
         QString("file:///%1").arg(QString::fromStdString(path)));
 
     // Prepare for new data
-    _images.clear();
-    _folderPath = path;
-    _selectedImage = nullptr;
+    pre_directory_change(image_paths.size(), path);
 
     lock.unlock(); // Unlock mutex while processing images in threads
 
@@ -61,7 +69,11 @@ bool ImageRepository::load_directory(const std::string &path) {
           ThreadPool::instance(), use_future([this, progressbarID, batch]() {
             std::vector<std::unique_ptr<Image>> local_images;
             for (const auto &file : batch) {
-              auto image = std::make_unique<Image>();
+#ifdef IMAGE_CACHE
+                std::unique_ptr<Image> image = std::make_unique<Image>(&_cachePool);
+#else
+                std::unique_ptr<Image> image = std::make_unique<ImageCacheless>();
+#endif
               image->load(file.string());
               local_images.push_back(std::move(image));
               Logger::instance()->updateProgressBar(progressbarID, 1);
@@ -81,11 +93,8 @@ bool ImageRepository::load_directory(const std::string &path) {
       }
       lock.unlock(); // Unlock after modifying
     }
-    for (const auto& image : _images) {
-        connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
-    }
 
-    emit onDirectoryChanged(path, getImages(), false);
+    post_directory_change(path, false);
     return true;
   } catch (const std::filesystem::filesystem_error &ex) {
     std::cerr << "Filesystem error: " << ex.what() << std::endl;
@@ -96,30 +105,64 @@ bool ImageRepository::load_directory(const std::string &path) {
 }
 
 bool ImageRepository::load_image(const std::string &path) {
-  std::unique_lock<std::recursive_mutex> lock(_mutex);
+    std::unique_lock<std::recursive_mutex> lock(_mutex);
 
-  std::filesystem::path fpath(path);
-  if (!std::filesystem::exists(fpath))
-    return false;
+    std::filesystem::path fpath(path);
+    if (!std::filesystem::exists(fpath))
+        return false;
 
-  const std::regex filter(IMAGE_FILE_REGEX);
-  std::smatch what;
+    const std::regex filter(IMAGE_FILE_REGEX);
+    std::smatch what;
 
-  if (!std::regex_search(path, what, filter))
-    return false;
+    if (!std::regex_search(path, what, filter))
+        return false;
 
-  _images.clear();
-  _selectedImage = nullptr;
+    pre_directory_change(1, fpath.remove_filename().string());
 
-  std::unique_ptr<Image> img = std::make_unique<Image>();
-  img->load(path);
-  _images.push_back(std::move(img));
-  for (const auto& image : _images) {
-      connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
-  }
+#ifdef IMAGE_CACHE
+    std::unique_ptr<Image> img = std::make_unique<Image>(&_cachePool);
+#else
+    std::unique_ptr<ImageCacheless> img = std::make_unique<ImageCacheless>();
+#endif
 
-  emit onDirectoryChanged(fpath.parent_path().string(), getImages(), true);
-  return true;
+    img->load(path);
+    _images.push_back(std::move(img));
+
+    post_directory_change(fpath.parent_path().string(), true);
+    return true;
+}
+
+void ImageRepository::pre_directory_change(int image_count, const std::string &dir) {
+    selectImage(-1);
+
+    _folderPath = dir;
+    _images.clear();
+
+#ifdef IMAGE_CACHE
+    _cachePool.clear();
+
+    std::string cacheDir = std::filesystem::current_path().string() + "/" + IMAGE_CACHE_DIR;
+    if (!std::filesystem::exists(cacheDir))
+        std::filesystem::create_directory(cacheDir);
+    else
+    {
+        for (auto& cacheItem : std::filesystem::directory_iterator(cacheDir))
+            std::filesystem::remove(cacheItem.path());
+    }
+#endif
+
+    //emit onImageLoadStarted(image_count);
+}
+
+void ImageRepository::post_directory_change(const std::string &newDir, bool image_load) {
+    for (const auto& image : _images) {
+        connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
+    }
+
+    emit onDirectoryChanged(newDir, getImages(), image_load);
+
+    if (!_images.empty())
+        selectImage(0);
 }
 
 void ImageRepository::selectImage(int index) {
@@ -160,6 +203,18 @@ void ImageRepository::selectImage(const std::string &path) {
     if (selected) {
         emit loadActionList(selected->getHistory());
     }
+}
+
+void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
+    std::unique_lock<std::recursive_mutex> lock(_mutex);
+
+    for (auto it = _images.begin(); it != _images.end(); ++it)
+        (*it)->onCacheImageLoaded(path, image);
+}
+
+void ImageRepository::onCacheImageRemoved(const std::string& path, cv::Mat* image) {
+    if (!std::filesystem::exists(path))
+        cv::imwrite(path, *image);
 }
 
 std::size_t ImageRepository::getImagesCount() const {

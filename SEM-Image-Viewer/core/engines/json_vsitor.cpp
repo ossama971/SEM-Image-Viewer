@@ -2,7 +2,6 @@
 
 #include "../utils.h"
 #include "../data/image_format.h"
-#include "../data/image_color_space.h"
 #include "../data/image_state.h"
 
 #include "../engines/thread_pool.h"
@@ -19,19 +18,19 @@ void JsonVisitor::visit(const ImageMetadata &metadata) {
   metadata_tree.put("width", metadata.getWidth());
   metadata_tree.put("height", metadata.getHeight());
   metadata_tree.put("format", imageFormatToString(metadata.getFormat()));
-  metadata_tree.put("colorSpace", colorSpaceToString(metadata.getColorSpace()));
+  //metadata_tree.put("colorSpace", colorSpaceToString(metadata.getColorSpace()));
   // metadata_tree.put("dateModified", metadata.getDateModified());
   json_tree.add_child("metadata", metadata_tree);
 }
 
-void JsonVisitor::visit(const ImageState &state) {
+void JsonVisitor::visit(const ImageState &state, Image *image) {
   boost::property_tree::ptree state_tree;
   // TODO: handle the case when session_datapath is empty
   Utils::createDirectory(this->session_datapath);
   const std::string image_filepath = Utils::generateString(11) + state.ImageExtension;
   // TODO: prepend the image_name with the applied filter name before this random string
   const std::filesystem::path image_path(this->session_datapath + "/" + image_filepath);
-  if (state.save(image_path.string())) {
+  if (image && image->save(image_path.string(), (ImageState*)&state)) {
     state_tree.put("state", imageStateSourceToString(state.State));
     state_tree.put("image", image_path.string());
     json_tree.add_child("state", state_tree);
@@ -59,7 +58,7 @@ void JsonVisitor::visit(const Image &image) {
   boost::property_tree::ptree states_tree;
   for (const auto &state : image.getStates()) {
     JsonVisitor stateVisitor(session_datapath, json_filepath, progressbarID);
-    state->accept(stateVisitor);
+    state->accept(stateVisitor, (Image*)&image);
     states_tree.push_back(std::make_pair("", stateVisitor.json_tree.get_child("state")));
   }
   image_tree.add_child("states", states_tree);

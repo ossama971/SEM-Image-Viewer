@@ -22,16 +22,15 @@ public:
     const int getWidth() const;
     const int getHeight() const;
     const ImageFormat getFormat() const;
-    const ColorSpace getColorSpace() const;
+    const ColorSpace getColorSpace(const cv::Mat &image);
     const std::filesystem::file_time_type getDateModified() const;
 
     void accept(Visitor &v) const override;
 
 private:
+    bool _loaded = false;
     int _width, _height;
     ImageFormat _format;
-    ColorSpace _colorSpace;
-    //std::filesystem::file_time_type _dateCreated;
     std::filesystem::file_time_type _dateModified;
 };
 

@@ -5,6 +5,7 @@
 #include "image_meta_data.h"
 #include "Visitor.h"
 #include "Visitable.h"
+#include "../../image_cache_config.h"
 
 #include <memory>
 #include <vector>
@@ -16,23 +17,34 @@ class Image : public QObject, public Visitable {
     Q_OBJECT
 
 public:
-    Image();
-    Image(const std::filesystem::path path);
+    Image(class ImageCachePool* cachePool);
+    Image(ImageCachePool* cachePool, const std::filesystem::path path);
     Image(const Image& image);
     Image(Image&& image);
     Image& operator=(const Image& image);
     Image& operator=(Image&& image);
-    ~Image();
+    virtual ~Image();
 
-    bool load(const std::filesystem::path path);
-    bool setImage(const cv::Mat &image, ImageStateSource newState = ImageStateSource::Origin);
+    virtual bool load(const std::filesystem::path &path);
+    virtual bool save(const std::string &path, ImageState *state);
 
-    void addRedo(const cv::Mat &image, ImageStateSource newState);
+    virtual bool setImage(cv::Mat *image, const ImageStateSource newState = ImageStateSource::Origin);
+    virtual void addRedo(const cv::Mat &imagePath, const ImageStateSource newState);
 
+private:
+    bool save(const std::string &path, ImageState *state, const cv::Mat &image);
+
+    cv::Mat* getImageMat(bool autoLoad) const;
+    std::filesystem::path getPath(const ImageStateSource newState) const;
+
+public:
     bool isLoaded() const;
-    const cv::Mat& getImageMat() const;
+    virtual const cv::Mat& getImageMat() const;
+    virtual cv::Mat readImageMat() const;
     ImageStateSource getImageState() const;
     std::filesystem::path getPath() const;
+
+public:
     ImageMetadata getMetadata() const;
 
     std::vector<std::unique_ptr<ImageState>>const & getStates() const;
@@ -45,15 +57,26 @@ public:
     bool redo();
     const QList<QString> getHistory();
 
-signals:
-    void onImageStateUpdated(std::vector<std::unique_ptr<ImageState>>& states);
+public slots:
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
 
-private:
+signals:
+    void onImageStateUpdated(Image* image);
+
+#ifdef GRID_VIEW_MANUAL_UPDATE
+    void onCacheLoaded();
+#endif
+
+protected:
     bool _loaded;
     std::filesystem::path _path;
     ImageMetadata _metadata;
     std::vector<std::unique_ptr<ImageState>> _states;
+private:
     std::vector<std::unique_ptr<ImageState>> _redo;
+    ImageCachePool *_cachePool;
 };
+
+cv::Mat loadFromQrc(QString qrc, int flag = cv::IMREAD_COLOR);
 
 #endif // IMAGE_H

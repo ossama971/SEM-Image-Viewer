@@ -13,7 +13,7 @@ NoiseReductionFilter::NoiseReductionFilter(double intensity)
 
 cv::Mat NoiseReductionFilter::applyFilter(const Image &inputImage) const
 {
-    cv::Mat image = inputImage.getImageMat();
+    const cv::Mat& image = inputImage.readImageMat();
     cv::Mat res;
 
     if (image.channels() == 1)

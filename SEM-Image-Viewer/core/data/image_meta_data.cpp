@@ -3,11 +3,14 @@
 #include <opencv2/opencv.hpp>
 
 void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
-  _width = image.cols;
-  _height = image.rows;
-  _format = getImageFormat(path);
-  _colorSpace = isGreyScale(image) ? ColorSpace::Gray : ColorSpace::RGB;
-  _dateModified = std::filesystem::last_write_time(path);
+    if (_loaded)
+        return;
+
+    _loaded = true;
+    _width = image.cols;
+    _height = image.rows;
+    _format = getImageFormat(path);
+    _dateModified = std::filesystem::last_write_time(path);
 }
 
 const ImageFormat ImageMetadata::getImageFormat(const std::string &path) {
@@ -50,16 +53,26 @@ bool ImageMetadata::isGreyScale(const cv::Mat &image) {
   return true;
 }
 
-const int ImageMetadata::getWidth() const { return _width; }
+const int ImageMetadata::getWidth() const {
+    return _width;
+}
 
-const int ImageMetadata::getHeight() const { return _height; }
+const int ImageMetadata::getHeight() const {
+    return _height;
+}
 
-const ImageFormat ImageMetadata::getFormat() const { return _format; }
+const ImageFormat ImageMetadata::getFormat() const {
+    return _format;
+}
 
-const ColorSpace ImageMetadata::getColorSpace(void) const { return _colorSpace; }
+const ColorSpace ImageMetadata::getColorSpace(const cv::Mat &image) {
+    return isGreyScale(image) ? ColorSpace::Gray : ColorSpace::RGB;
+}
 
 const std::filesystem::file_time_type ImageMetadata::getDateModified() const {
   return _dateModified;
 }
 
-void ImageMetadata::accept(Visitor &v) const { v.visit(*this); }
+void ImageMetadata::accept(Visitor &v) const {
+    v.visit(*this);
+}

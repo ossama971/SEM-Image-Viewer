@@ -14,7 +14,7 @@
 class JsonVisitor : public Visitor {
 public:
   void visit(const ImageMetadata &metadata) override;
-  void visit(const ImageState &state) override;
+  void visit(const ImageState &state, Image *image) override;
   void visit(const Image &image) override;
   void visit(const ImageRepository &repo) override;
   void visit(const SessionData &session) override;

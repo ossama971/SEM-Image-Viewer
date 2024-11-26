@@ -25,7 +25,9 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
     if (!selectedImage)
         return;
 
-    selectedImage->setImage(std::move(filter->applyFilter(*selectedImage)), filter->getImageSource());
+    cv::Mat filteredImage = filter->applyFilter(*selectedImage);
+    selectedImage->setImage(&filteredImage, filter->getImageSource());
+
     emit updateActionList(selectedImage->getCurrentAction());
 }
 
@@ -40,7 +42,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<i
 
 void SessionData::onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource) {
     for (int i = 0; i < input.size(); ++i)
-        input[i]->setImage(output[i], stateSource);
+        input[i]->setImage((cv::Mat*)&output[i], stateSource);
 
     emit onBatchFilterFinished();
 }
