@@ -37,9 +37,13 @@ void ImageDataModel::onImageStateUpdated(Image* image) {
     if (index == -1)
         return;
 
+    emit preImageStateUpdate();
+
     beginResetModel();
     loadImages(index, index);
     endResetModel();
+
+    emit postImageStateUpdate();
 }
 
 int ImageDataModel::rowCount(const QModelIndex &parent) const

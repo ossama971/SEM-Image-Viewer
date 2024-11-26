@@ -25,6 +25,10 @@ private slots:
     void onReload();
     void onImageStateUpdated(Image* image);
 
+signals:
+    void preImageStateUpdate();
+    void postImageStateUpdate();
+
 private:
     class ImageRepository* imageRepo = nullptr;
     QList<Image*> images;
