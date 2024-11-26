@@ -193,18 +193,20 @@ void MainWindow::onSaveChangesClicked() {
     // Open a folder browser to select the base directory
     QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
     if (baseDirectory.isEmpty()) {
+        //TODO: use logger instead of QMessageBox
         QMessageBox::warning(this, "No Directory Selected", "You must select a directory to save the session.");
         return;
     }
 
     // Set default session folder name and JSON file name
-    std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString()) / "session_data";
+    std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString());
     std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
 
     // Check if the session folder already exists
-    if (std::filesystem::exists(sessionFolderPath)) {
+    if (std::filesystem::exists(jsonFilePath)) {
+        //TODO: use logger instead of QMessageBox
         QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
-                                 .arg(QString::fromStdString(sessionFolderPath.string())));
+                                                        .arg(QString::fromStdString(sessionFolderPath.string())));
         return;
     }
 
@@ -225,10 +227,11 @@ void MainWindow::onSaveChangesClicked() {
                                  visitor.write_json();
                              }));
         saveTask.get();
-
+        //TODO: use logger instead of QMessageBox
         QMessageBox::information(this, "Save Successful", "Session has been successfully saved.");
         QApplication::quit(); // Exit the application if save was successful
     } catch (const std::exception &e) {
+        //TODO: use logger instead of QMessageBox
         QMessageBox::critical(this, "Save Error", QString("Failed to save session: %1").arg(e.what()));
     }
 
