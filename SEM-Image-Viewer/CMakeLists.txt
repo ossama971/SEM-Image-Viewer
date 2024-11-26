@@ -180,6 +180,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(SEM-Image-Viewer MANUAL_FINALIZATION ${PROJECT_SOURCES}
       core/filters/batch_filter.cpp core/filters/batch_filter.h
       widgets/horizontal_intensity_plot.h widgets/horizontal_intensity_plot.cpp
+      core/data/image_cache_pool.cpp core/data/image_cache_pool.h core/data/image_cache_task.cpp core/data/image_cache_task.h core/data/image_cacheless.cpp core/data/image_cacheless.h core/data/image_state_cacheless.cpp core/data/image_state_cacheless.h image_cache_config.h
 
 
 

@@ -64,5 +64,6 @@
         <file>icons/none-filled-arrow-down-dark.svg</file>
         <file>icons/link-external-dark-mode.svg</file>
         <file>icons/link-external-light-mode.svg</file>
+        <file>assets/image-loading.png</file>
     </qresource>
 </RCC>

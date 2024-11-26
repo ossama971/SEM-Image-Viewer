@@ -466,9 +466,8 @@ void ImageWidgetCore::updateImage(const cv::Mat &image) {
   setImage(pixmap);
 }
 
-void ImageWidgetCore::onupdateImageState(
-    std::vector<std::unique_ptr<ImageState>> &states) {
-  updateImage(states.back()->Image);
+void ImageWidgetCore::onupdateImageState(Image* image) {
+  updateImage(image->getImageMat());
 }
 
 void ImageWidgetCore::handleHeatmap(const cv::Mat &image,bool checked)

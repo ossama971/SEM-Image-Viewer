@@ -1,0 +1,9 @@
+#ifndef IMAGE_CACHE_CONFIG_H
+#define IMAGE_CACHE_CONFIG_H
+
+#define IMAGE_CACHE
+
+#define IMAGE_CACHE_DIR  "cache"
+#define IMAGE_CACHE_SIZE 10
+
+#endif // IMAGE_CACHE_CONFIG_H

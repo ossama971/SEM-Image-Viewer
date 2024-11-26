@@ -6,40 +6,40 @@
 #include "../core/engines/workspace.h"
 #include <QDebug>
 
-ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent)
+ImageDataModel::ImageDataModel(QObject *parent) : QAbstractListModel(parent), imageRepo(&Workspace::Instance()->getActiveSession().getImageRepo())
 {
     // Connect the repository's signal to the data model's slot
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onDirectoryChanged,
                      this, &ImageDataModel::updateImages);
 
-    QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(),
-                     &ImageRepository::onImageChanged,
-                     this, [this](Image *newImage)
-                     {
-                        if (newImage) {
-                            QObject::connect(newImage, &Image::onImageStateUpdated,
-                                            this, &ImageDataModel::updateImagesAfterFilter,Qt::UniqueConnection);
-                        } });
-}
-
-void ImageDataModel::updateImagesAfterFilter(std::vector<std::unique_ptr<ImageState>> &states)
-{
-    // beginResetModel();
-    // m_thumbnails.clear();
-    std::vector<Image *> newImages = Workspace::Instance()->getActiveSession().getImageRepo().getImages();
-    updateImages("", newImages, false);
-
-    // loadImages(0, 20);
+    QObject::connect(imageRepo, &ImageRepository::updateGridView, this, &ImageDataModel::onReload);
 }
 
 void ImageDataModel::updateImages(const std::string &newDir, const std::vector<Image *> &newImages, bool image_load)
 {
+    for (auto it = newImages.begin(); it != newImages.end(); ++it)
+        connect(*it, &Image::onImageStateUpdated, this, &ImageDataModel::onImageStateUpdated);
+
     beginResetModel();
     images.clear();
     m_thumbnails.clear();
     images = QList<Image *>(newImages.begin(), newImages.end());
     endResetModel();
     loadImages(0, 20);
+}
+
+void ImageDataModel::onReload() {
+    updateImages(imageRepo->getFolderPath(), imageRepo->getImages(), true);
+}
+
+void ImageDataModel::onImageStateUpdated(Image* image) {
+    int index = getImageIndex(image);
+    if (index == -1)
+        return;
+
+    beginResetModel();
+    loadImages(index, index);
+    endResetModel();
 }
 
 int ImageDataModel::rowCount(const QModelIndex &parent) const
@@ -58,13 +58,12 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
     {
         // If thumbnail is already cached, return it
         if (m_thumbnails.contains(index.row()))
-        {
             return m_thumbnails[index.row()];
-        }
 
         // Otherwise, generate and cache the thumbnail
         QImage thumbnail = generateThumbnail(*images[index.row()]);
-        m_thumbnails.insert(index.row(), thumbnail);
+        m_thumbnails[index.row()] = thumbnail;
+
         return thumbnail;
     }
     return QVariant();
@@ -101,7 +100,7 @@ QImage convertMatToQImage(const cv::Mat &mat)
 
 QImage ImageDataModel::generateThumbnail(const Image &image) const
 {
-    cv::Mat mat = image.getImageMat(); // Updated to use `getImageMat`
+    const cv::Mat &mat = image.getImageMat(); // Updated to use `getImageMat`
     if (mat.empty())
         return QImage();
 
@@ -122,11 +121,8 @@ void ImageDataModel::loadImages(int startIndex, int endIndex)
     // Load thumbnails for the specified range of images
     for (int i = startIndex; i <= endIndex; ++i)
     {
-        if (!m_thumbnails.contains(i))
-        {
-            QImage thumbnail = generateThumbnail(*images[i]);
-            m_thumbnails.insert(i, thumbnail);
-        }
+        QImage thumbnail = generateThumbnail(*images[i]);
+        m_thumbnails[i] = thumbnail;
     }
 }
 
@@ -137,4 +133,13 @@ Image *ImageDataModel::getImageAt(int index) const
         return images[index];
     }
     return nullptr; // Return a default/empty Image if index is out of bounds
+}
+
+int ImageDataModel::getImageIndex(Image* image) {
+    for (int i = 0; i < images.size(); ++i)
+    {
+        if (images[i] == image)
+            return i;
+    }
+    return -1;
 }

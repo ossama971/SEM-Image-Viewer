@@ -4,7 +4,7 @@
 cv::Mat GrayScaleFilter::applyFilter(const Image &inputImage) const
 {
 
-    const cv::Mat &image = inputImage.getImageMat();
+    const cv::Mat &image = inputImage.readImageMat();
     cv::Mat outputImage = image;
 
     if (image.channels() != 1)

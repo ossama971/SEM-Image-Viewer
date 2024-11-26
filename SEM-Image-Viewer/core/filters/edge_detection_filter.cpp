@@ -33,7 +33,7 @@ cv::Mat EdgeDetectionFilter::toGrayscale(const cv::Mat &image) const
 cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
 {
 
-    const cv::Mat image = inputImage.getImageMat();
+    const cv::Mat& image = inputImage.readImageMat();
 
     cv::Mat detected_edges = image;
     if (image.channels() != 1)

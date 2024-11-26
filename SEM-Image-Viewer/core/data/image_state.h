@@ -18,21 +18,20 @@ enum class ImageStateSource {
   EdgeDetectionFilter
 };
 
-std::string imageStateSourceToString(ImageStateSource state);
+std::string imageStateSourceToString(const ImageStateSource state);
 ImageStateSource imageStateSourceFromString(const std::string &state);
 
 struct ImageState : public Visitable {
   ImageStateSource State;
-  cv::Mat Image;
+  std::string ImagePath;
   std::string ImageExtension;
 
   ImageState();
   ~ImageState() = default;
-  ImageState(ImageStateSource state, const cv::Mat &image, const std::string &imageExtension);
-
-  bool save(const std::string &path) const;
+  ImageState(const ImageStateSource state, const std::string &imagePath, const std::string &imageExtension);
 
   void accept(Visitor &v) const override;
+  void accept(Visitor &v, class Image *parent) const;
 };
 
 #endif // IMAGE_STATE_H
