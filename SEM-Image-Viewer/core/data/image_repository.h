@@ -38,6 +38,7 @@ public:
     const std::string getFolderPath() const;
 
     void accept(Visitor &v) const override;
+    void setHasUnsavedChanges(bool hasUnsavedChanges);
     bool getHasUnsavedChanges();
 
     // Costly operations, should only be used for 
@@ -66,6 +67,7 @@ private:
     std::vector<std::unique_ptr<Image>> _images;
     Image* _selectedImage = nullptr;
     bool _hasUnsavedChanges = false; // Tracks whether there are unsaved changes
+    std::atomic_int _imge_repo_version = 0;
 
 #ifdef IMAGE_CACHE
     ImageCachePool _cachePool;

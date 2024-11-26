@@ -11,7 +11,7 @@
 #include "image_cacheless.h"
 #endif
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr)
+ImageRepository::ImageRepository() : _selectedImage(nullptr), _imge_repo_version(0)
 #ifdef IMAGE_CACHE
     ,_cachePool(IMAGE_CACHE_SIZE)
 #endif
@@ -161,6 +161,7 @@ void ImageRepository::post_directory_change(const std::string &newDir, bool imag
     for (const auto& image : _images) {
         connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
     }
+    _imge_repo_version++;
 
     emit onDirectoryChanged(newDir, getImages(), image_load);
 
@@ -280,9 +281,17 @@ void ImageRepository::accept(Visitor &v) const {
   v.visit(*this);
 }
 
+// a function
+void ImageRepository::setHasUnsavedChanges(bool hasUnsavedChanges) {
+    _hasUnsavedChanges = hasUnsavedChanges;
+}
+
+// a Slot
+// TODO: it would be better to have one function that can change 
+// the _hasUnsavedChanges flag, instead of having multiple functions/slots
 void ImageRepository::setUnsavedChanges(Image* image) {
     if (image->isChanged())
-        _hasUnsavedChanges = true; // Set to true when any image state changes
+        _hasUnsavedChanges = true;
 }
 
 bool ImageRepository::getHasUnsavedChanges(){

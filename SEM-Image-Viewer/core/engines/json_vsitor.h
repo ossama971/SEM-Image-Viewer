@@ -22,7 +22,7 @@ public:
   void write_json() const;
 
   JsonVisitor() = default;
-  JsonVisitor(std::string session_datapath, std::string json_filepath, int progressbarID);
+  JsonVisitor(std::string session_datapath, std::string json_filepath, int progressbarID, std::function<void(int)> progressCallback);
   ~JsonVisitor() override = default;
 
 private:
@@ -33,6 +33,7 @@ private:
     // a better way to notify the progressbar as a seperate entity about the
     // progress of the visitor
     int progressbarID;
+    std::function<void(int)> progressCallback_;
 };
 
 #endif // JSON_VISITOR_H

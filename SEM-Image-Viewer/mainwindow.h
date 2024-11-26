@@ -55,6 +55,8 @@ private:
     MenuBarWidget *menuBarWidget = nullptr;
     MiniGrid *miniGrid = nullptr;
     ToolbarWidget *toolbarWidget = nullptr;
+
+    QProgressBar *progressBar = nullptr;
 };
 
 

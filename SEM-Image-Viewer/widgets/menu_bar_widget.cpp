@@ -304,7 +304,7 @@ void MenuBarWidget::saveSession() {
 
     post(ThreadPool::instance(),
         [sessionFolderPath, jsonFilePath, progressbarID]() {
-           JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
+           JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID, nullptr);
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
          });

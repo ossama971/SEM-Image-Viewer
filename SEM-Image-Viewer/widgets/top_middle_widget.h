@@ -20,6 +20,7 @@ public:
 
 signals:
     void onVisibilityChange(bool visible);
+    void selectDiffView();
 
 public slots:
     void setMaxMinHeight(int mn, int mx);
@@ -34,9 +35,6 @@ private:
     GridView *gridView = nullptr;
     DiffViewWidget *diffView = nullptr;
     QVBoxLayout *topMiddleLayout = nullptr;
-
-signals:
-    void selectDiffView();
 };
 
 #endif // TOP_MIDDLE_WIDGET_H
