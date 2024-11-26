@@ -1,5 +1,6 @@
 #include "image_cacheless.h"
 #include "image_state_cacheless.h"
+#include "../utils.h"
 
 ImageCacheless::ImageCacheless() : Image(nullptr) {
 }
@@ -48,10 +49,15 @@ void ImageCacheless::addRedo(const cv::Mat &image, const ImageStateSource newSta
   _states.push_back(std::make_unique<ImageStateCacheless>(newState, imagePath.string(), std::move(image), imageExtension));
 }
 
-const cv::Mat& ImageCacheless::getImageMat() const {
+const cv::Mat& ImageCacheless::getImageMat() {
     return static_cast<ImageStateCacheless*>(_states.back().get())->Image;
 }
 
+const QImage& ImageCacheless::getQImage() {
+    imageBuffer = Utils::matToImage(getImageMat());
+    return imageBuffer;
+}
+
 cv::Mat ImageCacheless::readImageMat() const {
-    return getImageMat();
+    return static_cast<ImageStateCacheless*>(_states.back().get())->Image;
 }

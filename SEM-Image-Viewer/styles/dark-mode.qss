@@ -133,6 +133,7 @@ QPushButton {
     border: none;
     background-color: transparent;
     font-family: 'Roboto';
+    border-radius: 4px;
 }
 QPushButton:hover {
     background-color: #444444;
@@ -219,19 +220,130 @@ QPushButton#applyButton {
     qproperty-iconSize: 16px 16px;
 }
 
-QPushButton#info {
+QToolButton#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+     font:  12px;
+     text-align: center;
+}
+
+QToolButton::hover#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #444444;
+    border-radius: 4px;
+}
+QToolButton::checked#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #555555;
+    border-radius: 4px;
+}
+
+QToolButton#info {
     qproperty-icon: url(:/icons/info-dark.svg);
     qproperty-iconSize: 14px 14px;
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
 }
 
-QPushButton#error {
+QToolButton::hover#info {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #444444;
+    border-radius: 4px;
+}
+QToolButton::checked#info {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #555555;
+    border-radius: 4px;
+}
+
+QToolButton#error {
     qproperty-icon: url(:/icons/error-dark.svg);
     qproperty-iconSize: 14px 14px;
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
 }
 
-QPushButton#warning {
+QToolButton::hover#error {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #444444;
+    border-radius: 4px;
+}
+QToolButton::checked#error {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #555555;
+    border-radius: 4px;
+}
+
+QToolButton#warning {
     qproperty-icon: url(:/icons/warning-dark.svg);
     qproperty-iconSize: 14px 14px;
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+}
+
+QToolButton::hover#warning {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #444444;
+    border-radius: 4px;
+}
+QToolButton::checked#warning {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #555555;
+    border-radius: 4px;
 }
 
 QPushButton#searchButton {
@@ -247,17 +359,17 @@ QPushButton:hover#searchButton2 {
 
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#newFileBtn {
     qproperty-icon: url(:/icons/new-file-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#collapseBtn {
     qproperty-icon: url(:/icons/nav-arrow-dark.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 
 QPushButton#redoButton {
@@ -343,6 +455,11 @@ QToolButton#pen {
     qproperty-iconSize: 16px 16px;
 }
 
+QChartView{
+   qproperty-cursor: url(:/icons/pen-icon-dark.svg);
+   qproperty-cursorSize: 20px 20px;
+}
+
 QToolButton#arrowup {
     qproperty-icon: url(:/icons/mini-grid-dark.svg);
     qproperty-iconSize: 18px 18px;
@@ -385,6 +502,9 @@ QProgressBar::text {
 QFrame {
     border-radius: 8px;
 }
+QFrame#fileBrowserSeparator {
+    background-color: #1E1E1E;
+}
 QCheckBox {
     color: white;
     }
@@ -406,3 +526,7 @@ QCheckBox::indicator:hover {
     border: 1px solid #4CAF50;
 }
 
+QWidget#log{
+  background-color: #555555;
+  color: #D3D3D3;
+  }

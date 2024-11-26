@@ -2,6 +2,7 @@
 #include "core/engines/logger.h"
 #include "core/engines/thread_pool.h"
 #include "core/engines/workspace.h"
+#include "models/image_data_model.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
   QWidget *centralWidget = new QWidget(this);
   setCentralWidget(centralWidget);
 
+  gridDataModel = new ImageDataModel(this);
+
   leftSidebarWidget = new LeftSidebarWidget(this);
   leftSidebarWidget->setMinimumWidth(160);
 
@@ -30,9 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
 
   toolbarWidget = new ToolbarWidget(this);
 
-  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget);
+  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget, gridDataModel);
   bottomMiddleWidget = new BottomMiddleWidget(this);
-  miniGrid = new MiniGrid(this);
+
+  miniGrid = new MiniGrid(this, gridDataModel);
   miniGrid->setMinimumHeight(90);
   miniGrid->setMaximumHeight(120);
 
