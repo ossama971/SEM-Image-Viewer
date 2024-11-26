@@ -6,8 +6,8 @@
 #include <QVBoxLayout>
 
 DiffViewWidget::DiffViewWidget(QWidget *parent)
-    : QWidget(parent), upperImageWidget(new ImageWidgetCore(this)),
-      lowerImageWidget(new ImageWidgetCore(this)),
+    : QWidget(parent), upperImageWidget(new ImageWidgetCore(this, false)),
+      lowerImageWidget(new ImageWidgetCore(this, false)),
       diffImageWidget(new ImageWidgetCore(this)) {
 
   QVBoxLayout *vlayout = new QVBoxLayout();
@@ -30,8 +30,11 @@ DiffViewWidget::DiffViewWidget(QWidget *parent)
 }
 
 void DiffViewWidget::updateDiffImage() {
-  cv::Mat upperImage = upperImageWidget->getImage();
-  cv::Mat lowerImage = lowerImageWidget->getImage();
+  const cv::Mat& upperImage = upperImageWidget->getImage();
+  const cv::Mat& lowerImage = lowerImageWidget->getImage();
+
+  /*const cv::Mat& upperImage = upperImageWidget->getImage();
+  const cv::Mat& lowerImage = lowerImageWidget->getImage();*/
 
 
   if (upperImage.empty() || lowerImage.empty()) {

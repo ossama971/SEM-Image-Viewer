@@ -14,10 +14,10 @@
 using namespace cv;
 using namespace std;
 
-ImageWidgetCore::ImageWidgetCore(QWidget *parent)
+ImageWidgetCore::ImageWidgetCore(QWidget *parent, bool cacheRead)
     : QWidget(parent), graphicsView(new QGraphicsView(this)),
       scene(new QGraphicsScene(this)), zoomWidget(new ZoomWidget(this)),
-      infoBar(new ImageInfoBar(this)) {
+    infoBar(new ImageInfoBar(this)), readFromCache(cacheRead) {
   graphicsView->setScene(scene);
 
   QVBoxLayout *layout = new QVBoxLayout(this);
@@ -337,7 +337,7 @@ void ImageWidgetCore::setDimensions(int width, int height) {
 optional<QPixmap>
 ImageWidgetCore::loadAndPrepareImage(const Image &selected_image,
                                      const QSize &targetSize) {
-  const Mat& image = selected_image.getImageMat();
+  const Mat& image = readFromCache ? selected_image.getImageMat() : selected_image.readImageMat();
   currentImage = image;
   if (image.empty()) {
     return nullopt;
@@ -472,7 +472,7 @@ void ImageWidgetCore::updateImage(const cv::Mat &image) {
 }
 
 void ImageWidgetCore::onupdateImageState(Image* image) {
-  updateImage(image->getImageMat());
+  updateImage(readFromCache ? image->getImageMat() : image->readImageMat());
 }
 
 void ImageWidgetCore::handleHeatmap(const cv::Mat &image,bool checked)
@@ -493,7 +493,7 @@ void ImageWidgetCore::handleHeatmap(const cv::Mat &image,bool checked)
 
 }
 
-cv::Mat ImageWidgetCore::getImage() const {
+const cv::Mat& ImageWidgetCore::getImage() const {
   return currentImage;
 }
 
