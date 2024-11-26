@@ -3,6 +3,7 @@
 #include "../filters/batch_filter.h"
 #include "../filters/gray_scale_filter.h"
 #include "../filters/edge_detection_filter.h"
+#include "../filters/noise_reduction_filter.h"
 #include "../engines/logger.h"
 #include <boost/type_index.hpp>
 
@@ -60,6 +61,9 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
                 return;
             }
         }
+    }
+    if(dynamic_cast<NoiseReductionFilter*>(filter.get())){
+
     }
     
     cv::Mat filteredImage = filter->applyFilter(*selectedImage);

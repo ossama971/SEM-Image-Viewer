@@ -130,7 +130,11 @@ void LoggerWidget::createLayouts()
     line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QHBoxLayout *topLayoutCompact = new QHBoxLayout;
-    topLayoutCompact->addWidget(new QLabel("Error : 1 Warnings : 2 Info : 3", this));
+    QString labelText = QString("Error : %1 Warnings : %2 Info : %3")
+                            .arg(errorCount)
+                            .arg(warningCount)
+                            .arg(infoCount);
+    topLayoutCompact->addWidget(new QLabel(labelText, this));
     topLayoutCompact->addStretch(9);
     topLayoutCompact->addWidget(switchLayoutButtonCompact);
     topLayoutCompact->addStretch(0);
@@ -232,30 +236,50 @@ void LoggerWidget::filterLogs()
     if (clickedButton == infoShowButton)
     {
         selectedType = "Info";
-
+        clickedButton->setStyleSheet(
+            "QPushButton {"
+            "border: none;"
+            "font-family: 'Roboto';"
+            "padding: 5px;"
+            "padding-right: 20px;"
+            "font: 12px;"
+            "text-align: center;"
+            "background-color: lightgray;"
+            "color: black;"  // Set text color to black
+            "}");
     }
     else if (clickedButton == warningsShowButton)
     {
         selectedType = "Warning";
-
+        clickedButton->setStyleSheet(
+            "QPushButton {"
+            "border: none;"
+            "font-family: 'Roboto';"
+            "padding: 5px;"
+            "padding-right: 20px;"
+            "font: 12px;"
+            "text-align: center;"
+            "background-color: lightgray;"
+            "color: black;"  // Set text color to black
+            "}");
     }
     else if (clickedButton == errorsShowButton)
     {
         selectedType = "Error";
-
+        clickedButton->setStyleSheet(
+            "QPushButton {"
+            "border: none;"
+            "font-family: 'Roboto';"
+            "padding: 5px;"
+            "padding-right: 20px;"
+            "font: 12px;"
+            "text-align: center;"
+            "background-color: lightgray;"
+            "color: black;"  // Set text color to black
+            "}");
     }
 
-    clickedButton->setStyleSheet(
-        "QPushButton {"
-        "border: none;"
-        "font-family: 'Roboto';"
-        "padding: 5px;"
-        "padding-right: 20px;"
-        "font: 12px;"
-        "text-align: center;"
-        "background-color: lightgray;"
-        "color: black;"  // Set text color to black
-        "}");
+
     logListLayout->clear();
     emit showSelectedType(selectedType ,filterText);
 }
@@ -286,6 +310,15 @@ void LoggerWidget::addLogCard(LogCard *card)
     logListLayout->setItemWidget(item, card);
     logListLayout->scrollToItem(item);
 
+    if(card->getType()=="error"){
+        errorCount++;
+    }
+    else if(card->getType()=="info"){
+        infoCount++;
+    }
+    else{
+        warningCount++;
+    }
 }
 
 

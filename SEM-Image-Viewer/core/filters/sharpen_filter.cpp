@@ -11,7 +11,7 @@ cv::Mat SharpenFilter::applyFilter(const Image &inputImage) const
     filter2D(image.clone(), outputImage, image.depth(), kern, cv::Point(-1, -1));                    // Applies the masking operator to the image
 
     Logger::instance()->logMessage(
-        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageTypes::info, Logger::MessageID::filter_applied,
         Logger::MessageOption::with_path,
         {"Sharpen Filter"},
         "https://www.opencvhelp.org/tutorials/image-processing/how-to-sharpen-image/");

@@ -28,7 +28,7 @@ cv::Mat GrayScaleFilter::applyFilter(const Image &inputImage) const
     }
 
     Logger::instance()->logMessage(
-        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageTypes::info, Logger::MessageID::filter_applied,
         Logger::MessageOption::with_path,
         {"Gray Scale"},
         "https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html");

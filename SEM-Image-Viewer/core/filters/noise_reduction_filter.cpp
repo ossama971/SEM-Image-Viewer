@@ -25,7 +25,7 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image &inputImage) const
         cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(res), _intensity, _intensity);
     }
     Logger::instance()->logMessage(
-        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+        Logger::MessageTypes::info, Logger::MessageID::filter_applied,
         Logger::MessageOption::with_path,
         {"Noise Reduction"},
         "https://docs.opencv.org/4.x/d5/d69/tutorial_py_non_local_means.html");

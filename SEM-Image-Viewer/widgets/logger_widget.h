@@ -47,7 +47,9 @@ private:
     QListWidget *logListLayout = nullptr;
 
     bool isExpanded = true;
-
+    int errorCount=0;
+    int infoCount=0;
+    int warningCount=0;
 signals:
     void layoutSwitched(bool isExpanded);
 };
