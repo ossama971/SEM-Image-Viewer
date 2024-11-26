@@ -16,7 +16,7 @@ cv::Mat NoiseReductionFilter::applyFilter(const Image &inputImage) const
     const cv::Mat& image = inputImage.readImageMat();
     cv::Mat res;
 
-    if (image.channels() == 1)
+    if (image.channels() == 1 || inputImage.getMetadata().getColorSpace(image) == ColorSpace::Gray)
     {
         cv::fastNlMeansDenoising(cv::InputArray(image), cv::OutputArray(res), _intensity);
     }
