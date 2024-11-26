@@ -72,6 +72,8 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 
     // Create action list
     actionList = new QListWidget(this);
+    actionList->setSelectionMode(QAbstractItemView::NoSelection);
+
     actionList->setStyleSheet(
         "QListWidget {"
         "    background: transparent;" // Makes the background transparent

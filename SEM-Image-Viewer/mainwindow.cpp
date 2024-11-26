@@ -193,8 +193,6 @@ void MainWindow::onSaveChangesClicked() {
     // Open a folder browser to select the base directory
     QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
     if (baseDirectory.isEmpty()) {
-        //TODO: use logger instead of QMessageBox
-        QMessageBox::warning(this, "No Directory Selected", "You must select a directory to save the session.");
         return;
     }
 
@@ -204,9 +202,10 @@ void MainWindow::onSaveChangesClicked() {
 
     // Check if the session folder already exists
     if (std::filesystem::exists(jsonFilePath)) {
-        //TODO: use logger instead of QMessageBox
-        QMessageBox::warning(this, "Folder Exists", QString("The folder '%1' already exists. Please choose a different location or delete the existing folder.")
-                                                        .arg(QString::fromStdString(sessionFolderPath.string())));
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::warning, Logger::MessageID::file_already_exists,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(sessionFolderPath.string())});
         return;
     }
 
@@ -227,12 +226,16 @@ void MainWindow::onSaveChangesClicked() {
                                  visitor.write_json();
                              }));
         saveTask.get();
-        //TODO: use logger instead of QMessageBox
-        QMessageBox::information(this, "Save Successful", "Session has been successfully saved.");
+        Logger::instance()->logMessage(
+                    Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
+                    Logger::MessageOption::without_path,
+                    {});
         QApplication::quit(); // Exit the application if save was successful
     } catch (const std::exception &e) {
-        //TODO: use logger instead of QMessageBox
-        QMessageBox::critical(this, "Save Error", QString("Failed to save session: %1").arg(e.what()));
+        Logger::instance()->logMessage(
+                    Logger::MessageTypes::error, Logger::MessageID::error_in_save,
+                    Logger::MessageOption::without_path,
+                    {});
     }
 
 }

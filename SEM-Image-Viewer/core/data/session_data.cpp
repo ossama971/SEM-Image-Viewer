@@ -1,6 +1,11 @@
 #include "session_data.h"
 #include "../data/image.h"
 #include "../filters/batch_filter.h"
+#include "../filters/gray_scale_filter.h"
+#include "../filters/edge_detection_filter.h"
+#include "../engines/logger.h"
+#include <boost/type_index.hpp>
+
 
 SessionData::SessionData() : _batchFilter() {
     connect(&_batchFilter, &BatchFilter::onFinish, this, &SessionData::onBatchFilterApplied);
@@ -22,9 +27,41 @@ void SessionData::loadImage(const std::string &path) {
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
     Image* selectedImage = _imageRepo.getImage();
-    if (!selectedImage)
+    if (!selectedImage){
+        Logger::instance()->logMessage(
+                    Logger::MessageTypes::error, Logger::MessageID::no_image_selected,
+                    Logger::MessageOption::without_path,
+                    {});
         return;
-
+    }
+    //check filter type
+    if(dynamic_cast<GrayScaleFilter*>(filter.get())){
+        const std::vector< std::unique_ptr<ImageState> > &states= selectedImage->getStates();
+        for(auto it=states.begin();it!=states.end();it++){
+            if((*it)->State==ImageStateSource::GrayScaleFilter){
+                //TODO: make logger msg(filter already applied)
+                Logger::instance()->logMessage(
+                    Logger::MessageTypes::warning, Logger::MessageID::already_applied,
+                    Logger::MessageOption::without_path,
+                    {"Gray Scale"});
+                return;
+            }
+        }
+    }
+    if(dynamic_cast<EdgeDetectionFilter*>(filter.get())){
+        const std::vector< std::unique_ptr<ImageState> > &states= selectedImage->getStates();
+        for(auto it=states.begin();it!=states.end();it++){
+            if((*it)->State==ImageStateSource::EdgeDetectionFilter){
+                //TODO: make logger msg(filter already applied)
+                Logger::instance()->logMessage(
+                    Logger::MessageTypes::warning, Logger::MessageID::already_applied,
+                    Logger::MessageOption::without_path,
+                    {"Edge Detection"});
+                return;
+            }
+        }
+    }
+    
     cv::Mat filteredImage = filter->applyFilter(*selectedImage);
     selectedImage->setImage(&filteredImage, filter->getImageSource());
 
