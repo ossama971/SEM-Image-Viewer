@@ -138,6 +138,7 @@ void ImageRepository::pre_directory_change(int image_count, const std::string &d
     selectImage(-1);
 
     _folderPath = dir;
+    _hasUnsavedChanges = false;
     _images.clear();
 
 #ifdef IMAGE_CACHE
@@ -160,6 +161,7 @@ void ImageRepository::post_directory_change(const std::string &newDir, bool imag
     for (const auto& image : _images) {
         connect(image.get(), &Image::onImageStateUpdated, this, &ImageRepository::setUnsavedChanges);
     }
+    _imge_repo_version++;
 
     emit onDirectoryChanged(newDir, getImages(), image_load);
 
@@ -207,16 +209,16 @@ void ImageRepository::selectImage(const std::string &path) {
     }
 }
 
-void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
+void ImageRepository::onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat) {
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     for (auto it = _images.begin(); it != _images.end(); ++it)
-        (*it)->onCacheImageLoaded(path, image);
+        (*it)->onCacheImageLoaded(path, image, imageMat);
 }
 
-void ImageRepository::onCacheImageRemoved(const std::string& path, cv::Mat* image) {
+void ImageRepository::onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat) {
     if (!std::filesystem::exists(path))
-        cv::imwrite(path, *image);
+        cv::imwrite(path, *imageMat);
 }
 
 std::size_t ImageRepository::getImagesCount() const {
@@ -279,8 +281,17 @@ void ImageRepository::accept(Visitor &v) const {
   v.visit(*this);
 }
 
-void ImageRepository::setUnsavedChanges(bool hasUnsavedChanges) {
+// a function
+void ImageRepository::setHasUnsavedChanges(bool hasUnsavedChanges) {
     _hasUnsavedChanges = hasUnsavedChanges;
+}
+
+// a Slot
+// TODO: it would be better to have one function that can change 
+// the _hasUnsavedChanges flag, instead of having multiple functions/slots
+void ImageRepository::setUnsavedChanges(Image* image) {
+    if (image->isChanged())
+        _hasUnsavedChanges = true;
 }
 
 bool ImageRepository::getHasUnsavedChanges(){

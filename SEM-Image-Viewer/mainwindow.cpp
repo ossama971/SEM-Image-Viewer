@@ -26,11 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
   leftSidebarWidget->setMinimumWidth(160);
 
   rightSidebarWidget = new RightSidebarWidget(this);
-  rightSidebarWidget->setMinimumWidth(190);
+  rightSidebarWidget->setMinimumWidth(210);
 
   toolbarWidget = new ToolbarWidget(this);
 
-  topMiddleWidget = new TopMiddleWidget(this);
+  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget);
   bottomMiddleWidget = new BottomMiddleWidget(this);
   miniGrid = new MiniGrid(this);
   miniGrid->setMinimumHeight(90);
@@ -266,7 +266,7 @@ void MainWindow::onSaveChangesClicked() {
                 visitor.write_json();
             }));
             saveTask.get();
-            Workspace::Instance()->getActiveSession().getImageRepo().setUnsavedChanges(false);
+            Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
             QMetaObject::invokeMethod(qApp, &QApplication::quit);
         });
     } catch (const std::exception &e) {

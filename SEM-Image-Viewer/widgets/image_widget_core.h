@@ -18,9 +18,10 @@ class ImageWidgetCore : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ImageWidgetCore(QWidget *parent = nullptr);
+  explicit ImageWidgetCore(QWidget *parent = nullptr, bool cacheRead = true);
   void loadAndDisplayImage(const Image &image);
-  cv::Mat getImage() const;
+  void setDimensions(int width, int height);
+  const cv::Mat& getImage() const;
   void handleHeatmap(const cv::Mat &heatmap,bool checked);
   void resetView();
 protected:
@@ -30,6 +31,7 @@ protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
+  bool readFromCache = true;
   QGraphicsView *graphicsView = nullptr;
   QGraphicsScene *scene = nullptr;
   ZoomWidget *zoomWidget = nullptr;

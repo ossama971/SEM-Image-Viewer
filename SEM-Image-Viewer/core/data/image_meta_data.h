@@ -19,6 +19,7 @@ private:
     bool isGreyScale(const cv::Mat &image);
 
 public:
+    bool isLoaded() const;
     const int getWidth() const;
     const int getHeight() const;
     const ImageFormat getFormat() const;

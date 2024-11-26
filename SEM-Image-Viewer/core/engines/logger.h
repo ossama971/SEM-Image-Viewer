@@ -43,6 +43,7 @@ public:
         error_in_save,
         saved_successfully,
         file_already_exists,
+        no_difference,
     };
 
     static QMap<MessageID, QString> LoggerMap;

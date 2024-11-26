@@ -38,6 +38,7 @@ public:
     const std::string getFolderPath() const;
 
     void accept(Visitor &v) const override;
+    void setHasUnsavedChanges(bool hasUnsavedChanges);
     bool getHasUnsavedChanges();
 
     // Costly operations, should only be used for 
@@ -53,19 +54,20 @@ signals:
     void updateGridView();
 
 public slots:
-    void setUnsavedChanges();
+    void setUnsavedChanges(Image* image);
 
 private slots:
-    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
-    void onCacheImageRemoved(const std::string& path, cv::Mat* image);
+    void onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat);
+    void onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat);
 
 private:
     std::string _folderPath;
     mutable std::recursive_mutex _mutex;
     // TODO: this should be a map of path to image, to have faster lookups
     std::vector<std::unique_ptr<Image>> _images;
-    Image* _selectedImage=nullptr;
+    Image* _selectedImage = nullptr;
     bool _hasUnsavedChanges = false; // Tracks whether there are unsaved changes
+    std::atomic_int _imge_repo_version = 0;
 
 #ifdef IMAGE_CACHE
     ImageCachePool _cachePool;

@@ -28,6 +28,7 @@ Logger *Logger::instance()
     LoggerMap[MessageID::error_in_save] = "Error in saving session";
     LoggerMap[MessageID::saved_successfully] = "Session saved successfully";
     LoggerMap[MessageID::file_already_exists] = "Json file %1 already exists in the directory";
+    LoggerMap[MessageID::no_difference] = "No difference between two images";
     std::atexit(destroyInstance);
   }
   return m_instance;

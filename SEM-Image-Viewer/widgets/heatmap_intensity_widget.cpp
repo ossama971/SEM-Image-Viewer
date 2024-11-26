@@ -5,13 +5,13 @@
 #include <QHBoxLayout>
 #include <QFrame>
 
-OtherListWidget::OtherListWidget(QWidget* parent)
+HeatIntensityWidget::HeatIntensityWidget(QWidget* parent)
     : QWidget(parent)
 {
     // Main layout
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(5, 10, 10, 10);
+    mainLayout->setContentsMargins(0, 10, 10, 10);
 
     // Title
     auto titleLabel = new QLabel("Other", this);
@@ -36,7 +36,7 @@ OtherListWidget::OtherListWidget(QWidget* parent)
     // setStyleSheet("QWidget { background-color: #2d2d2d; }");
 }
 
-void OtherListWidget::addWidget(QWidget* widget)
+void HeatIntensityWidget::addWidget(QWidget* widget)
 {
     m_itemsLayout->addWidget(widget);
 }

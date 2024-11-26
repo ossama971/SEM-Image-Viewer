@@ -64,48 +64,16 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
         QImage thumbnail = generateThumbnail(*images[index.row()]);
         m_thumbnails[index.row()] = thumbnail;
 
-        return thumbnail;
+        return thumbnail.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
     return QVariant();
 }
 
-QImage convertMatToQImage(const cv::Mat &mat)
-{
-    if (mat.empty())
-    {
-        return QImage(); // Return an empty QImage if the input cv::Mat is empty
-    }
-
-    QImage qImg;
-
-    if (mat.type() == CV_8UC1)
-    {
-        // Grayscale image
-        qImg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Grayscale8);
-    }
-    else if (mat.type() == CV_8UC3)
-    {
-        // RGB (BGR in OpenCV)
-        QImage tempImg(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-        qImg = tempImg.rgbSwapped(); // Convert BGR to RGB
-    }
-    else
-    {
-        // qDebug() << "Unsupported image format. Ensure the cv::Mat is CV_8UC1 or CV_8UC3.";
-        return QImage(); // Return an empty QImage if the format is unsupported
-    }
-
-    return qImg;
-}
-
 QImage ImageDataModel::generateThumbnail(const Image &image) const
 {
-    const cv::Mat &mat = image.getImageMat(); // Updated to use `getImageMat`
-    if (mat.empty())
+    const QImage &originalImage = image.getQImage(); // Updated to use `getImageMat`
+    if (originalImage.isNull())
         return QImage();
-
-    // Convert cv::Mat (BGR) to QImage (RGB)
-    QImage originalImage = convertMatToQImage(mat);
 
     // Using high-quality scaling
     return originalImage.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);

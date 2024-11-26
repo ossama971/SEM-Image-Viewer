@@ -118,6 +118,7 @@ void ToolbarWidget::onSelectDiffView() {
 }
 
 void ToolbarWidget::onUndoClicked() {
+    diffViewButton->setChecked(true);
     emit undoTriggered();
 }
 

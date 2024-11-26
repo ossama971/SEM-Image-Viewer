@@ -1,5 +1,4 @@
 #include "image.h"
-#include "image_cache_pool.h"
 #include "../utils.h"
 
 Image::Image(ImageCachePool* cachePool) : _loaded(false), _cachePool(cachePool) {
@@ -79,7 +78,7 @@ bool Image::save(const std::string &path, ImageState *state) {
     if (!state)
         return false;
 
-    cv::Mat* imagePtr = _cachePool->get(state->ImagePath, false);
+    cv::Mat* imagePtr = _cachePool->get(state->ImagePath, false).ImageMat;
     if (imagePtr)
         return save(path, state, *imagePtr);
 
@@ -157,11 +156,16 @@ void Image::accept(Visitor &v) const {
     v.visit(*this);
 }
 
-void Image::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
-    if (!image || _states.empty() || _states.back()->ImagePath.compare(path))
+void Image::onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat) {
+    if (!imageMat || _states.empty())
         return;
 
-    _metadata.load(path, *image);
+    if (!_metadata.isLoaded() && !_states[0]->ImagePath.compare(path))
+        _metadata.load(path, *imageMat);
+
+    if (_states.back()->ImagePath.compare(path))
+        return;
+
     emit onImageStateUpdated(this);
 
 #ifdef GRID_VIEW_MANUAL_UPDATE
@@ -176,14 +180,15 @@ bool Image::save(const std::string &path, ImageState *state, const cv::Mat &imag
     return cv::imwrite(path, image);
 }
 
-cv::Mat* Image::getImageMat(bool autoLoad) const {
+ImageCachePool::ImageCacheQuery Image::getImageMat(bool autoLoad) const {
     const std::string& path = _states.back()->ImagePath;
-    cv::Mat* image = _cachePool->get(path, autoLoad);
+    ImageCachePool::ImageCacheQuery image = _cachePool->get(path, autoLoad);
 
-    if (image != nullptr)
+    if (image.Image && image.ImageMat)
         return image;
 
-    return autoLoad ? _cachePool->getImageLoadingTemplate() : nullptr;
+    return autoLoad ? _cachePool->getImageLoadingTemplate()
+                    : ImageCachePool::ImageCacheQuery { nullptr, nullptr };
 }
 
 std::filesystem::path Image::getPath(const ImageStateSource newState) const {
@@ -202,11 +207,15 @@ bool Image::isLoaded() const {
 }
 
 const cv::Mat& Image::getImageMat() const {
-    return *getImageMat(true);
+    return *getImageMat(true).ImageMat;
+}
+
+const QImage& Image::getQImage() const {
+    return *getImageMat(true).Image;
 }
 
 cv::Mat Image::readImageMat() const {
-    cv::Mat* imagePtr = getImageMat(false);
+    cv::Mat* imagePtr = getImageMat(false).ImageMat;
     if (imagePtr)
         return *imagePtr;
 
@@ -216,26 +225,6 @@ cv::Mat Image::readImageMat() const {
     if (std::filesystem::exists(imagePath))
         image = cv::imread(imagePath);
     return image;
-}
-
-const QList<QString> Image::getHistory(){
-    QList<QString> actionsList;
-
-    for(int i=0;i<_states.size();i++){
-        if(_states[i]->State==ImageStateSource::GrayScaleFilter){
-            actionsList.append("Gray Scale Filter");
-        }
-        else if(_states[i]->State==ImageStateSource::NoiseReductionFilter){
-            actionsList.append("Noise Reduction Filter");
-        }
-        else if(_states[i]->State==ImageStateSource::SharpenFilter){
-            actionsList.append("Sharpen Filter");
-        }
-        else if(_states[i]->State==ImageStateSource::EdgeDetectionFilter){
-            actionsList.append("Edge Detection Filter");
-        }
-    }
-    return actionsList;
 }
 
 ImageStateSource Image::getImageState() const {
@@ -272,4 +261,28 @@ std::vector<std::unique_ptr<ImageState>> const &Image::getUndo() const {
 
 ImageMetadata Image::getMetadata() const {
     return _metadata;
+}
+
+const QList<QString> Image::getHistory() {
+    QList<QString> actionsList;
+
+    for(int i=0;i<_states.size();i++){
+        if(_states[i]->State==ImageStateSource::GrayScaleFilter){
+            actionsList.append("Gray Scale Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::NoiseReductionFilter){
+            actionsList.append("Noise Reduction Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::SharpenFilter){
+            actionsList.append("Sharpen Filter");
+        }
+        else if(_states[i]->State==ImageStateSource::EdgeDetectionFilter){
+            actionsList.append("Edge Detection Filter");
+        }
+    }
+    return actionsList;
+}
+
+bool Image::isChanged() const {
+    return _states.size() > 1 || !_redo.empty();
 }
