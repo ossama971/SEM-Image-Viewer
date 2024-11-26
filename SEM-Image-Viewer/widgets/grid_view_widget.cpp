@@ -9,7 +9,7 @@
 
 GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
     listView = new QListView(this);
-    listView->setSelectionMode(QAbstractItemView::MultiSelection);
+    listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     // Initialize main layout as a grid layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -66,10 +66,6 @@ void GridView::handleSelectionChanged(const QItemSelection &selected, const QIte
         if (selectedIndexes.size() == 2) {
             firstImage = imageDataModel->getImageAt(selectedIndexes[0].row());
             secondImage = imageDataModel->getImageAt(selectedIndexes[1].row());
-        }
-
-        if(selectedIndexes.size() >2){
-            //send batch images to image repository
         }
     }
 }
