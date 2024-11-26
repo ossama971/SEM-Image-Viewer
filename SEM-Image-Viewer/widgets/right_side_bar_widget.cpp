@@ -38,7 +38,7 @@ RightSidebarWidget::RightSidebarWidget(QWidget *parent) : QWidget(parent), _imag
     list->addWidget(_grayScaleWidget);
     list->addWidget(_edgeExtractionWidget);
     list->addWidget(_noiseReductionWidget);
-    rightSidebarLayout->setContentsMargins(10, 0, 0, 0);
+    rightSidebarLayout->setContentsMargins(10, 0, 10,0);
     rightSidebarLayout->addWidget(list);
 
     HeatMapWidget *_heatmapWidget = new HeatMapWidget();

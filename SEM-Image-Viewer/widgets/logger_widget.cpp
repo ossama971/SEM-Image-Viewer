@@ -36,7 +36,16 @@ void LoggerWidget::createButtons()
     allShowButton = new QPushButton("All", this);
 
     allShowButton->setStyleSheet(
-        buttonsStyle);
+        "QPushButton {"
+        "border: none;"
+        "font-family: 'Roboto';"
+        "padding:5px;"
+        "padding-right: 20px;"
+        "font:  12px;"
+        "text-align: center;"
+         "color: black;"
+        "background-color: lightgray;"
+        "}");
 
     infoShowButton = new QPushButton("Info", this);
     infoShowButton->setObjectName("info");
@@ -59,7 +68,7 @@ void LoggerWidget::createButtons()
     //  Search line edit for filtering logs by text
     QWidget *searchWidget = new QWidget(this);
     QHBoxLayout *searchContainerLayout = new QHBoxLayout(searchWidget);
-    searchContainerLayout->setContentsMargins(5, 5, 5, 5); // Padding inside the border
+    searchContainerLayout->setContentsMargins(2, 2, 2, 2); // Padding inside the border
     searchContainerLayout->setSpacing(0);
     layout = new QHBoxLayout(searchWidget);
     searchLineEdit = new QLineEdit(this);
@@ -72,7 +81,7 @@ void LoggerWidget::createButtons()
     searchLineEdit->setStyleSheet(""
                                   "QLineEdit {"
                                   "    border: none;"
-                                  "    padding: 5px;"
+                                  "    padding: 2px;"
                                   "}");
     QPushButton *searchIcon = new QPushButton(this);
     searchIcon->setObjectName("searchButton2");
@@ -82,8 +91,8 @@ void LoggerWidget::createButtons()
     searchWidget->setStyleSheet(
         "QWidget {"
         "    border: 2px solid #aaaaaa;"
-        "    border-radius: 10px;"
-        "    padding: 5px;"
+        "    border-radius: 8px;"
+        "    padding: 2px;"
         "}"
         "QWidget:focus-within {"
         "    border: 2px solid #0078d7;"
@@ -186,19 +195,67 @@ void LoggerWidget::filterLogs()
     QString selectedType = "";
     QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
 
+    infoShowButton->setStyleSheet("QPushButton {"
+                                  "border: none;"
+                                  "font-family: 'Roboto';"
+                                  "padding:5px;"
+                                  "padding-right: 20px;"
+                                  "font:  12px;"
+                                  "text-align: center;"
+                                  "}");
+    warningsShowButton->setStyleSheet("QPushButton {"
+                                      "border: none;"
+                                      "font-family: 'Roboto';"
+                                      "padding:5px;"
+                                      "padding-right: 20px;"
+                                      "font:  12px;"
+                                      "text-align: center;"
+                                      "}");
+    errorsShowButton->setStyleSheet("QPushButton {"
+                                    "border: none;"
+                                    "font-family: 'Roboto';"
+                                    "padding:5px;"
+                                    "padding-right: 20px;"
+                                    "font:  12px;"
+                                    "text-align: center;"
+                                    "}");
+    allShowButton->setStyleSheet("QPushButton {"
+                                 "border: none;"
+                                 "font-family: 'Roboto';"
+                                 "padding:5px;"
+                                 "padding-right: 20px;"
+                                 "font:  12px;"
+                                 "text-align: center;"
+                                 "}");
+
+
     if (clickedButton == infoShowButton)
     {
         selectedType = "Info";
+
     }
     else if (clickedButton == warningsShowButton)
     {
         selectedType = "Warning";
+
     }
     else if (clickedButton == errorsShowButton)
     {
         selectedType = "Error";
+
     }
 
+    clickedButton->setStyleSheet(
+        "QPushButton {"
+        "border: none;"
+        "font-family: 'Roboto';"
+        "padding: 5px;"
+        "padding-right: 20px;"
+        "font: 12px;"
+        "text-align: center;"
+        "background-color: lightgray;"
+        "color: black;"  // Set text color to black
+        "}");
     logListLayout->clear();
     emit showSelectedType(selectedType ,filterText);
 }
@@ -227,6 +284,7 @@ void LoggerWidget::addLogCard(LogCard *card)
     item->setSizeHint(QSize(card->sizeHint().width(), card->sizeHint().height()));
     logListLayout->addItem(item);
     logListLayout->setItemWidget(item, card);
+    logListLayout->scrollToItem(item);
 
 }
 
