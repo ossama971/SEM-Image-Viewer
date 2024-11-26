@@ -19,6 +19,7 @@ GrayScaleWidget::GrayScaleWidget(QWidget *parent)
         "}"
         );
     //Add label and Button to layout
+    layout->setContentsMargins(0,0,0,0);
     layout->addWidget(label);
     layout->addWidget(applyButton);
     layout->addStretch();

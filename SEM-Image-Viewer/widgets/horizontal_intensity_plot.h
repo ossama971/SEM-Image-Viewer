@@ -3,14 +3,16 @@
 
 #include <QWidget>
 #include <QLabel>
-
+#include <QToolButton>
 class horizontal_intensity_plot: public QWidget
 {
     Q_OBJECT
 public:
     explicit horizontal_intensity_plot(QWidget *parent=nullptr);
 private:
-    QLabel *label;
+    QLabel *label = nullptr;
+    QToolButton *applyButton = nullptr;
+    void toggleStyleSheet();
 
 
 };

@@ -48,29 +48,32 @@ void ImageWidgetCore::showEvent(QShowEvent *event) {
   QWidget::showEvent(event);
   scene->installEventFilter(this);
 }
-
 void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     if (currentImage.empty()) {
         return;
     }
+
     Mat image = currentImage;
     if (currentImage.type() != CV_8UC1) {
         cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     }
 
-    // Extract the intensity values along the specified row (horizontal line)
+    // Extract intensity values along the specified row
     std::vector<int> intensities;
     for (int x = xStart; x <= xEnd; ++x) {
         intensities.push_back(image.at<uchar>(y, x));
     }
 
+    // Determine the min and max intensity values
+    auto [minIntensity, maxIntensity] = std::minmax_element(intensities.begin(), intensities.end());
+
     // Create a QtCharts series for plotting the intensity values
     QLineSeries *series = new QLineSeries();
     for (int x = 0; x < intensities.size(); ++x) {
-        series->append(x, intensities[x]);
+        series->append(xStart + x, intensities[x]); // Match the X-axis to the actual image positions
     }
 
-    // Clear any previous plot items in the scene
+    // Clear previous plot items in the scene
     QList<QGraphicsItem *> items = scene->items();
     for (auto *item : items) {
         if (dynamic_cast<QChartView *>(item)) {
@@ -79,27 +82,23 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
         }
     }
 
-    // Calculate axis proportions
-    int xRange = xEnd - xStart + 1;
-    int yRange = 255; // Intensity values are fixed between 0 and 255
-    double aspectRatio = static_cast<double>(xRange) / yRange;
-
-    // Create a chart and configure it
+    // Create and configure the chart
     QChart *chart = new QChart();
     chart->addSeries(series);
     chart->legend()->hide();
     chart->setBackgroundVisible(false);
-    chart->setBackgroundBrush(Qt::NoBrush); // Transparent background
+    chart->setBackgroundBrush(Qt::NoBrush);
     chart->setPlotAreaBackgroundVisible(false);
 
     // Customize axes
     QValueAxis *axisX = new QValueAxis();
-    axisX->setRange(0, xRange - 1);
+    axisX->setRange(xStart, xEnd); // Exact X range
     axisX->setLabelsVisible(false);
     axisX->setGridLineVisible(false);
     axisX->setVisible(false);
+
     QValueAxis *axisY = new QValueAxis();
-    axisY->setRange(0, 255);
+    axisY->setRange(*minIntensity, 255); // Dynamic Y range
     axisY->setLabelsVisible(false);
     axisY->setGridLineVisible(false);
     axisY->setVisible(false);
@@ -113,13 +112,13 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     series->attachAxis(axisY);
 
     // Create a ChartView and embed it in the scene
-    chartView = new QChartView(chart);
+    QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setAttribute(Qt::WA_TranslucentBackground); // Transparent background
+    chartView->setAttribute(Qt::WA_TranslucentBackground);
     chartView->setStyleSheet("background: transparent;");
 
     // Create a proxy widget to embed the chart view into the scene
-    proxyWidget = new QGraphicsProxyWidget();
+    QGraphicsProxyWidget *proxyWidget = new QGraphicsProxyWidget();
     proxyWidget->setWidget(chartView);
 
     // Get the pixmap item's position in the scene
@@ -127,38 +126,40 @@ void ImageWidgetCore::drawIntensityPlot(int y, int xStart, int xEnd) {
     if (!pixmapItem) {
         return; // No pixmap item found
     }
-    QPointF pixmapPos = pixmapItem->pos(); // Top-left corner of the image in the scene
 
-    // Calculate chart position and size
-    QRectF viewRect = graphicsView->sceneRect();
-    double chartHeight = viewRect.height() / 4.0; // Proportional height
-    double chartWidth = chartHeight * aspectRatio; // Scale width based on aspect ratio
+    // Align the chart in the scene
+    QPointF pixmapPos = pixmapItem->sceneBoundingRect().topLeft();
+    QRectF pixmapRect = pixmapItem->sceneBoundingRect();
 
-    double chartX = pixmapPos.x() + xStart;      // Align with xStart on the image
-    double chartY = pixmapPos.y() + y - chartHeight; // Position above the specified y-line
+    // Calculate the chart position and size
+    double pixelToSceneRatio = pixmapRect.width() / currentImage.cols; // Scale factor
+    double chartWidth = (xEnd - xStart + 1) * pixelToSceneRatio; // Match the pixel range
+    double chartHeight = pixmapRect.height() / 4.0;             // Proportional height
 
-    // Set proxy widget geometry to align chart within the scene
-    // Create a QRectF for the chart's geometry
+    double chartX = pixmapPos.x() + (xStart * pixelToSceneRatio); // Align with xStart
+    double chartY = pixmapPos.y() + (y * pixelToSceneRatio) - chartHeight; // Position above the row
+
     QRectF chartRect(chartX, chartY, chartWidth, chartHeight);
-
-    // Set the geometry using the QRectF
     proxyWidget->setGeometry(chartRect);
 
-
     // Add the proxy widget to the scene
-    scene->addItem(proxyWidget);
-    // Set custom cursor for the plot
+    if (!scene->items().contains(proxyWidget)) {
+        scene->addItem(proxyWidget);
+    }
+
+    // Set a custom cursor for the plot
     QPixmap cursorPixmap(":/icons/pen-icon.svg");
-    QSize cursorSize(20, 20); // Adjust size as needed
+    QSize cursorSize(20, 20);
     QPixmap scaledCursor = cursorPixmap.scaled(cursorSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     chartView->setCursor(QCursor(scaledCursor));
-
 }
+
 
 
 
 bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
     if (obj == scene) {
+
         intensityPlotMode = (Workspace::Instance()->getActiveSession().horizontalIntensityPlotMode);
 
         if (intensityPlotMode) {
@@ -234,28 +235,34 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
                     lineEnd = mouseEvent->scenePos();
                     qDebug() << "Mouse Release at:" << lineEnd;
 
-                    // Set the final line position
+                    // Adjust xStart and xEnd based on the scene's transformations
+                    QGraphicsPixmapItem *pixmapItem = dynamic_cast<QGraphicsPixmapItem *>(scene->items().last());
+                    if (pixmapItem) {
+                        QPointF pixmapPos = pixmapItem->sceneBoundingRect().topLeft();
 
-                    intensityLine->setLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineStart.y());
+                        // Compute xStart and xEnd relative to the pixmap position
+                        qreal xStart = lineStart.x() - pixmapPos.x();
+                        qreal xEnd = lineEnd.x() - pixmapPos.x();
 
-                    // Trigger intensity plot drawing
-                    qreal xStart = lineStart.x();
-                    qreal xEnd = lineEnd.x();
-                    if (xStart > xEnd) {
-                        std::swap(xStart, xEnd);
+                        // Ensure xStart is less than xEnd
+                        if (xStart > xEnd) {
+                            std::swap(xStart, xEnd);
+                        }
+
+                        // Finalize the intensity line in the scene
+                        intensityLine->setLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineStart.y());
+
+                        // Trigger the intensity plot drawing relative to the pixmap position
+                        drawIntensityPlot(static_cast<int>(lineStart.y() - pixmapPos.y()),
+                                          static_cast<int>(xStart),
+                                          static_cast<int>(xEnd));
                     }
-                    drawIntensityPlot(static_cast<int>(lineStart.y()),
-                                      static_cast<int>(xStart),
-                                      static_cast<int>(xEnd));
 
-                    // Optional: Clear the temporary line if not needed after plotting
-                    // delete intensityLine;
-                    // intensityLine = nullptr;
+                    // Reset cursor and exit intensity plot mode
                     graphicsView->unsetCursor();
                     customCursorSet = false;
-                    isPlotting= false;
+                    isPlotting = false;
                     Workspace::Instance()->getActiveSession().toggleHorizontalPlotMode();
-
 
                     return true;
                 }
@@ -269,16 +276,45 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
 
         }
 
+        if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
+            QGraphicsSceneMouseEvent *mouseEvent =
+                static_cast<QGraphicsSceneMouseEvent *>(event);
 
-    if (obj == scene && event->type() == QEvent::GraphicsSceneMouseMove) {
-      QGraphicsSceneMouseEvent *mouseEvent =
-          static_cast<QGraphicsSceneMouseEvent *>(event);
-      QPointF scenePos = mouseEvent->scenePos();
+            if (mouseEvent) {
+                // Get the scene position of the mouse
+                QPointF scenePos = mouseEvent->scenePos();
 
-      infoBar->setMousePosition(static_cast<int>(scenePos.x()),
-                                static_cast<int>(scenePos.y()));
+                // Try to find the last pixmap item in the scene
+                QGraphicsPixmapItem *pixmapItem = nullptr;
+                for (QGraphicsItem *item : scene->items()) {
+                    pixmapItem = dynamic_cast<QGraphicsPixmapItem *>(item);
+                    if (pixmapItem) break; // Found a pixmap item, break the loop
+                }
 
-    }
+                if (pixmapItem) {
+                    // Get the top-left corner of the pixmap in scene coordinates
+                    QRectF pixmapRect = pixmapItem->sceneBoundingRect();
+                    QPointF pixmapPos = pixmapRect.topLeft();
+
+                    // Calculate the relative position of the mouse to the pixmap
+                    double relativeX = scenePos.x() - pixmapPos.x();
+                    double relativeY = scenePos.y() - pixmapPos.y();
+
+                    // Invert Y-axis: 0 at bottom, height at top
+                    double invertedY = pixmapRect.height() - relativeY;
+
+                    // Update the info bar with the relative position
+                    infoBar->setMousePosition(static_cast<int>(relativeX),
+                                              static_cast<int>(invertedY));
+                } else {
+                    // No pixmap found: Use the scene position as fallback
+                    infoBar->setMousePosition(static_cast<int>(scenePos.x()),
+                                              static_cast<int>(scenePos.y()));
+                }
+            }
+        }
+
+
   }
   return QWidget::eventFilter(obj, event);
 }

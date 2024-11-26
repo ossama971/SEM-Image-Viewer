@@ -28,16 +28,18 @@ border: 1px solid #CCCCCC;
 
 /* Tool buttons in the toolbar */
 QToolButton {
-background-color: #F1F1F1;
+background-color: transparent;
 color: #333333;
 border: none;
 font-family: 'Roboto';
 }
 QToolButton:hover {
 background-color: #DDDDDD;
+border-radius: 4px;
 }
 QToolButton:checked {
 background-color: #CCCCCC;
+border-radius: 4px;
 }
 /* Styling for QSplitter */
 QSplitter {
@@ -118,6 +120,11 @@ border-radius: 4px;
 }
 QPushButton:pressed {
 background-color: #CCCCCC;
+}
+
+QPushButton:toolTip {
+background-color: transparent;
+color: #333333;
 }
 
 
@@ -234,6 +241,7 @@ QPushButton#undoButton {
 }
 QPushButton#copyBtn {
     qproperty-icon: url(:/icons/copy-icon-light.svg);
+     qproperty-iconSize: 16px 16px;
 }
 QPushButton#pathBtn {
     qproperty-icon: url(:/icons/link-external-light-mode.svg);
@@ -269,6 +277,16 @@ QToolButton#view{
     qproperty-icon: url(:/icons/image-icon-light.svg);
      qproperty-iconSize: 17px 17px;
 }
+
+QToolButton#up{
+    qproperty-icon: url(:/icons/none-filled-arrow-up-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
+
+QToolButton#down{
+    qproperty-icon: url(:/icons/none-filled-arrow-down-light.svg);
+     qproperty-iconSize: 17px 17px;
+}
 QPushButton#zoom-in {
                qproperty-icon: url(:/icons/zoom-in.svg);
            }
@@ -300,7 +318,10 @@ QToolButton#arrowup{
     qproperty-icon: url(:/icons/mini-grid-light.svg);
     qproperty-iconSize: 18px 18px;
 }
-
+QToolButton#pen {
+    qproperty-icon: url(:/icons/pen-icon.svg);
+    qproperty-iconSize: 16px 16px;
+}
 QToolButton#closelog{
     qproperty-icon: url(:/icons/close-logger-light.svg);
     qproperty-iconSize: 18px 18px;
