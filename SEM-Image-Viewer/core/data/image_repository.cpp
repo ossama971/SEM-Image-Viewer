@@ -11,7 +11,7 @@
 #include "image_cacheless.h"
 #endif
 
-ImageRepository::ImageRepository() : _selectedImage(nullptr)
+ImageRepository::ImageRepository() : _selectedImage(nullptr), _imge_repo_version(0)
 #ifdef IMAGE_CACHE
     ,_cachePool(IMAGE_CACHE_SIZE)
 #endif
@@ -279,8 +279,8 @@ void ImageRepository::accept(Visitor &v) const {
   v.visit(*this);
 }
 
-void ImageRepository::setUnsavedChanges() {
-    _hasUnsavedChanges = true; // Set to true when any image state changes
+void ImageRepository::setUnsavedChanges(bool hasUnsavedChanges) {
+    _hasUnsavedChanges = hasUnsavedChanges;
 }
 
 bool ImageRepository::getHasUnsavedChanges(){

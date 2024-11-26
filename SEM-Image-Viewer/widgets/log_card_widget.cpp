@@ -35,7 +35,6 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
     headerLabel = new QLabel(displayText, this);
     headerLabel->setToolTip(fullText);
     if(colorFlag ){
-        printf("GRR");
         headerLabel->setStyleSheet(R"(
         font-weight: semi-bold;
         font-size: 12px;
