@@ -27,6 +27,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    // bool saveSession(MainWindow *parent)
     ~MainWindow();
 public slots:
     void onShowLeftSidebarClicked(bool isChecked);
