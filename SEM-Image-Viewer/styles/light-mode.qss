@@ -25,7 +25,14 @@ QToolBar {
 background-color: #F1F1F1;
 border: 1px solid #CCCCCC;
 }
-
+QToolTip {
+    background-color: #FFFFFF;
+    color: #333333;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+    font-family: 'Roboto';
+}
 /* Tool buttons in the toolbar */
 QToolButton {
 background-color: transparent;

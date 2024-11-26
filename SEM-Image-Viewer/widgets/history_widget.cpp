@@ -39,6 +39,8 @@ HistoryWidget::HistoryWidget(QWidget *parent)
     // Create Redo button with icon
     redoButton = new QPushButton(this);
     redoButton->setObjectName("redoButton");
+    undoButton->setToolTip("Undo");
+    redoButton->setToolTip("Redo");
     redoButton->setStyleSheet(
         "QPushButton { "
         "   padding: 2px;"

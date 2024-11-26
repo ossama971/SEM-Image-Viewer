@@ -14,6 +14,7 @@ SharpenWidget::SharpenWidget(QWidget *parent)
     label->setStyleSheet("QLabel {background-color:transparent}");
     QPushButton *applyButton = new QPushButton(this);
     applyButton->setObjectName("applyButton");
+    applyButton->setToolTip("Apply");
     applyButton->setStyleSheet(
         "QPushButton { "
         "padding:2px"

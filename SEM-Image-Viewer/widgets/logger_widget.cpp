@@ -59,7 +59,7 @@ void LoggerWidget::createButtons()
     //  Search line edit for filtering logs by text
     QWidget *searchWidget = new QWidget(this);
     QHBoxLayout *searchContainerLayout = new QHBoxLayout(searchWidget);
-    searchContainerLayout->setContentsMargins(5, 5, 5, 5); // Padding inside the border
+    searchContainerLayout->setContentsMargins(2, 2, 2, 2); // Padding inside the border
     searchContainerLayout->setSpacing(0);
     layout = new QHBoxLayout(searchWidget);
     searchLineEdit = new QLineEdit(this);
@@ -72,7 +72,7 @@ void LoggerWidget::createButtons()
     searchLineEdit->setStyleSheet(""
                                   "QLineEdit {"
                                   "    border: none;"
-                                  "    padding: 5px;"
+                                  "    padding: 2px;"
                                   "}");
     QPushButton *searchIcon = new QPushButton(this);
     searchIcon->setObjectName("searchButton2");
@@ -82,8 +82,8 @@ void LoggerWidget::createButtons()
     searchWidget->setStyleSheet(
         "QWidget {"
         "    border: 2px solid #aaaaaa;"
-        "    border-radius: 10px;"
-        "    padding: 5px;"
+        "    border-radius: 8px;"
+        "    padding: 2px;"
         "}"
         "QWidget:focus-within {"
         "    border: 2px solid #0078d7;"
