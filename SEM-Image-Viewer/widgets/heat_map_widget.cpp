@@ -9,21 +9,19 @@ HeatMapWidget::HeatMapWidget(QWidget *parent)
     // QLabel *label = new QLabel(this);
     // label->setText("Edge Extraction");
     // label->setStyleSheet("QLabel {background-color:transparent}");
-    heatmapButton = new QToolButton(this);
-    heatmapButton->setText("Heat Map");
+    heatmapButton = new QCheckBox("Heat Map",this);
     heatmapButton->setCheckable(true);
 
-    auto buttonStyle =  "QToolButton {  border: none; }"
-                        "QToolButton:checked { padding: 0px 3px 0px 3px;}"
-                        "QToolButton:hover { padding: 0px 3px 0px 3px;}";
-    heatmapButton->setStyleSheet(buttonStyle);
+    // auto buttonStyle =  "QToolButton {  border: none; }"
+    //                     "QToolButton:checked { padding: 0px 3px 0px 3px;}"
+    //                     "QToolButton:hover { padding: 0px 3px 0px 3px;}";
+    //heatmapButton->setStyleSheet(buttonStyle);
 
     layout->setContentsMargins(0,10,0,10);
     layout->addWidget(heatmapButton);
-    layout->setAlignment(Qt::AlignLeft);
     setLayout(layout);
 
-    connect(heatmapButton,&QToolButton::toggled,this,&HeatMapWidget::handleApplyHeatMap);
+    connect(heatmapButton,&QCheckBox::toggled,this,&HeatMapWidget::handleApplyHeatMap);
     connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this,&HeatMapWidget::resetToggle);
 }
 void HeatMapWidget::handleApplyHeatMap(bool checked)
