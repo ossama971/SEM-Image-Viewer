@@ -31,10 +31,10 @@ signals:
     void showSelectedType(const QString &type, const QString &_searchText);
 
 private:
-    QPushButton *allShowButton = nullptr;
-    QPushButton *infoShowButton = nullptr;
-    QPushButton *errorsShowButton = nullptr;
-    QPushButton *warningsShowButton = nullptr;
+    QToolButton *allShowButton = nullptr;
+    QToolButton *infoShowButton = nullptr;
+    QToolButton *errorsShowButton = nullptr;
+    QToolButton *warningsShowButton = nullptr;
     QPushButton *switchLayoutButtonFull = nullptr;
     QPushButton *switchLayoutButtonCompact = nullptr;
 

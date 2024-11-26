@@ -13,8 +13,9 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
     // Create a container widget
     QWidget *containerWidget = new QWidget(this);
     if(colorFlag){
-        containerWidget->setStyleSheet("background-color: #dee2e6; ");
+        containerWidget->setObjectName("log");
     }
+    containerWidget->setAttribute(Qt::WA_StyledBackground, true);
     // Main vertical layout for the container
 
 
@@ -39,7 +40,6 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
         font-weight: semi-bold;
         font-size: 12px;
         background: transparent;
-        color: black;
         )");
     }
     else{
@@ -56,6 +56,7 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
     if(path!=""){
         pathBtn= new QPushButton(this);
         pathBtn->setObjectName("pathBtn");
+        pathBtn->setToolTip("Open in File Browser");
         headerLayout->addWidget(pathBtn);
         connect(pathBtn, &QPushButton::clicked, this, &LogCard::onClickOnPath);
     }
@@ -71,6 +72,7 @@ LogCard::LogCard(const QString &typeOfMessage,const QString &headerText, bool pr
     // Copy button
     copyBtn = new QPushButton(this);
     copyBtn->setObjectName("copyBtn");
+    copyBtn->setToolTip("Copy Message");
     headerLayout->addWidget(copyBtn);
 
 
