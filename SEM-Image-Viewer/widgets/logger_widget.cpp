@@ -278,6 +278,19 @@ void LoggerWidget::filterLogs()
             "color: black;"  // Set text color to black
             "}");
     }
+    else if(clickedButton == allShowButton){
+        clickedButton->setStyleSheet(
+            "QPushButton {"
+            "border: none;"
+            "font-family: 'Roboto';"
+            "padding: 5px;"
+            "padding-right: 20px;"
+            "font: 12px;"
+            "text-align: center;"
+            "background-color: lightgray;"
+            "color: black;"  // Set text color to black
+            "}");
+    }
 
 
     logListLayout->clear();
