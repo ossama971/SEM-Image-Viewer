@@ -46,6 +46,7 @@ public:
         no_difference,
         operation_in_progress,
         insufficient_permissions,
+        exporting_error,
     };
 
     static QMap<MessageID, QString> LoggerMap;

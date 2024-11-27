@@ -134,11 +134,25 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
   post(ThreadPool::instance(),
        std::packaged_task<void()>(
            [matImg, saveFileName]() {
-             cv::imwrite(saveFileName, matImg);
+            std::filesystem::path parentPath = std::filesystem::path(saveFileName).parent_path();
+            if (!Utils::checkWritePermission(parentPath)) {
+              Logger::instance()->logMessage(
+                  Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+                  Logger::MessageOption::with_path,
+                  {QString::fromStdString(parentPath.string())});
+              return;
+            }
+             if(cv::imwrite(saveFileName, matImg)) {
                Logger::instance()->logMessage(
                   Logger::MessageTypes::info, Logger::MessageID::exporting_images,
-                  Logger::MessageOption::with_path, { "saveFileName" },
+                  Logger::MessageOption::with_path, { QString::fromStdString(saveFileName) },
                   QString("file:///%1").arg(QString::fromStdString(saveFileName)));
+               } else {
+               Logger::instance()->logMessage(
+                   Logger::MessageTypes::error, Logger::MessageID::exporting_error,
+                   Logger::MessageOption::with_path,
+                   {QString::fromStdString(saveFileName)});
+               }
            }));
 }
 
@@ -147,6 +161,14 @@ void MenuBarWidget::exportImages(const QString &format) {
       this, tr("Select Directory to Save Images"));
 
   if (directoryPath.isEmpty()) {
+    return;
+  }
+
+  if(!Utils::checkWritePermission(std::filesystem::path(directoryPath.toStdString()))) {
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+        Logger::MessageOption::with_path,
+        {directoryPath});
     return;
   }
 

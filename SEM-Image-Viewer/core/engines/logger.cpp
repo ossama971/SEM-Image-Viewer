@@ -31,6 +31,7 @@ Logger *Logger::instance()
     LoggerMap[MessageID::no_difference] = "No difference between two images";
     LoggerMap[MessageID::operation_in_progress] = "Can't load images while having batch operation in progress";
     LoggerMap[MessageID::insufficient_permissions] = "Insufficient permissions to write to the directory %1";
+    LoggerMap[MessageID::exporting_error] = "Error in exporting images to %1";
 
     std::atexit(destroyInstance);
   }
