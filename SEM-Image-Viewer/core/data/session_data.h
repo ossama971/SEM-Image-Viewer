@@ -38,7 +38,8 @@ signals:
     void popActionList();
 
     void onBatchFilterStarted(int maxIterations);
-    void onBatchFilterFinished();
+    void onBatchFilterFinished();    
+
 
 private slots:
     void onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource);

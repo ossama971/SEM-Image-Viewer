@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <vector>
+#include <future>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 
@@ -38,6 +39,7 @@ public:
     const std::string getFolderPath() const;
 
     void accept(Visitor &v) const override;
+    void setHasUnsavedChanges(bool hasUnsavedChanges);
     bool getHasUnsavedChanges();
 
     // Costly operations, should only be used for 
@@ -56,8 +58,11 @@ public slots:
     void setUnsavedChanges(Image* image);
 
 private slots:
-    void onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat);
-    void onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat);
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
+    void onCacheImageRemoved(const std::string &path, cv::Mat *image);
+
+public:
+    std::atomic_int _current_operations = 0;
 
 private:
     std::string _folderPath;

@@ -6,7 +6,7 @@
 #include <QCheckBox>
 #include <QItemSelectionModel>
 
-#include "../models/image_data_model.h"
+class Image;
 
 class GridView : public QWidget {
     Q_OBJECT
@@ -16,7 +16,7 @@ signals:
     void openDiffView();
 
 public:
-    explicit GridView(QWidget *parent = nullptr);
+    explicit GridView(QWidget *parent = nullptr, class ImageDataModel *dataModel = nullptr);
     std::vector<int> getSelectedImages();
 
 private slots:
@@ -26,12 +26,16 @@ private slots:
     void onImageChanged(Image* newImage);
     void onScroll(int value);
     void openInDiffView();
+    void preImageStateUpdate();
+    void postImageStateUpdate();
 
 private:
     QListView *listView = nullptr;
     ImageDataModel *imageDataModel = nullptr;
     Image* firstImage = nullptr;
     Image* secondImage = nullptr;
+    QModelIndex _selectedIndex;
+
     void setModel(ImageDataModel *model);
     void loadImages(const QString &path);
     void initializeGrid();

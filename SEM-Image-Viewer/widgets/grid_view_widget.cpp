@@ -1,5 +1,6 @@
 #include "grid_view_widget.h"
 #include "../core/engines/workspace.h"
+#include "../models/image_data_model.h"
 #include "thumbnail_delegate.h"
 
 #include <QVBoxLayout>
@@ -7,7 +8,7 @@
 #include <QCheckBox>
 #include <QScrollBar>
 
-GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageDataModel(this)) {
+GridView::GridView(QWidget *parent, ImageDataModel *dataModel) : QWidget(parent), imageDataModel(dataModel) {
     listView = new QListView(this);
     listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -40,6 +41,9 @@ GridView::GridView(QWidget *parent) : QWidget(parent), imageDataModel(new ImageD
 
     // Connect the scrollbar to load more images when necessary
     connect(listView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GridView::onScroll);
+
+    connect(imageDataModel, &ImageDataModel::preImageStateUpdate, this, &GridView::preImageStateUpdate);
+    connect(imageDataModel, &ImageDataModel::postImageStateUpdate, this, &GridView::postImageStateUpdate);
 }
 
 std::vector<int> GridView::getSelectedImages() {
@@ -117,6 +121,22 @@ void GridView::showContextMenu(const QPoint &pos) {
 void GridView::openInDiffView() {
     emit openDiffView();
     emit openDiffViewRequested(firstImage, secondImage);
+}
+
+void GridView::preImageStateUpdate() {
+    QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() != 1)
+        _selectedIndex = QModelIndex();
+    else
+        _selectedIndex = selectedIndexes[0];
+}
+
+void GridView::postImageStateUpdate() {
+    if (_selectedIndex.row() != -1)
+    {
+        QItemSelection selection(_selectedIndex, _selectedIndex);
+        listView->selectionModel()->select(selection, QItemSelectionModel::Select);
+    }
 }
 
 void GridView::toggleSelectAll(QCheckBox *checkbox, bool checked) {

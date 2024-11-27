@@ -82,9 +82,13 @@ bool Image::save(const std::string &path, ImageState *state) {
     if (imagePtr)
         return save(path, state, *imagePtr);
 
-    cv::Mat image;
-    if (std::filesystem::exists(state->ImagePath))
-        image = cv::imread(state->ImagePath);
+    if (!std::filesystem::exists(state->ImagePath))
+        return false;
+
+    cv::Mat image = cv::imread(state->ImagePath);
+    if (image.empty())
+        return false;
+
     return save(path, state, image);
 }
 
@@ -156,12 +160,12 @@ void Image::accept(Visitor &v) const {
     v.visit(*this);
 }
 
-void Image::onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat) {
-    if (!imageMat || _states.empty())
+void Image::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
+    if (!image || _states.empty())
         return;
 
     if (!_metadata.isLoaded() && !_states[0]->ImagePath.compare(path))
-        _metadata.load(path, *imageMat);
+        _metadata.load(path, *image);
 
     if (_states.back()->ImagePath.compare(path))
         return;
@@ -184,11 +188,11 @@ ImageCachePool::ImageCacheQuery Image::getImageMat(bool autoLoad) const {
     const std::string& path = _states.back()->ImagePath;
     ImageCachePool::ImageCacheQuery image = _cachePool->get(path, autoLoad);
 
-    if (image.Image && image.ImageMat)
+    if (image.ImageMat)
         return image;
 
     return autoLoad ? _cachePool->getImageLoadingTemplate()
-                    : ImageCachePool::ImageCacheQuery { nullptr, nullptr };
+                    : ImageCachePool::ImageCacheQuery { nullptr };
 }
 
 std::filesystem::path Image::getPath(const ImageStateSource newState) const {
@@ -208,10 +212,6 @@ bool Image::isLoaded() const {
 
 const cv::Mat& Image::getImageMat() const {
     return *getImageMat(true).ImageMat;
-}
-
-const QImage& Image::getQImage() const {
-    return *getImageMat(true).Image;
 }
 
 cv::Mat Image::readImageMat() const {

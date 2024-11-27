@@ -13,6 +13,17 @@ void ImageMetadata::load(const std::string &path, const cv::Mat &image) {
     _dateModified = std::filesystem::last_write_time(path);
 }
 
+void ImageMetadata::load(const std::string &path, const QImage &image) {
+    if (_loaded)
+        return;
+
+    _loaded = true;
+    _width = image.width();
+    _height = image.height();
+    _format = getImageFormat(path);
+    _dateModified = std::filesystem::last_write_time(path);
+}
+
 const ImageFormat ImageMetadata::getImageFormat(const std::string &path) {
   std::string::size_type i = path.find_last_of(".");
   if (i == std::string::npos || i + 1 >= path.length())

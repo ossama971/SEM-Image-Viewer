@@ -127,13 +127,19 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
     saveFilePath += "." + format;
   }
 
-  const cv::Mat matImg = image->getImageMat();
+  const cv::Mat& matImg = image->getImageMat();
 
   // Save the image using OpenCV
   const std::string saveFileName = saveFilePath.toStdString();
   post(ThreadPool::instance(),
        std::packaged_task<void()>(
-           [matImg, saveFileName]() { cv::imwrite(saveFileName, matImg); }));
+           [matImg, saveFileName]() {
+             cv::imwrite(saveFileName, matImg);
+               Logger::instance()->logMessage(
+                  Logger::MessageTypes::info, Logger::MessageID::exporting_images,
+                  Logger::MessageOption::with_path, { "saveFileName" },
+                  QString("file:///%1").arg(QString::fromStdString(saveFileName)));
+           }));
 }
 
 void MenuBarWidget::exportImages(const QString &format) {
@@ -291,8 +297,15 @@ void MenuBarWidget::saveSession() {
     return;
   }
 
+  if (!Utils::checkWritePermission(sessionFolderPath)) {
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+        Logger::MessageOption::with_path,
+        {QString::fromStdString(sessionFolderPath.string())});
+    return;
+  }
+
   try {
-    // Log the save action
     int progressbarID = Logger::instance()->logMessageWithProgressBar(
         Logger::MessageTypes::info, Logger::MessageID::saving_session,
         Logger::MessageOption::with_path,
@@ -304,14 +317,10 @@ void MenuBarWidget::saveSession() {
 
     post(ThreadPool::instance(),
         [sessionFolderPath, jsonFilePath, progressbarID]() {
-           JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID);
+           JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID, nullptr);
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
          });
-        // Logger::instance()->logMessage(
-        //             Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
-        //             Logger::MessageOption::without_path,
-        //             {});
   } catch (const std::exception &e) {
     Logger::instance()->logMessage(
         Logger::MessageTypes::error, Logger::MessageID::error_in_save,

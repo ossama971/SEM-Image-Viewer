@@ -21,6 +21,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class ImageDataModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -46,6 +48,7 @@ protected:
 private:
     Ui::MainWindow *ui = nullptr;
     ImageWidget *imageWidget = nullptr;
+    ImageDataModel *gridDataModel = nullptr;
     LeftSidebarWidget *leftSidebarWidget = nullptr;
     RightSidebarWidget *rightSidebarWidget = nullptr;
     TopMiddleWidget *topMiddleWidget = nullptr;
@@ -55,6 +58,8 @@ private:
     MenuBarWidget *menuBarWidget = nullptr;
     MiniGrid *miniGrid = nullptr;
     ToolbarWidget *toolbarWidget = nullptr;
+
+    QProgressBar *progressBar = nullptr;
 };
 
 

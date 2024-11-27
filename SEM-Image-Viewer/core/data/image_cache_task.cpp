@@ -8,8 +8,8 @@ void ImageCacheTask::run() {
     if (!std::filesystem::exists(_path))
         return;
 
-    QImage image;
-    if (!image.load(QString::fromStdString(_path)))
+    cv::Mat image = cv::imread(_path);
+    if (image.empty())
         return;
 
     emit imageLoaded(_path, std::move(image));

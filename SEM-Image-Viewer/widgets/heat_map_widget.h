@@ -2,7 +2,7 @@
 #define HEAT_MAP_WIDGET_H
 #include "../core/utils.h"
 #include <QWidget>
-#include <QToolButton>
+#include <QCheckBox>
 
 class HeatMapWidget : public QWidget
 {
@@ -10,7 +10,7 @@ class HeatMapWidget : public QWidget
 public:
     explicit HeatMapWidget(QWidget *parent = nullptr);
 private:
-    QToolButton *heatmapButton = nullptr;
+    QCheckBox *heatmapButton= nullptr;
 signals:
     void applyHeatMap(const cv::Mat &heatmap,bool checked);
 public slots:

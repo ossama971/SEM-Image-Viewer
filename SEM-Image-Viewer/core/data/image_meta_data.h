@@ -9,10 +9,12 @@
 #include <string>
 #include <filesystem>
 #include <opencv2/opencv.hpp>
+#include <QImage>
 
 class ImageMetadata : public Visitable {
 public:
     void load(const std::string &path, const cv::Mat &image);
+    void load(const std::string &path, const QImage &image);
 
 private:
     const ImageFormat getImageFormat(const std::string &path);

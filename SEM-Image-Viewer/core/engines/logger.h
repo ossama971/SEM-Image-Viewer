@@ -44,6 +44,8 @@ public:
         saved_successfully,
         file_already_exists,
         no_difference,
+        operation_in_progress,
+        insufficient_permissions,
     };
 
     static QMap<MessageID, QString> LoggerMap;

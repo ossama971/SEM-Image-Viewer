@@ -13,7 +13,6 @@
 #include <filesystem>
 #include <QObject>
 #include <opencv2/opencv.hpp>
-#include <QImage>
 
 class Image : public QObject, public Visitable {
     Q_OBJECT
@@ -37,13 +36,11 @@ private:
     bool save(const std::string &path, ImageState *state, const cv::Mat &image);
 
     ImageCachePool::ImageCacheQuery getImageMat(bool autoLoad) const;
-    QImage* getQImage(bool autoLoad) const;
     std::filesystem::path getPath(const ImageStateSource newState) const;
 
 public:
     bool isLoaded() const;
     virtual const cv::Mat& getImageMat() const;
-    virtual const QImage& getQImage() const;
     virtual cv::Mat readImageMat() const;
     ImageStateSource getImageState() const;
     std::filesystem::path getPath() const;
@@ -61,7 +58,7 @@ public:
     bool isChanged() const;
 
 public slots:
-    void onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat);
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
 
 signals:
     void onImageStateUpdated(Image* image);

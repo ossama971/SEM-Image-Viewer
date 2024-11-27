@@ -2,6 +2,7 @@
 #include "core/engines/logger.h"
 #include "core/engines/thread_pool.h"
 #include "core/engines/workspace.h"
+#include "models/image_data_model.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
   QWidget *centralWidget = new QWidget(this);
   setCentralWidget(centralWidget);
 
+  gridDataModel = new ImageDataModel(this);
+
   leftSidebarWidget = new LeftSidebarWidget(this);
   leftSidebarWidget->setMinimumWidth(160);
 
@@ -30,9 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
 
   toolbarWidget = new ToolbarWidget(this);
 
-  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget);
+  topMiddleWidget = new TopMiddleWidget(this, toolbarWidget, gridDataModel);
   bottomMiddleWidget = new BottomMiddleWidget(this);
-  miniGrid = new MiniGrid(this);
+
+  miniGrid = new MiniGrid(this, gridDataModel);
   miniGrid->setMinimumHeight(90);
   miniGrid->setMaximumHeight(120);
 
@@ -217,58 +221,72 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::onCloseAllClicked() { this->close(); }
 
 void MainWindow::onSaveChangesClicked() {
-  // Open a folder browser to select the base directory
-  QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
-  if (baseDirectory.isEmpty()) {
-    return;
-  }
+    QString baseDirectory = QFileDialog::getExistingDirectory(this, "Select Base Directory to Save Session");
+    if (baseDirectory.isEmpty()) {
+        return;
+    }
 
-  // Set default session folder name and JSON file name
-  std::filesystem::path sessionFolderPath =
-      std::filesystem::path(baseDirectory.toStdString());
-  std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
+    std::filesystem::path sessionFolderPath = std::filesystem::path(baseDirectory.toStdString());
+    std::filesystem::path jsonFilePath = sessionFolderPath / "session.json";
 
-  // Check if the session folder already exists
-  if (std::filesystem::exists(jsonFilePath)) {
-    Logger::instance()->logMessage(
-    Logger::MessageTypes::warning, Logger::MessageID::file_already_exists,
-    Logger::MessageOption::with_path,
-    {QString::fromStdString(sessionFolderPath.string())});
-    return;
-  }
+    if (std::filesystem::exists(jsonFilePath)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::warning, Logger::MessageID::file_already_exists,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(sessionFolderPath.string())});
+        return;
+    }
 
-  try {
-    // Log the save action
-    int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::info, Logger::MessageID::saving_session,
-        Logger::MessageOption::with_path,
-        {QString::fromStdString(jsonFilePath.string())},
-        Workspace::Instance()
-            ->getActiveSession()
-            .getImageRepo()
-            .getImagesCount());
+    if (!Utils::checkWritePermission(sessionFolderPath)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(sessionFolderPath.string())});
+        return;
+    }
 
-    // Save the session using a thread pool task
-    auto saveTask =
-        post(ThreadPool::instance(),
-             use_future([sessionFolderPath, jsonFilePath, progressbarID]() {
-               JsonVisitor visitor(sessionFolderPath.string(),
-                                   jsonFilePath.string(), progressbarID);
-               Workspace::Instance()->getActiveSession().accept(visitor);
-               visitor.write_json();
-             }));
-    saveTask.get();
-    Logger::instance()->logMessage(
-                Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
-                Logger::MessageOption::without_path,
-                {});
-    QApplication::quit();
-  } catch (const std::exception &e) {
-    Logger::instance()->logMessage(
-                Logger::MessageTypes::error, Logger::MessageID::error_in_save,
-                Logger::MessageOption::without_path,
-                {});
-  }
+    try {
+        setEnabled(false);
+
+        progressBar = new QProgressBar(this);
+        progressBar->setRange(0, Workspace::Instance()->getActiveSession().getImageRepo().getImagesCount());
+        progressBar->setValue(0);
+        progressBar->setTextVisible(true);
+        progressBar->show();
+
+        // Calculate the center position
+        int windowWidth = this->width();
+        int windowHeight = this->height();
+        int progressBarWidth = 333;
+        int progressBarHeight = 37;
+        
+        int x = (windowWidth - progressBarWidth) / 2;
+        int y = (windowHeight - progressBarHeight) / 2;
+        
+        progressBar->setGeometry(x, y, progressBarWidth, progressBarHeight);
+
+        post(ThreadPool::instance(), [sessionFolderPath, jsonFilePath, this]() {
+            auto saveTask = post(ThreadPool::instance(), use_future([this, sessionFolderPath, jsonFilePath]() {
+                auto progressCallback = [this](int progress) {
+                    QMetaObject::invokeMethod(this, [this, progress]() {
+                        int new_value = progressBar->value() + 1;
+                        progressBar->setValue(new_value);
+                    });
+                };
+                JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), -100, progressCallback);
+                Workspace::Instance()->getActiveSession().accept(visitor);
+                visitor.write_json();
+            }));
+            saveTask.get();
+            Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
+            QMetaObject::invokeMethod(qApp, &QApplication::quit);
+        });
+    } catch (const std::exception &e) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error, Logger::MessageID::error_in_save,
+            Logger::MessageOption::without_path,
+            {});
+    }
 }
 
 void MainWindow::applyTheme() {

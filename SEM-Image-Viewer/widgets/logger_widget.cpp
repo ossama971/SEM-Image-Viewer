@@ -1,6 +1,7 @@
 #include "logger_widget.h"
 #include <QLabel>
 #include <QListWidgetItem>
+#include <QToolButton>
 
 LoggerWidget::LoggerWidget(QWidget *parent)
     : QWidget(parent)
@@ -23,7 +24,7 @@ LoggerWidget::LoggerWidget(QWidget *parent)
 
 void LoggerWidget::createButtons()
 {
-    QString buttonsStyle = "QPushButton {"
+    QString buttonsStyle = "QToolButton {"
                            "border: none;"
                            "font-family: 'Roboto';"
                            "padding:5px;"
@@ -33,32 +34,32 @@ void LoggerWidget::createButtons()
                            "}";
 
     // Buttons for filtering logs by type
-    allShowButton = new QPushButton("All", this);
+    allShowButton = new QToolButton( this);
+    allShowButton->setText("All");
+    allShowButton->setObjectName("all");
 
-    allShowButton->setStyleSheet(
-        "QPushButton {"
-        "border: none;"
-        "font-family: 'Roboto';"
-        "padding:5px;"
-        "padding-right: 20px;"
-        "font:  12px;"
-        "text-align: center;"
-         "color: black;"
-        "background-color: lightgray;"
-        "}");
-
-    infoShowButton = new QPushButton("Info", this);
+    infoShowButton = new QToolButton(this);
     infoShowButton->setObjectName("info");
+    infoShowButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    infoShowButton->setText("Info");
     infoShowButton->setStyleSheet(buttonsStyle);
 
-    errorsShowButton = new QPushButton("Errors", this);
+    errorsShowButton = new QToolButton( this);
     errorsShowButton->setObjectName("error");
+    errorsShowButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    errorsShowButton->setText("Errors");
     errorsShowButton->setStyleSheet(buttonsStyle);
 
-    warningsShowButton = new QPushButton("Warnings", this);
+    warningsShowButton = new QToolButton(this);
     warningsShowButton->setObjectName("warning");
+    warningsShowButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    warningsShowButton->setText("Warnings");
     warningsShowButton->setStyleSheet(buttonsStyle);
-
+    allShowButton->setCheckable(true);
+    allShowButton->setChecked(true);
+    infoShowButton->setCheckable(true);
+    errorsShowButton->setCheckable(true);
+    warningsShowButton->setCheckable(true);
     switchLayoutButtonFull = new QPushButton("   ▼", this);
     switchLayoutButtonFull->setStyleSheet(buttonsStyle);
 
@@ -197,99 +198,38 @@ void LoggerWidget::filterLogs()
 {
     QString filterText = searchLineEdit->text();
     QString selectedType = "";
-    QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
-
-    infoShowButton->setStyleSheet("QPushButton {"
-                                  "border: none;"
-                                  "font-family: 'Roboto';"
-                                  "padding:5px;"
-                                  "padding-right: 20px;"
-                                  "font:  12px;"
-                                  "text-align: center;"
-                                  "}");
-    warningsShowButton->setStyleSheet("QPushButton {"
-                                      "border: none;"
-                                      "font-family: 'Roboto';"
-                                      "padding:5px;"
-                                      "padding-right: 20px;"
-                                      "font:  12px;"
-                                      "text-align: center;"
-                                      "}");
-    errorsShowButton->setStyleSheet("QPushButton {"
-                                    "border: none;"
-                                    "font-family: 'Roboto';"
-                                    "padding:5px;"
-                                    "padding-right: 20px;"
-                                    "font:  12px;"
-                                    "text-align: center;"
-                                    "}");
-    allShowButton->setStyleSheet("QPushButton {"
-                                 "border: none;"
-                                 "font-family: 'Roboto';"
-                                 "padding:5px;"
-                                 "padding-right: 20px;"
-                                 "font:  12px;"
-                                 "text-align: center;"
-                                 "}");
+    QToolButton *clickedButton = qobject_cast<QToolButton *>(sender());
 
 
     if (clickedButton == infoShowButton)
     {
         selectedType = "Info";
-        clickedButton->setStyleSheet(
-            "QPushButton {"
-            "border: none;"
-            "font-family: 'Roboto';"
-            "padding: 5px;"
-            "padding-right: 20px;"
-            "font: 12px;"
-            "text-align: center;"
-            "background-color: lightgray;"
-            "color: black;"  // Set text color to black
-            "}");
+        clickedButton->setChecked(true);
+        allShowButton->setChecked(false);
+        warningsShowButton->setChecked(false);
+        errorsShowButton->setChecked(false);
     }
     else if (clickedButton == warningsShowButton)
     {
         selectedType = "Warning";
-        clickedButton->setStyleSheet(
-            "QPushButton {"
-            "border: none;"
-            "font-family: 'Roboto';"
-            "padding: 5px;"
-            "padding-right: 20px;"
-            "font: 12px;"
-            "text-align: center;"
-            "background-color: lightgray;"
-            "color: black;"  // Set text color to black
-            "}");
+        clickedButton->setChecked(true);
+        allShowButton->setChecked(false);
+        infoShowButton->setChecked(false);
+        errorsShowButton->setChecked(false);
     }
     else if (clickedButton == errorsShowButton)
     {
         selectedType = "Error";
-        clickedButton->setStyleSheet(
-            "QPushButton {"
-            "border: none;"
-            "font-family: 'Roboto';"
-            "padding: 5px;"
-            "padding-right: 20px;"
-            "font: 12px;"
-            "text-align: center;"
-            "background-color: lightgray;"
-            "color: black;"  // Set text color to black
-            "}");
+        clickedButton->setChecked(true);
+        allShowButton->setChecked(false);
+        warningsShowButton->setChecked(false);
+        infoShowButton->setChecked(false);
     }
     else if(clickedButton == allShowButton){
-        clickedButton->setStyleSheet(
-            "QPushButton {"
-            "border: none;"
-            "font-family: 'Roboto';"
-            "padding: 5px;"
-            "padding-right: 20px;"
-            "font: 12px;"
-            "text-align: center;"
-            "background-color: lightgray;"
-            "color: black;"  // Set text color to black
-            "}");
+        clickedButton->setChecked(true);
+        infoShowButton->setChecked(false);
+        warningsShowButton->setChecked(false);
+        errorsShowButton->setChecked(false);
     }
 
 

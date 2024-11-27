@@ -14,15 +14,10 @@ horizontal_intensity_plot::horizontal_intensity_plot(QWidget * parent)
     applyButton = new QToolButton(this);
     applyButton->setObjectName("pen");
     applyButton->setCheckable(true);
-    applyButton->setStyleSheet(
-        "QPushButton { "
-        "padding:2px"
-        "}"
-        );
     //Add label and Button to layout
     layout->addWidget(label);
     layout->addWidget(applyButton);
-    layout->setContentsMargins(5,0,0,0);
+    layout->setContentsMargins(0,0,0,0);
     layout->addStretch();
     layout->setSpacing(5);
 
@@ -30,23 +25,6 @@ horizontal_intensity_plot::horizontal_intensity_plot(QWidget * parent)
 
 
     connect(applyButton, &QToolButton::clicked,&Workspace::Instance()->getActiveSession(),&SessionData::toggleHorizontalPlotMode);
-}
-
-
-void horizontal_intensity_plot::toggleStyleSheet()
-{
-    if(Workspace::Instance()->getActiveSession().horizontalIntensityPlotMode)
-    {
-        applyButton->setStyleSheet("QPushButton {"
-                                   "background-color: rgba( 55,55,55,0.5);"  // Example color for toggle
-                                   "border-radius: 4px;"
-                                   "}");
-    }
-    else {
-        applyButton->setStyleSheet("QPushButton {"
-                                   "background-color: transparent"
-                                   "border-radius: 4px;"
-                                   "}");  // Example color for toggle
-    }
 
 }
+

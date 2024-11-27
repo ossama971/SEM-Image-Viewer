@@ -37,9 +37,13 @@ void ImageDataModel::onImageStateUpdated(Image* image) {
     if (index == -1)
         return;
 
+    emit preImageStateUpdate();
+
     beginResetModel();
     loadImages(index, index);
     endResetModel();
+
+    emit postImageStateUpdate();
 }
 
 int ImageDataModel::rowCount(const QModelIndex &parent) const
@@ -61,7 +65,7 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
             return m_thumbnails[index.row()];
 
         // Otherwise, generate and cache the thumbnail
-        QImage thumbnail = generateThumbnail(*images[index.row()]);
+        QImage thumbnail = generateThumbnail(images[index.row()]);
         m_thumbnails[index.row()] = thumbnail;
 
         return thumbnail.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -69,11 +73,42 @@ QVariant ImageDataModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QImage ImageDataModel::generateThumbnail(const Image &image) const
+QImage convertMatToQImage(const cv::Mat &mat)
 {
-    const QImage &originalImage = image.getQImage(); // Updated to use `getImageMat`
-    if (originalImage.isNull())
+    if (mat.empty())
+    {
+        return QImage(); // Return an empty QImage if the input cv::Mat is empty
+    }
+
+    QImage qImg;
+
+    if (mat.type() == CV_8UC1)
+    {
+        // Grayscale image
+        qImg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Grayscale8);
+    }
+    else if (mat.type() == CV_8UC3)
+    {
+        // RGB (BGR in OpenCV)
+        QImage tempImg(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        qImg = tempImg.rgbSwapped(); // Convert BGR to RGB
+    }
+    else
+    {
+        qDebug() << "Unsupported image format. Ensure the cv::Mat is CV_8UC1 or CV_8UC3.";
+        return QImage(); // Return an empty QImage if the format is unsupported
+    }
+
+    return qImg;
+}
+
+QImage ImageDataModel::generateThumbnail(Image *image) const
+{
+    const cv::Mat &mat = image->getImageMat(); // Updated to use `getImageMat`
+    if (mat.empty())
         return QImage();
+
+    QImage originalImage = convertMatToQImage(mat);
 
     // Using high-quality scaling
     return originalImage.scaled(thumbnailSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -89,7 +124,7 @@ void ImageDataModel::loadImages(int startIndex, int endIndex)
     // Load thumbnails for the specified range of images
     for (int i = startIndex; i <= endIndex; ++i)
     {
-        QImage thumbnail = generateThumbnail(*images[i]);
+        QImage thumbnail = generateThumbnail(images[i]);
         m_thumbnails[i] = thumbnail;
     }
 }

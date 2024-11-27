@@ -120,6 +120,7 @@ padding: 4px;
 border: none;
 background-color: transparent;
 font-family: 'Roboto';
+border-radius: 4px;
 }
 QPushButton:hover {
 background-color: #DDDDDD;
@@ -205,17 +206,126 @@ QPushButton#applyButton {
    qproperty-icon: url(:/icons/play-icon.svg);
    qproperty-iconSize: 16px 16px;
 }
-QPushButton#info {
+QToolButton#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+     font:  12px;
+     text-align: center;
+}
+
+QToolButton::hover#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #DDDDDD;
+    border-radius: 4px;
+}
+QToolButton::checked#all {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 4px;
+}
+QToolButton#info {
     qproperty-icon: url(:/icons/info-light.svg);
     qproperty-iconSize: 14px 14px;
+     border: none;
+     font-family: 'Roboto';
+     padding:5px;
+     padding-right: 20px;
+     font:  12px;
+     text-align: center;
 }
-QPushButton#error {
+
+QToolButton::hover#info {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #DDDDDD;
+    border-radius: 4px;
+}
+QToolButton::checked#info {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 4px;
+}
+QToolButton#error {
     qproperty-icon: url(:/icons/error-light.svg);
     qproperty-iconSize: 14px 14px;
+     border: none;
+     font-family: 'Roboto';
+     padding:5px;
+     padding-right: 20px;
+     font:  12px;
+     text-align: center;
 }
-QPushButton#warning {
+
+QToolButton::hover#error {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #DDDDDD;
+    border-radius: 4px;
+}
+QToolButton::checked#error {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 4px;
+}
+QToolButton#warning {
     qproperty-icon: url(:/icons/warning-light.svg);
     qproperty-iconSize: 14px 14px;
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+}
+QToolButton::hover#warning {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: #DDDDDD;
+    border-radius: 4px;
+}
+QToolButton::checked#warning {
+    border: none;
+    font-family: 'Roboto';
+    padding:5px;
+    padding-right: 20px;
+    font:  12px;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 4px;
 }
 QPushButton#searchButton {
     qproperty-icon: url(:/icons/search-light.svg);
@@ -228,15 +338,15 @@ background-color: transparent;
 }
 QPushButton#newFolderBtn {
     qproperty-icon: url(:/icons/new-folder-light.svg);
-    qproperty-iconSize: 20px 20px;
+    qproperty-iconSize: 20px 16px;
 }
 QPushButton#newFileBtn {
    qproperty-icon: url(:/icons/new-file-light.svg);
-   qproperty-iconSize: 20px 20px;
+   qproperty-iconSize: 20px 16px;
 }
 QPushButton#collapseBtn {
   qproperty-icon: url(:/icons/nav-arrow-light.svg);
-  qproperty-iconSize: 20px 20px;
+  qproperty-iconSize: 20px 16px;
 }
 QPushButton#redoButton {
  qproperty-icon: url(:/icons/redo-icon.svg);
@@ -329,6 +439,11 @@ QToolButton#pen {
     qproperty-icon: url(:/icons/pen-icon.svg);
     qproperty-iconSize: 16px 16px;
 }
+
+QChartView{
+    cursor: url(:/icons/pen-icon.svg), auto;
+}
+
 QToolButton#closelog{
     qproperty-icon: url(:/icons/info-light.svg);
     qproperty-iconSize: 20px 20px;
@@ -361,6 +476,9 @@ QProgressBar::text {
 QFrame {
     border-radius: 8px;
 }
+QFrame#fileBrowserSeparator {
+    background-color: #CCCCCC;
+}
 
 QCheckBox {
     color: black;
@@ -382,3 +500,7 @@ QCheckBox::indicator:checked {
 QCheckBox::indicator:hover {
     border: 1px solid #4CAF50;
 }
+
+QWidget#log{
+  background-color: #CCCCCC;
+  }

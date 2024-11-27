@@ -1,5 +1,6 @@
 #include "image_cacheless.h"
 #include "image_state_cacheless.h"
+#include "../utils.h"
 
 ImageCacheless::ImageCacheless() : Image(nullptr) {
 }

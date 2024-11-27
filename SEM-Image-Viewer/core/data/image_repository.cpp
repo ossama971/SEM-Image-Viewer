@@ -23,6 +23,11 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr)
 }
 
 bool ImageRepository::load_directory(const std::string &path) {
+  if(_current_operations.load() > 0) {
+    Logger::instance()->logMessage(Logger::MessageTypes::warning, Logger::MessageID::operation_in_progress, Logger::MessageOption::without_path, {});
+    return false;
+  }
+
   std::unique_lock<std::recursive_mutex> lock(_mutex);
 
   try {
@@ -107,6 +112,10 @@ bool ImageRepository::load_directory(const std::string &path) {
 }
 
 bool ImageRepository::load_image(const std::string &path) {
+    if(_current_operations.load() > 0) {
+      Logger::instance()->logMessage(Logger::MessageTypes::warning, Logger::MessageID::operation_in_progress, Logger::MessageOption::without_path, {});
+      return false;
+    }
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     std::filesystem::path fpath(path);
@@ -208,16 +217,16 @@ void ImageRepository::selectImage(const std::string &path) {
     }
 }
 
-void ImageRepository::onCacheImageLoaded(const std::string &path, QImage *image, cv::Mat* imageMat) {
+void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     for (auto it = _images.begin(); it != _images.end(); ++it)
-        (*it)->onCacheImageLoaded(path, image, imageMat);
+        (*it)->onCacheImageLoaded(path, image);
 }
 
-void ImageRepository::onCacheImageRemoved(const std::string &path, QImage *image, cv::Mat* imageMat) {
+void ImageRepository::onCacheImageRemoved(const std::string &path, cv::Mat *image) {
     if (!std::filesystem::exists(path))
-        cv::imwrite(path, *imageMat);
+        cv::imwrite(path, *image);
 }
 
 std::size_t ImageRepository::getImagesCount() const {
@@ -280,9 +289,17 @@ void ImageRepository::accept(Visitor &v) const {
   v.visit(*this);
 }
 
+// a function
+void ImageRepository::setHasUnsavedChanges(bool hasUnsavedChanges) {
+    _hasUnsavedChanges = hasUnsavedChanges;
+}
+
+// a Slot
+// TODO: it would be better to have one function that can change 
+// the _hasUnsavedChanges flag, instead of having multiple functions/slots
 void ImageRepository::setUnsavedChanges(Image* image) {
     if (image->isChanged())
-        _hasUnsavedChanges = true; // Set to true when any image state changes
+        _hasUnsavedChanges = true;
 }
 
 bool ImageRepository::getHasUnsavedChanges(){

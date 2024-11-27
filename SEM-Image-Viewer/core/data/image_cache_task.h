@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QRunnable>
 #include <string>
-#include <QImage>
+#include <opencv2/opencv.hpp>
 
 class ImageCacheTask : public QObject, public QRunnable {
     Q_OBJECT
@@ -15,7 +15,7 @@ public:
     void run() override;
 
 signals:
-    void imageLoaded(const std::string& path, QImage image);
+    void imageLoaded(const std::string& path, cv::Mat image);
 
 private:
     std::string _path;

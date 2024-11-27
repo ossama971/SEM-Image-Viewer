@@ -30,6 +30,7 @@ protected:
   void wheelEvent(QWheelEvent *event) override;
   bool eventFilter(QObject *watched, QEvent *event) override;
 
+
 private:
   bool readFromCache = true;
   QGraphicsView *graphicsView = nullptr;
@@ -50,7 +51,7 @@ private:
   int xStart;
   int xEnd;
 
-  std::optional<QPixmap> loadAndPrepareImage(const Image &image, const QSize &targetSize);
+  std::optional<QPixmap> loadAndPrepareImage(Image *selected_image, const QSize &targetSize);
   void setImage(const QPixmap &pixmap);
   QPixmap matToQPixmap(const cv::Mat &image);
   void clearSceneToDefault();
@@ -59,6 +60,7 @@ private:
   bool isPlotting = false;
 
   void customClearScene();
+
 
 private slots:
   void zoomIn();

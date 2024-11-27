@@ -22,8 +22,6 @@ void SessionData::loadImage(const std::string &path) {
     Image* selectedImage = _imageRepo.getImage();
     if (!selectedImage)
         return;
-
-    emit loadActionList(selectedImage->getHistory());
 }
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
@@ -69,7 +67,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
     cv::Mat filteredImage = filter->applyFilter(*selectedImage);
     selectedImage->setImage(&filteredImage, filter->getImageSource());
 
-    emit updateActionList(selectedImage->getCurrentAction());
+    emit loadActionList(selectedImage->getHistory());
 }
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices) {
@@ -78,6 +76,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<i
         return;
 
     emit onBatchFilterStarted(batchInput.size());
+
     _batchFilter.apply(std::move(filter), batchInput);
 }
 
@@ -144,9 +143,8 @@ bool SessionData::redo(){
         //logger
         return false;
 
-
     if(selectedImage->redo()){
-        emit updateActionList(selectedImage->getCurrentAction());
+        emit loadActionList(selectedImage->getHistory());
     }
     return true;
 }
@@ -166,5 +164,5 @@ void SessionData::accept(Visitor &v) const {
 
 void SessionData::toggleHorizontalPlotMode()
 {
-    horizontalIntensityPlotMode = !horizontalIntensityPlotMode;
+    horizontalIntensityPlotMode = !horizontalIntensityPlotMode;    
 }
