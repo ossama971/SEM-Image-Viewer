@@ -217,16 +217,16 @@ void ImageRepository::selectImage(const std::string &path) {
     }
 }
 
-void ImageRepository::onCacheImageLoaded(const std::string &path, QImage *image) {
+void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
     std::unique_lock<std::recursive_mutex> lock(_mutex);
 
     for (auto it = _images.begin(); it != _images.end(); ++it)
         (*it)->onCacheImageLoaded(path, image);
 }
 
-void ImageRepository::onCacheImageRemoved(const std::string &path, QImage *image) {
+void ImageRepository::onCacheImageRemoved(const std::string &path, cv::Mat *image) {
     if (!std::filesystem::exists(path))
-        image->save(QString::fromStdString(path));
+        cv::imwrite(path, *image);
 }
 
 std::size_t ImageRepository::getImagesCount() const {

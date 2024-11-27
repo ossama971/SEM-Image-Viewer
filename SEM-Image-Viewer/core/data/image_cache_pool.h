@@ -7,7 +7,6 @@
 #include <set>
 #include <memory>
 #include <string>
-#include <QImage>
 #include <opencv2/opencv.hpp>
 #include <chrono>
 
@@ -20,14 +19,13 @@ public:
     void setMaxSize(int maxSize);
     void clear();
 
-    bool set(const std::string &path, QImage* image = nullptr);
-    bool set(const std::string &path, cv::Mat* image = nullptr);
+    bool set(const std::string &path, cv::Mat *image = nullptr, bool notify = false);
     bool remove(const std::string &path);
 
     struct ImageCacheQuery
     {
-        QImage *Image;
-        //cv::Mat *ImageMat;
+        //QImage *Image;
+        cv::Mat *ImageMat;
     };
 
     ImageCacheQuery get(const std::string &path, bool autoLoad = true);
@@ -42,18 +40,18 @@ private:
     void unlockFileLoading(const std::string &fileName);
 
 private slots:
-    void onImageTaskFinished(const std::string &path, QImage image);
+    void onImageTaskFinished(const std::string &path, cv::Mat image);
 
 signals:
-    void onImageLoaded(const std::string &path, QImage *image);
-    void onImageRemoved(const std::string &path, QImage *image);
+    void onImageLoaded(const std::string &path, cv::Mat *image);
+    void onImageRemoved(const std::string &path, cv::Mat *image);
 
 private:
     using high_resolution_clock = std::chrono::high_resolution_clock;
 
     struct ImageCacheItem
     {
-        std::unique_ptr<QImage> Image;
+        std::unique_ptr<cv::Mat> Image;
         int CacheSize;
         high_resolution_clock::time_point InsertTime;
     };
@@ -63,7 +61,7 @@ private:
     std::map<std::string, ImageCacheItem> _cache;
     std::map<high_resolution_clock::time_point, std::string> _accessHits;
     std::set<std::string> _filesLoading;
-    QImage _imageLoadingTemplate;
+    cv::Mat _imageLoadingTemplate;
 };
 
 #endif // CACHE_POOL_H

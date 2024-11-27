@@ -58,8 +58,8 @@ public slots:
     void setUnsavedChanges(Image* image);
 
 private slots:
-    void onCacheImageLoaded(const std::string &path, QImage *image);
-    void onCacheImageRemoved(const std::string &path, QImage *image);
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
+    void onCacheImageRemoved(const std::string &path, cv::Mat *image);
 
 public:
     std::atomic_int _current_operations = 0;

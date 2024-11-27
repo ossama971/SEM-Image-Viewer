@@ -10,6 +10,7 @@ namespace Utils {
     void loadSessionJson(const std::string &filename);
     cv::Mat heatmap(const cv::Mat& image);
     QImage loadFromQrc(const QString &qrc, const char *extension);
+    cv::Mat loadFromQrc(const QString &qrc, int flag = cv::IMREAD_COLOR);
     cv::Mat imageToMat(const QImage &image);
     QImage matToImage(const cv::Mat &image);
 };

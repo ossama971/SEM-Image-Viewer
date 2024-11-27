@@ -78,15 +78,15 @@ bool Image::save(const std::string &path, ImageState *state) {
     if (!state)
         return false;
 
-    QImage* imagePtr = _cachePool->get(state->ImagePath, false).Image;
+    cv::Mat* imagePtr = _cachePool->get(state->ImagePath, false).ImageMat;
     if (imagePtr)
         return save(path, state, *imagePtr);
 
     if (!std::filesystem::exists(state->ImagePath))
         return false;
 
-    QImage image;
-    if (!image.load(QString::fromStdString(state->ImagePath)))
+    cv::Mat image = cv::imread(state->ImagePath);
+    if (image.empty())
         return false;
 
     return save(path, state, image);
@@ -160,7 +160,7 @@ void Image::accept(Visitor &v) const {
     v.visit(*this);
 }
 
-void Image::onCacheImageLoaded(const std::string &path, QImage *image) {
+void Image::onCacheImageLoaded(const std::string &path, cv::Mat *image) {
     if (!image || _states.empty())
         return;
 
@@ -177,18 +177,18 @@ void Image::onCacheImageLoaded(const std::string &path, QImage *image) {
 #endif
 }
 
-bool Image::save(const std::string &path, ImageState *state, const QImage &image) {
-    if (!state || image.isNull())
+bool Image::save(const std::string &path, ImageState *state, const cv::Mat &image) {
+    if (!state || image.empty())
         return false;
 
-    return image.save(QString::fromStdString(path));
+    return cv::imwrite(path, image);
 }
 
 ImageCachePool::ImageCacheQuery Image::getImageMat(bool autoLoad) const {
     const std::string& path = _states.back()->ImagePath;
     ImageCachePool::ImageCacheQuery image = _cachePool->get(path, autoLoad);
 
-    if (image.Image)
+    if (image.ImageMat)
         return image;
 
     return autoLoad ? _cachePool->getImageLoadingTemplate()
@@ -210,19 +210,14 @@ bool Image::isLoaded() const {
     return _loaded;
 }
 
-const cv::Mat& Image::getImageMat() {
-    imageMatBuffer = Utils::imageToMat(*getImageMat(true).Image);
-    return imageMatBuffer;
-}
-
-const QImage& Image::getQImage() {
-    return *getImageMat(true).Image;
+const cv::Mat& Image::getImageMat() const {
+    return *getImageMat(true).ImageMat;
 }
 
 cv::Mat Image::readImageMat() const {
-    QImage* imagePtr = getImageMat(false).Image;
+    cv::Mat* imagePtr = getImageMat(false).ImageMat;
     if (imagePtr)
-        return Utils::imageToMat(*imagePtr);
+        return *imagePtr;
 
     cv::Mat image;
     const std::string& imagePath = _states.back()->ImagePath;

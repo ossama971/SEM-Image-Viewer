@@ -240,6 +240,20 @@ QImage Utils::loadFromQrc(const QString &qrc, const char *extension) {
     return img;
 }
 
+cv::Mat Utils::loadFromQrc(const QString &qrc, int flag) {
+    QFile file(qrc);
+    cv::Mat img;
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        qint64 sz = file.size();
+        std::vector<uchar> buf(sz);
+        file.read((char*)buf.data(), sz);
+        img = cv::imdecode(buf, flag);
+    }
+    return img;
+}
+
 cv::Mat Utils::imageToMat(const QImage &image) {
     if (image.isNull())
         return cv::Mat();

@@ -8,7 +8,7 @@
 #define CACHE_IMAGE_SIZE 1
 
 ImageCachePool::ImageCachePool(int maxSize) : _maxSize(maxSize), _curSize(0) {
-    _imageLoadingTemplate = Utils::loadFromQrc(":/assets/image-loading.png", "png");
+    _imageLoadingTemplate = Utils::loadFromQrc(":/assets/image-loading.png", cv::IMREAD_COLOR);
 }
 
 void ImageCachePool::setMaxSize(int maxSize) {
@@ -25,15 +25,16 @@ void ImageCachePool::clear() {
     _accessHits.clear();
 }
 
-bool ImageCachePool::set(const std::string &path, QImage* image) {
+bool ImageCachePool::set(const std::string &path, cv::Mat *image, bool notify) {
     std::unique_lock<std::mutex> guard(_cacheMtx);
 
     const int reqSize = CACHE_IMAGE_SIZE;
 
-    QImage img;
+    cv::Mat img;
     if (!image)
     {
-        if (!img.load(QString::fromStdString(path)))
+        img = cv::imread(path);
+        if (img.empty())
             return false;
 
         image = &img;
@@ -43,14 +44,15 @@ bool ImageCachePool::set(const std::string &path, QImage* image) {
     auto it = _cache.find(path);
     if (it != _cache.end())
     {
-        QImage* imagePtr = it->second.Image.get();
+        cv::Mat* imagePtr = it->second.Image.get();
         *imagePtr = *image;
 
         _accessHits.erase(it->second.InsertTime);
         _accessHits[time] = path;
 
         guard.unlock();
-        emit onImageLoaded(path, imagePtr);
+        if (notify)
+            emit onImageLoaded(path, imagePtr);
         return true;
     }
 
@@ -58,24 +60,17 @@ bool ImageCachePool::set(const std::string &path, QImage* image) {
     if (_curSize + reqSize > _maxSize)
         return false;
 
-    std::unique_ptr<QImage> imageUniquePtr = std::make_unique<QImage>(*image);
-    QImage* imagePtr = imageUniquePtr.get();
+    std::unique_ptr<cv::Mat> imageUniquePtr = std::make_unique<cv::Mat>(*image);
+    cv::Mat *imagePtr = imageUniquePtr.get();
 
     _cache.insert(std::make_pair(path, ImageCacheItem{ std::move(imageUniquePtr), reqSize, time }));
     _accessHits[time] = path;
     _curSize += reqSize;
 
     guard.unlock();
-    emit onImageLoaded(path, imagePtr);
+    if (notify)
+        emit onImageLoaded(path, imagePtr);
     return true;
-}
-
-bool ImageCachePool::set(const std::string &path, cv::Mat* image) {
-    if (!image)
-        return set(path, (QImage*)nullptr);
-
-    QImage qImage = Utils::matToImage(*image);
-    return set(path, &qImage);
 }
 
 bool ImageCachePool::remove(const std::string &path) {
@@ -157,7 +152,7 @@ void ImageCachePool::unlockFileLoading(const std::string &fileName) {
     _filesLoading.erase(fileName);
 }
 
-void ImageCachePool::onImageTaskFinished(const std::string &path, QImage image) {
-    set(path, &image);
+void ImageCachePool::onImageTaskFinished(const std::string &path, cv::Mat image) {
+    set(path, &image, true);
     unlockFileLoading(path);
 }

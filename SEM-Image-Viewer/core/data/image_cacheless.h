@@ -19,8 +19,7 @@ public:
     bool setImage(cv::Mat* image, const ImageStateSource newState = ImageStateSource::Origin) override;
     void addRedo(const cv::Mat &image, const ImageStateSource newState) override;
 
-    const cv::Mat& getImageMat() override;
-    const QImage& getQImage() override;
+    const cv::Mat& getImageMat() const override;
     cv::Mat readImageMat() const override;
 };
 

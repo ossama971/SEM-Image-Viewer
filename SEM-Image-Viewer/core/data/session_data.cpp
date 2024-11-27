@@ -67,7 +67,7 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
     cv::Mat filteredImage = filter->applyFilter(*selectedImage);
     selectedImage->setImage(&filteredImage, filter->getImageSource());
 
-    emit updateActionList(selectedImage->getCurrentAction());
+    emit loadActionList(selectedImage->getHistory());
 }
 
 void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices) {
@@ -143,9 +143,8 @@ bool SessionData::redo(){
         //logger
         return false;
 
-
     if(selectedImage->redo()){
-        emit updateActionList(selectedImage->getCurrentAction());
+        emit loadActionList(selectedImage->getHistory());
     }
     return true;
 }

@@ -13,7 +13,6 @@
 #include <filesystem>
 #include <QObject>
 #include <opencv2/opencv.hpp>
-#include <QImage>
 
 class Image : public QObject, public Visitable {
     Q_OBJECT
@@ -34,16 +33,14 @@ public:
     virtual void addRedo(const cv::Mat &imagePath, const ImageStateSource newState);
 
 private:
-    bool save(const std::string &path, ImageState *state, const QImage &image);
+    bool save(const std::string &path, ImageState *state, const cv::Mat &image);
 
     ImageCachePool::ImageCacheQuery getImageMat(bool autoLoad) const;
-    QImage* getQImage(bool autoLoad) const;
     std::filesystem::path getPath(const ImageStateSource newState) const;
 
 public:
     bool isLoaded() const;
-    virtual const cv::Mat& getImageMat();
-    virtual const QImage& getQImage();
+    virtual const cv::Mat& getImageMat() const;
     virtual cv::Mat readImageMat() const;
     ImageStateSource getImageState() const;
     std::filesystem::path getPath() const;
@@ -61,7 +58,7 @@ public:
     bool isChanged() const;
 
 public slots:
-    void onCacheImageLoaded(const std::string &path, QImage *image);
+    void onCacheImageLoaded(const std::string &path, cv::Mat *image);
 
 signals:
     void onImageStateUpdated(Image* image);
@@ -78,9 +75,6 @@ protected:
 private:
     std::vector<std::unique_ptr<ImageState>> _redo;
     ImageCachePool *_cachePool;
-protected:
-    QImage imageBuffer;
-    cv::Mat imageMatBuffer;
 };
 
 cv::Mat loadFromQrc(QString qrc, int flag = cv::IMREAD_COLOR);
