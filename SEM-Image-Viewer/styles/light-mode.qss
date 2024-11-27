@@ -323,15 +323,15 @@ QWidget#searchBoxHolder {
 
 QToolButton#arrowup{
     qproperty-icon: url(:/icons/mini-grid-light.svg);
-    qproperty-iconSize: 18px 18px;
+    qproperty-iconSize: 20px 20px;
 }
 QToolButton#pen {
     qproperty-icon: url(:/icons/pen-icon.svg);
     qproperty-iconSize: 16px 16px;
 }
 QToolButton#closelog{
-    qproperty-icon: url(:/icons/close-logger-light.svg);
-    qproperty-iconSize: 18px 18px;
+    qproperty-icon: url(:/icons/info-light.svg);
+    qproperty-iconSize: 20px 20px;
 }
 
 QCheckBox {
