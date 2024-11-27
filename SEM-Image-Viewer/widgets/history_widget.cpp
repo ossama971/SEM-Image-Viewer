@@ -102,6 +102,7 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 void HistoryWidget::updateActionList(const QString &action)
 {
     actionList->addItem(action);
+    qDebug() << "[#1] History size:" << actionList->count();
 }
 
 void HistoryWidget::loadActionList(const QList<QString> &actions){
@@ -116,6 +117,8 @@ void HistoryWidget::loadActionList(const QList<QString> &actions){
     {
         actionList->addItem(action);
     }
+
+    qDebug() << "[#2] History size:" << actionList->count();
 }
 void HistoryWidget::popAction() {
     if (actionList->count() > 0) {

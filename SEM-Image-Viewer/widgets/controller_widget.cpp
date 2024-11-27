@@ -23,7 +23,6 @@ void Controller::setHistoryWidget(HistoryWidget *widget)
         connect(historyWidget,&HistoryWidget::redo,this, &Controller::redoAction);
         connect(historyWidget,&HistoryWidget::undo,this, &Controller::undoAction);
         connect(&SessionData_, &SessionData::loadActionList,historyWidget, &HistoryWidget::loadActionList);
-        connect(&SessionData_.getImageRepo(), &ImageRepository::loadActionList,historyWidget, &HistoryWidget::loadActionList);
         connect(&SessionData_, &SessionData::updateActionList,historyWidget, &HistoryWidget::updateActionList);
         connect(&SessionData_, &SessionData::popActionList,historyWidget, &HistoryWidget::popAction);
     }
