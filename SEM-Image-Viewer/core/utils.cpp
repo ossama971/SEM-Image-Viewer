@@ -105,38 +105,44 @@ cv::Mat Utils::heatmap(const cv::Mat &image)
   return gray;
 }
 
-bool Utils::createDirectory(const std::string &path)
-{
-  if (std::filesystem::exists(path))
-  {
+bool Utils::checkWritePermission(const std::filesystem::path &folderPath) {
+  try {
+    std::filesystem::path tempFilePath = folderPath / ".write_test";
+    std::ofstream tempFile(tempFilePath.string());
+    if (!tempFile.is_open()) {
+      throw std::ios_base::failure("Unable to create file in the selected directory.");
+    }
+    tempFile.close();
+    std::filesystem::remove(tempFilePath);
+    return true;
+  } catch (const std::exception &e) {
+    return false;
+  }
+}
+
+bool Utils::createDirectory(const std::string &path) {
+  if (std::filesystem::exists(path)) {
     return true;
   }
   else
   {
-    // create the directory
-    // qDebug() << "Creating directory: " << path.c_str();
-    if (std::filesystem::create_directory(path))
-    {
+    if (std::filesystem::create_directory(path)) {
       return true;
     }
-    else
-    {
-      // Logger::instance()->log(std::make_unique<ErrorMessage>(
-      //     1, boost::format("Error creating directory: %1%") % path));
+    else {
       return false;
     }
   }
 }
 
-void Utils::loadSessionJson(const std::string &filename)
-{
+// TODO: handle the reading files permissions and the errors that can arise from
+// it
+void Utils::loadSessionJson(const std::string &filename) {
   boost::property_tree::ptree root;
-  try
-  {
+  try {
     boost::property_tree::read_json(filename, root);
   }
-  catch (const boost::property_tree::json_parser_error &e)
-  {
+  catch (const boost::property_tree::json_parser_error &e) {
     // Handle JSON parsing error
     return;
   }

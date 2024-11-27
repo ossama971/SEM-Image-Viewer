@@ -297,8 +297,15 @@ void MenuBarWidget::saveSession() {
     return;
   }
 
+  if (!Utils::checkWritePermission(sessionFolderPath)) {
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+        Logger::MessageOption::with_path,
+        {QString::fromStdString(sessionFolderPath.string())});
+    return;
+  }
+
   try {
-    // Log the save action
     int progressbarID = Logger::instance()->logMessageWithProgressBar(
         Logger::MessageTypes::info, Logger::MessageID::saving_session,
         Logger::MessageOption::with_path,
@@ -314,10 +321,6 @@ void MenuBarWidget::saveSession() {
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
          });
-        // Logger::instance()->logMessage(
-        //             Logger::MessageTypes::error, Logger::MessageID::saved_successfully,
-        //             Logger::MessageOption::without_path,
-        //             {});
   } catch (const std::exception &e) {
     Logger::instance()->logMessage(
         Logger::MessageTypes::error, Logger::MessageID::error_in_save,

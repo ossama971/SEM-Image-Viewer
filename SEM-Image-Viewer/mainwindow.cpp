@@ -237,6 +237,14 @@ void MainWindow::onSaveChangesClicked() {
         return;
     }
 
+    if (!Utils::checkWritePermission(sessionFolderPath)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(sessionFolderPath.string())});
+        return;
+    }
+
     try {
         setEnabled(false);
 
