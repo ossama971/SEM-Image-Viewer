@@ -514,7 +514,7 @@ QCheckBox::indicator {
     border: 1px solid #888888;
 }
 
-QCheckBox::indicator:checked {ŒŒ
+QCheckBox::indicator:checked {
     background-color: transparent;
     border: 1px solid #888888;
     image: url(:/icons/checkbox_checked.svg);
@@ -530,6 +530,3 @@ QWidget#log{
   background-color: #555555;
   color: #D3D3D3;
   }
-#penCursor {
-    cursor: url(:/icons/pen-icon-dark.svg), default;
-}
