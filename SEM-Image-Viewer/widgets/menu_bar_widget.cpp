@@ -133,7 +133,13 @@ void MenuBarWidget::exportSelectedImage(const QString &format) {
   const std::string saveFileName = saveFilePath.toStdString();
   post(ThreadPool::instance(),
        std::packaged_task<void()>(
-           [matImg, saveFileName]() { cv::imwrite(saveFileName, matImg); }));
+           [matImg, saveFileName]() {
+             cv::imwrite(saveFileName, matImg);
+               Logger::instance()->logMessage(
+                  Logger::MessageTypes::info, Logger::MessageID::exporting_images,
+                  Logger::MessageOption::with_path, { "saveFileName" },
+                  QString("file:///%1").arg(QString::fromStdString(saveFileName)));
+           }));
 }
 
 void MenuBarWidget::exportImages(const QString &format) {
