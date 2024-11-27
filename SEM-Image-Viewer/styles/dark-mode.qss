@@ -397,7 +397,7 @@ QCheckBox::indicator {
     border: 1px solid #888888;
 }
 
-QCheckBox::indicator:checked {
+QCheckBox::indicator:checked {ŒŒ
     background-color: transparent;
     border: 1px solid #888888;
     image: url(:/icons/checkbox_checked.svg);

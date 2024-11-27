@@ -167,7 +167,6 @@ bool ImageWidgetCore::eventFilter(QObject *obj, QEvent *event) {
             if (!customCursorSet) {
                 QColor backgroundColor = graphicsView->palette().color(graphicsView->backgroundRole());
                 QColor lightModeBackground(255, 255, 255, 255);
-                qDebug()<<backgroundColor;
                 if (backgroundColor == lightModeBackground)
                 {
                     QPixmap cursorPixmap(":/icons/pen-icon.svg");

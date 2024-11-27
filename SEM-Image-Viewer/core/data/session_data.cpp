@@ -166,5 +166,5 @@ void SessionData::accept(Visitor &v) const {
 
 void SessionData::toggleHorizontalPlotMode()
 {
-    horizontalIntensityPlotMode = !horizontalIntensityPlotMode;
+    horizontalIntensityPlotMode = !horizontalIntensityPlotMode;    
 }
