@@ -135,15 +135,36 @@ bool Utils::createDirectory(const std::string &path) {
   }
 }
 
-// TODO: handle the reading files permissions and the errors that can arise from
-// it
+bool Utils::checkReadPermission(const std::filesystem::path &path) {
+  if (!std::filesystem::exists(path)) {
+        return false;
+    }
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        return false;
+    }
+    return true;
+}
+
 void Utils::loadSessionJson(const std::string &filename) {
+  if(!checkReadPermission(filename)) {
+    Logger::instance()->logMessage(
+        Logger::MessageTypes::error,
+        Logger::MessageID::insufficient_permissions,
+        Logger::MessageOption::without_path,
+        {QString::fromStdString(filename)});
+    return;
+  }
+
+  if (!std::filesystem::exists(filename)) {
+    return;
+  }
+
   boost::property_tree::ptree root;
   try {
     boost::property_tree::read_json(filename, root);
   }
   catch (const boost::property_tree::json_parser_error &e) {
-    // Handle JSON parsing error
     return;
   }
 
