@@ -27,6 +27,11 @@ private slots:
     void scrollRight();
     void handleSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void onImageChanged(Image* newImage);
+    void preImageStateUpdate();
+    void postImageStateUpdate();
+
+private:
+    QModelIndex _selectedIndex;
 };
 
 #endif // MINI_GRID_WIDGET_H

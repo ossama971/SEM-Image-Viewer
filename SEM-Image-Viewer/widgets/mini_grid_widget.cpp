@@ -39,6 +39,9 @@ MiniGrid::MiniGrid(QWidget *parent, ImageDataModel *dataModel) : QWidget(parent)
     setModel(imageDataModel);
     connect(listView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MiniGrid::handleSelectionChanged);
     QObject::connect(&Workspace::Instance()->getActiveSession().getImageRepo(), &ImageRepository::onImageChanged, this, &MiniGrid::onImageChanged);
+
+    connect(imageDataModel, &ImageDataModel::preImageStateUpdate, this, &MiniGrid::preImageStateUpdate);
+    connect(imageDataModel, &ImageDataModel::postImageStateUpdate, this, &MiniGrid::postImageStateUpdate);
 }
 
 void MiniGrid::setModel(ImageDataModel *model) {
@@ -56,7 +59,6 @@ void MiniGrid::initializeMiniGrid() {
     listView->setGridSize(QSize(100, 100));
     listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    listView->PositionAtCenter;
     listView->itemAlignment();
     auto* thumbnailDelegate = new ThumbnailDelegate(this);
     thumbnailDelegate->setPadding(6);
@@ -88,4 +90,20 @@ void MiniGrid::handleSelectionChanged(const QItemSelection &selected, const QIte
 
 void MiniGrid::onImageChanged(Image* newImage) {
 
+}
+
+void MiniGrid::preImageStateUpdate() {
+    QModelIndexList selectedIndexes = listView->selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() != 1)
+        _selectedIndex = QModelIndex();
+    else
+        _selectedIndex = selectedIndexes[0];
+}
+
+void MiniGrid::postImageStateUpdate() {
+    if (_selectedIndex.row() != -1)
+    {
+        QItemSelection selection(_selectedIndex, _selectedIndex);
+        listView->selectionModel()->select(selection, QItemSelectionModel::Select);
+    }
 }

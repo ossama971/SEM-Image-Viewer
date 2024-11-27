@@ -26,12 +26,16 @@ private slots:
     void onImageChanged(Image* newImage);
     void onScroll(int value);
     void openInDiffView();
+    void preImageStateUpdate();
+    void postImageStateUpdate();
 
 private:
     QListView *listView = nullptr;
     ImageDataModel *imageDataModel = nullptr;
     Image* firstImage = nullptr;
     Image* secondImage = nullptr;
+    QModelIndex _selectedIndex;
+
     void setModel(ImageDataModel *model);
     void loadImages(const QString &path);
     void initializeGrid();
