@@ -30,6 +30,7 @@ protected:
   void wheelEvent(QWheelEvent *event) override;
   bool eventFilter(QObject *watched, QEvent *event) override;
 
+
 private:
   bool readFromCache = true;
   QGraphicsView *graphicsView = nullptr;
@@ -59,6 +60,7 @@ private:
   bool isPlotting = false;
 
   void customClearScene();
+
 
 private slots:
   void zoomIn();

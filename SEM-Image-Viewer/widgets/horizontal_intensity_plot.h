@@ -12,7 +12,7 @@ public:
 private:
     QLabel *label = nullptr;
     QToolButton *applyButton = nullptr;
-    void toggleStyleSheet();
+
 
 
 };

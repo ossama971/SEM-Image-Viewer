@@ -409,3 +409,6 @@ QCheckBox::indicator:hover {
     border: 1px solid #4CAF50;
 }
 
+#penCursor {
+    cursor: url(:/icons/pen-icon-dark.svg), default;
+}
