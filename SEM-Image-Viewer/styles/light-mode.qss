@@ -502,5 +502,5 @@ QCheckBox::indicator:hover {
 }
 
 QWidget#log{
-  background-color: #dee2e6;
+  background-color: #CCCCCC;
   }
