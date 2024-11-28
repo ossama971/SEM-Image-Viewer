@@ -27,7 +27,7 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
     const std::size_t batch_size = 17;
 
     std::vector<std::future<void>> futures;
-    size_t processed_images = 0;
+    std::atomic_int processed_images = 0;
 
     for (std::size_t i = 0; i < input.size(); i += batch_size) {
       auto start = input.begin() + i;
@@ -35,11 +35,12 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
       std::vector<Image*> batch(start, end);
 
       auto future = post(ThreadPool::instance(),
-          use_future([filterPtr, batch, progressbarID, &output, &processed_images]() {
-            for (std::size_t i = 0; i < batch.size(); ++i) {
-              output[i].second = filterPtr->applyFilter(*batch[i], output[i].first, false);
-              if (!output[i].second)
-                output[i].first = batch[i]->readImageMat();
+          use_future([filterPtr, batch, progressbarID, &output, &processed_images, global_start = i]() {
+            for (std::size_t j = 0; j < batch.size(); ++j) {
+              std::size_t global_index = global_start + j;
+              output[global_index].second = filterPtr->applyFilter(*batch[j], output[global_index].first, false);
+              if (!output[global_index].second)
+                output[global_index].first = batch[j]->readImageMat();
               processed_images++;
               float progress = static_cast<float>(processed_images) / static_cast<float>(output.size());
               Logger::instance()->updateProgressBar(progressbarID, progress);
