@@ -108,7 +108,7 @@ bool SessionData::undo(){
     }
 
     if (selectedImage->undo()){
-        emit popActionList();
+        emit loadActionList(selectedImage->getHistory());
     }
     return true; // TODO: return true or false?
 }
