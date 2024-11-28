@@ -64,6 +64,6 @@
         <file>icons/link-external-light-mode.svg</file>
         <file>assets/image-loading.png</file>
         <file>icons/Sem-image-icon.svg</file>
-        <file>icons/2383605.svg</file>
+        <file>icons/app_icon.svg</file>
     </qresource>
 </RCC>

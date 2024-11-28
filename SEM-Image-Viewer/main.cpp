@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         // qDebug() << "Failed to load stylesheet";
     }
     MainWindow w;
-    w.setWindowIcon(QIcon(":/icons/2383605.svg"));
+    w.setWindowIcon(QIcon(":/icons/app_icon.svg"));
     w.show();
     return a.exec();
 
