@@ -7,6 +7,7 @@ class Image;
 namespace Utils {
     std::string generateString(size_t length);
     cv::Mat diffTwoImages(const cv::Mat &image1, const cv::Mat &image2, const int threshold);
+    bool checkReadPermission(const std::filesystem::path &path);
     bool checkWritePermission(const std::filesystem::path &folderPath);
     bool createDirectory(const std::string &path);
     void loadSessionJson(const std::string &filename);
