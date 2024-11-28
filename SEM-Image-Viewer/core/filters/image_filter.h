@@ -9,7 +9,7 @@ protected:
 public:
     virtual ~ImageFilter() = default;
 
-    virtual cv::Mat applyFilter(const Image& inputImage) const = 0;
+    virtual bool applyFilter(const Image& inputImage, cv::Mat& outputImage, bool log = true) const = 0;
 
     virtual ImageStateSource getImageSource() const = 0;
 };

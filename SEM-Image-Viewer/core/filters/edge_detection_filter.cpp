@@ -30,27 +30,45 @@ cv::Mat EdgeDetectionFilter::toGrayscale(const cv::Mat &image) const
     cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
     return gray_image;
 }
-cv::Mat EdgeDetectionFilter::applyFilter(const Image &inputImage) const
+bool EdgeDetectionFilter::applyFilter(const Image &inputImage, cv::Mat &outputImage, bool log) const
 {
 
     const cv::Mat& image = inputImage.readImageMat();
 
-    cv::Mat detected_edges = image;
+    const std::vector< std::unique_ptr<ImageState> > &states= inputImage.getStates();
+    for(auto it=states.begin();it!=states.end();it++){
+        if((*it)->State==ImageStateSource::EdgeDetectionFilter)
+        {
+            if (log)
+            {
+                Logger::instance()->logMessage(
+                    Logger::MessageTypes::warning, Logger::MessageID::already_applied,
+                    Logger::MessageOption::with_path,
+                    {"Edge Detection"},
+                    "https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html");
+            }
+            return false;
+        }
+    }
+
+    outputImage = image;
     if (image.channels() != 1)
     {
 
-        detected_edges = toGrayscale(image);
+        outputImage = toGrayscale(image);
     }
-    detected_edges = denoise(detected_edges);
-    cv::Canny(detected_edges, detected_edges, threshold_low, threshold_high);
+    outputImage = denoise(outputImage);
+    cv::Canny(outputImage, outputImage, threshold_low, threshold_high);
 
-    Logger::instance()->logMessage(
-        Logger::MessageTypes::info, Logger::MessageID::filter_applied,
-        Logger::MessageOption::with_path,
-        {"Edge Detection"},
-        "https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html");
-
-    return detected_edges;
+    if (log)
+    {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::info, Logger::MessageID::filter_applied,
+            Logger::MessageOption::with_path,
+            {"Edge Detection"},
+            "https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html");
+    }
+    return true;
 }
 
 ImageStateSource EdgeDetectionFilter::getImageSource() const

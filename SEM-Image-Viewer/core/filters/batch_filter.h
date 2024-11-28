@@ -20,7 +20,7 @@ public:
 
 signals:
     void onImageProcessed(Image* image);
-    void onFinish(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource);
+    void onFinish(const std::vector<Image*> &input, const std::vector<std::pair<cv::Mat, bool>> &output, ImageStateSource stateSource);
 
 private:
     QDateTime startTime;

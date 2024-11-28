@@ -91,8 +91,10 @@ void Controller::onEdgeWidgetFilterApplied()
 }
 void Controller::onNoiseReductionFilterApplied()
 {
-    int instensity=noiseReductionWidget->getIntensity();
-    std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(instensity);
+    int intensity=noiseReductionWidget->getIntensity();
+    if (!intensity)
+        return;
+    std::unique_ptr<NoiseReductionFilter> filter = std::make_unique<NoiseReductionFilter>(intensity);
 
     applyFilter(std::move(filter));
 }

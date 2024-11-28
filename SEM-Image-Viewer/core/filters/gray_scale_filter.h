@@ -5,7 +5,7 @@
 
 class GrayScaleFilter : public ImageFilter {
 public:
-    cv::Mat applyFilter(const Image& inputImage) const override;
+    bool applyFilter(const Image &inputImage, cv::Mat &outputImage, bool log = true) const override;
 
     ImageStateSource getImageSource() const override;
 };

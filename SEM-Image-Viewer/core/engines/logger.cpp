@@ -11,19 +11,19 @@ Logger *Logger::instance()
   {
     m_instance = new Logger();
 
-    LoggerMap[MessageID::filter_applied] = " %1 : Filter applied successfully";
+    LoggerMap[MessageID::filter_applied] = "%1 filter applied successfully";
     LoggerMap[MessageID::images_loading_started] = "Folder at path %1 loaded successfully";
     LoggerMap[MessageID::images_loading_finished] = "Started loading folder %1";
-    LoggerMap[MessageID::undo_applied] = "Undo filter %1 successfully";
-    LoggerMap[MessageID::redo_applied] = "Redo filter %1 successfully";
+    LoggerMap[MessageID::undo_applied] = "Undo: %1 filter reverted successfully";
+    LoggerMap[MessageID::redo_applied] = "Redo: %1 filter done successfully";
     LoggerMap[MessageID::undo_stack_is_empty] = "Redo Stack For Image %1 is Empty";
     LoggerMap[MessageID::redo_stack_is_empty] = "Undo Stack For Image %1 is Empty";
     LoggerMap[MessageID::exporting_images] = "Exporting images to %1";
-    LoggerMap[MessageID::batch_filter_applied] = "Batch Filter applied";
+    LoggerMap[MessageID::batch_filter_applied] = "Batch Filter applied sucessfully";
     LoggerMap[MessageID::saving_session] = "Saving session to %1 file";
     LoggerMap[MessageID::loading_session] = "Loading session from %1 file";
-    LoggerMap[MessageID::differerence_images] = "Difference Images feature has been applied successfully";
-    LoggerMap[MessageID::already_applied] = "Filter %1 already applied";
+    LoggerMap[MessageID::differerence_images] = "Image Differentiation has been applied successfully";
+    LoggerMap[MessageID::already_applied] = "%1 filter already applied";
     LoggerMap[MessageID::no_image_selected] = "No image selected";
     LoggerMap[MessageID::error_in_save] = "Error in saving session";
     LoggerMap[MessageID::saved_successfully] = "Session saved successfully";

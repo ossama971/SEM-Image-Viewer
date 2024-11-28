@@ -15,7 +15,7 @@ public:
     void loadDirectory(const std::string &path);
     void loadImage(const std::string &path);
     void applyFilter(std::unique_ptr<ImageFilter> filter);
-    void applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices);
+    void applyFilter(std::unique_ptr<ImageFilter> filter, const std::vector<int> &image_indices);
 
     bool undo();
     bool redo();
@@ -42,7 +42,7 @@ signals:
 
 
 private slots:
-    void onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource);
+    void onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<std::pair<cv::Mat, bool>> &output, ImageStateSource stateSource);
 
 private:
     ImageRepository _imageRepo;

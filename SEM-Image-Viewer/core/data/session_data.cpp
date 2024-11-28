@@ -33,44 +33,17 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter) {
                     {});
         return;
     }
-    //check filter type
-    if(dynamic_cast<GrayScaleFilter*>(filter.get())){
-        const std::vector< std::unique_ptr<ImageState> > &states= selectedImage->getStates();
-        for(auto it=states.begin();it!=states.end();it++){
-            if((*it)->State==ImageStateSource::GrayScaleFilter){
-                //TODO: make logger msg(filter already applied)
-                Logger::instance()->logMessage(
-                    Logger::MessageTypes::warning, Logger::MessageID::already_applied,
-                    Logger::MessageOption::without_path,
-                    {"Gray Scale"});
-                return;
-            }
-        }
-    }
-    if(dynamic_cast<EdgeDetectionFilter*>(filter.get())){
-        const std::vector< std::unique_ptr<ImageState> > &states= selectedImage->getStates();
-        for(auto it=states.begin();it!=states.end();it++){
-            if((*it)->State==ImageStateSource::EdgeDetectionFilter){
-                //TODO: make logger msg(filter already applied)
-                Logger::instance()->logMessage(
-                    Logger::MessageTypes::warning, Logger::MessageID::already_applied,
-                    Logger::MessageOption::without_path,
-                    {"Edge Detection"});
-                return;
-            }
-        }
-    }
-    if(dynamic_cast<NoiseReductionFilter*>(filter.get())){
-
-    }
     
-    cv::Mat filteredImage = filter->applyFilter(*selectedImage);
+    cv::Mat filteredImage;
+    if (!filter->applyFilter(*selectedImage, filteredImage))
+        return;
+
     selectedImage->setImage(&filteredImage, filter->getImageSource());
 
     emit loadActionList(selectedImage->getHistory());
 }
 
-void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<int> image_indices) {
+void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, const std::vector<int> &image_indices) {
     std::vector<Image*> batchInput = _imageRepo.getImages(std::move(image_indices));
     if (batchInput.empty())
         return;
@@ -80,9 +53,12 @@ void SessionData::applyFilter(std::unique_ptr<ImageFilter> filter, std::vector<i
     _batchFilter.apply(std::move(filter), batchInput);
 }
 
-void SessionData::onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<cv::Mat> &output, ImageStateSource stateSource) {
+void SessionData::onBatchFilterApplied(const std::vector<Image*> &input, const std::vector<std::pair<cv::Mat, bool>> &output, ImageStateSource stateSource) {
     for (int i = 0; i < input.size(); ++i)
-        input[i]->setImage((cv::Mat*)&output[i], stateSource);
+    {
+        if (output[i].second)
+            input[i]->setImage((cv::Mat*)&output[i].first, stateSource);
+    }
 
     emit onBatchFilterFinished();
 }

@@ -21,7 +21,7 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
 
   post(ThreadPool::instance(), [this, filter = std::move(filter), input = std::move(input), progressbarID]() {
 
-    std::vector<cv::Mat> output(input.size());
+    std::vector<std::pair<cv::Mat, bool>> output(input.size());
     ImageFilter* filterPtr = filter.get();
 
     const std::size_t batch_size = 17;
@@ -37,7 +37,9 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
       auto future = post(ThreadPool::instance(),
           use_future([filterPtr, batch, progressbarID, &output, &processed_images]() {
             for (std::size_t i = 0; i < batch.size(); ++i) {
-              output[i] = filterPtr->applyFilter(*batch[i]);
+              output[i].second = filterPtr->applyFilter(*batch[i], output[i].first, false);
+              if (!output[i].second)
+                output[i].first = batch[i]->readImageMat();
               processed_images++;
               float progress = static_cast<float>(processed_images) / static_cast<float>(output.size());
               Logger::instance()->updateProgressBar(progressbarID, progress);
@@ -52,6 +54,6 @@ void BatchFilter::apply(std::unique_ptr<ImageFilter> filter, const std::vector<I
 
     Workspace::Instance()->getActiveSession().getImageRepo()._current_operations.fetch_sub(1, std::memory_order_relaxed);
 
-    emit onFinish(std::move(input), std::move(output), filter->getImageSource());
+    emit onFinish(input, output, filter->getImageSource());
   });
 }

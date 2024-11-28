@@ -11,25 +11,28 @@ NoiseReductionFilter::NoiseReductionFilter(double intensity)
         _intensity = intensity;
 }
 
-cv::Mat NoiseReductionFilter::applyFilter(const Image &inputImage) const
+bool NoiseReductionFilter::applyFilter(const Image &inputImage, cv::Mat &outputImage, bool log) const
 {
     const cv::Mat& image = inputImage.readImageMat();
-    cv::Mat res;
 
     if (image.channels() == 1 || inputImage.getMetadata().getColorSpace(image) == ColorSpace::Gray)
     {
-        cv::fastNlMeansDenoising(cv::InputArray(image), cv::OutputArray(res), _intensity);
+        cv::fastNlMeansDenoising(cv::InputArray(image), cv::OutputArray(outputImage), _intensity);
     }
     else
     {
-        cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(res), _intensity, _intensity);
+        cv::fastNlMeansDenoisingColored(cv::InputArray(image), cv::OutputArray(outputImage), _intensity, _intensity);
     }
-    Logger::instance()->logMessage(
-        Logger::MessageTypes::info, Logger::MessageID::filter_applied,
-        Logger::MessageOption::with_path,
-        {"Noise Reduction"},
-        "https://docs.opencv.org/4.x/d5/d69/tutorial_py_non_local_means.html");
-    return res;
+
+    if (log)
+    {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::info, Logger::MessageID::filter_applied,
+            Logger::MessageOption::with_path,
+            {"Noise Reduction"},
+            "https://docs.opencv.org/4.x/d5/d69/tutorial_py_non_local_means.html");
+    }
+    return true;
 }
 
 ImageStateSource NoiseReductionFilter::getImageSource() const
