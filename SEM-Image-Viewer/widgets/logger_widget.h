@@ -20,6 +20,8 @@ public:
 
     void addLogCard(LogCard *card);
     void clearLogCards();
+    void updateLogs(int info, int warning, int error);
+
 private slots:
     void filterLogs();
     void switchLayout();
@@ -29,6 +31,7 @@ private slots:
 
 signals:
     void showSelectedType(const QString &type, const QString &_searchText);
+    void getLogStats();
 
 private:
     QToolButton *allShowButton = nullptr;
@@ -37,6 +40,7 @@ private:
     QToolButton *warningsShowButton = nullptr;
     QPushButton *switchLayoutButtonFull = nullptr;
     QPushButton *switchLayoutButtonCompact = nullptr;
+    QLabel *logShortInfo;
 
     QVBoxLayout *fullLayout = nullptr;
     QVBoxLayout *compactLayout = nullptr;

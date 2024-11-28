@@ -19,10 +19,14 @@ private:
     loggerController &operator=(const loggerController &) = delete;
     LoggerWidget *_loggerWidgetPtr = nullptr;
     bool logCardColor;
+
 public:
     static loggerController &instance();
     void setLoggerWidget(LoggerWidget *widget);
     ~loggerController();
+
+private:
+    int countLogs(const QString &type);
 
 public slots:
 
@@ -31,6 +35,7 @@ public slots:
     void createLogMessageWithProgressBar( IMessage* msg,int itemCount);
     void updateProgressBar(int id,int value);
 
+    void updateLogStats();
 };
 
 #endif

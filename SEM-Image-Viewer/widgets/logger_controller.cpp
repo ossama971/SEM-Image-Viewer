@@ -17,6 +17,7 @@ void loggerController::setLoggerWidget(LoggerWidget *widget){
     _loggerWidgetPtr=widget;
     if(_loggerWidgetPtr){
         connect(_loggerWidgetPtr,&LoggerWidget::showSelectedType,this,&loggerController::FilterMessagesByType);
+        Logger::connect(_loggerWidgetPtr,&LoggerWidget::getLogStats,this,&loggerController::updateLogStats);
     }
 }
 
@@ -26,6 +27,7 @@ void loggerController::createLogMessage( IMessage* msg){
     _loggerWidgetPtr->addLogCard(_card);
     _messageList.append(msg);
 
+    updateLogStats();
 }
 
 void loggerController::createLogMessageWithProgressBar( IMessage* msg,int itemCount){
@@ -35,6 +37,7 @@ void loggerController::createLogMessageWithProgressBar( IMessage* msg,int itemCo
     _loggerWidgetPtr->addLogCard(_card);
     _messageList.append(msg);
 
+    updateLogStats();
 }
 
 void loggerController::updateProgressBar(int id,int value){
@@ -49,6 +52,18 @@ loggerController::~loggerController(){
     }
 }
 
+int loggerController::countLogs(const QString &type) {
+    int count = 0;
+
+    for (auto msg : _messageList) {
+
+        if (type.isEmpty() || msg->GetType() == type) {
+            count++;
+        }
+    }
+
+    return count;
+}
 
 void loggerController::FilterMessagesByType(const QString &type, const QString &_text) {
     for (auto msg : _messageList) {
@@ -68,4 +83,8 @@ void loggerController::FilterMessagesByType(const QString &type, const QString &
             }
         }
     }
+}
+
+void loggerController::updateLogStats() {
+    _loggerWidgetPtr->updateLogs(countLogs("Info"), countLogs("Warning"), countLogs("Error"));
 }

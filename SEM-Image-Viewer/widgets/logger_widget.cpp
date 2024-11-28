@@ -131,11 +131,10 @@ void LoggerWidget::createLayouts()
     line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QHBoxLayout *topLayoutCompact = new QHBoxLayout;
-    QString labelText = QString("Error : %1 Warnings : %2 Info : %3")
-                            .arg(errorCount)
-                            .arg(warningCount)
-                            .arg(infoCount);
-    topLayoutCompact->addWidget(new QLabel(labelText, this));
+    logShortInfo = new QLabel(this);
+    updateLogs(0, 0, 0);
+
+    topLayoutCompact->addWidget(logShortInfo);
     topLayoutCompact->addStretch(9);
     topLayoutCompact->addWidget(switchLayoutButtonCompact);
     topLayoutCompact->addStretch(0);
@@ -194,6 +193,19 @@ void LoggerWidget::createLayouts()
     setLayout(mainLayout);
 }
 
+void LoggerWidget::updateLogs(int info, int warning, int error) {
+    infoCount = info;
+    warningCount = warning;
+    errorCount = error;
+
+    QString labelText = QString("Info: %1   Warning: %2   Error: %3")
+                            .arg(infoCount)
+                            .arg(warningCount)
+                            .arg(errorCount);
+
+    logShortInfo->setText(labelText);
+}
+
 void LoggerWidget::filterLogs()
 {
     QString filterText = searchLineEdit->text();
@@ -241,6 +253,7 @@ void LoggerWidget::switchLayout()
 {
     if (isExpanded)
     {
+        emit getLogStats();
         stackedWidget->setCurrentIndex(1); // Show compact view
     }
     else
