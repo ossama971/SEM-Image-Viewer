@@ -17,8 +17,8 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr)
 #endif
 {
 #ifdef IMAGE_CACHE
-    connect(&_cachePool, &ImageCachePool::onImageLoaded, this, &ImageRepository::onCacheImageLoaded);
-    connect(&_cachePool, &ImageCachePool::onImageRemoved, this, &ImageRepository::onCacheImageRemoved);
+    connect(&_cachePool, &ImageCachePool::onImageLoaded, this, &ImageRepository::onCacheImageLoaded, Qt::DirectConnection);
+    connect(&_cachePool, &ImageCachePool::onImageRemoved, this, &ImageRepository::onCacheImageRemoved, Qt::DirectConnection);
 #endif
 }
 
@@ -102,6 +102,7 @@ bool ImageRepository::load_directory(const std::string &path) {
     }
 
     post_directory_change(path, false);
+
     return true;
   } catch (const std::filesystem::filesystem_error &ex) {
     std::cerr << "Filesystem error: " << ex.what() << std::endl;
@@ -225,7 +226,7 @@ void ImageRepository::onCacheImageLoaded(const std::string &path, cv::Mat *image
 }
 
 void ImageRepository::onCacheImageRemoved(const std::string &path, cv::Mat *image) {
-    if (!std::filesystem::exists(path))
+    if (!std::filesystem::exists(path.c_str()))
         cv::imwrite(path, *image);
 }
 
@@ -292,13 +293,16 @@ void ImageRepository::accept(Visitor &v) const {
 // a function
 void ImageRepository::setHasUnsavedChanges(bool hasUnsavedChanges) {
     _hasUnsavedChanges = hasUnsavedChanges;
+
+    for (auto image = _images.begin(); image != _images.end(); ++image)
+        (*image)->setChanged(hasUnsavedChanges);
 }
 
 // a Slot
 // TODO: it would be better to have one function that can change 
 // the _hasUnsavedChanges flag, instead of having multiple functions/slots
 void ImageRepository::setUnsavedChanges(Image* image) {
-    if (image->isChanged())
+    if (!_hasUnsavedChanges && image->isChanged())
         _hasUnsavedChanges = true;
 }
 

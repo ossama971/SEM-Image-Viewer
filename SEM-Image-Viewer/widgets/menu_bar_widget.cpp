@@ -342,6 +342,7 @@ void MenuBarWidget::saveSession() {
            JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID, nullptr);
            Workspace::Instance()->getActiveSession().accept(visitor);
            visitor.write_json();
+           Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
          });
   } catch (const std::exception &e) {
     Logger::instance()->logMessage(

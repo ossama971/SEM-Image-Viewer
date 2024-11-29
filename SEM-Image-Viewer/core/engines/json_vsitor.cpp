@@ -24,22 +24,22 @@ void JsonVisitor::visit(const ImageMetadata &metadata) {
 }
 
 void JsonVisitor::visit(const ImageState &state, Image *image) {
-  boost::property_tree::ptree state_tree;
-  // TODO: handle the case when session_datapath is empty
-  Utils::createDirectory(this->session_datapath);
-  const std::string image_filepath = Utils::generateString(11) + state.ImageExtension;
-  // TODO: prepend the image_name with the applied filter name before this random string
-  const std::filesystem::path image_path(this->session_datapath + "/" + image_filepath);
-  if (image && image->save(image_path.string(), (ImageState*)&state)) {
-    state_tree.put("state", imageStateSourceToString(state.State));
-    state_tree.put("image", image_path.string());
-    json_tree.add_child("state", state_tree);
-  }
-  else {
+    boost::property_tree::ptree state_tree;
+    Utils::createDirectory(this->session_datapath);
+    if(image) {
+        const std::string image_filepath = image->getPath().stem().string() + "_" + imageStateSourceToString(state.State) + "_" + Utils::generateString(8) + state.ImageExtension;
+        const std::filesystem::path image_path(this->session_datapath + "/" + image_filepath);
+        if (image && image->save(image_path.string(), (ImageState*)&state)) {
+            state_tree.put("state", imageStateSourceToString(state.State));
+            state_tree.put("image", image_path.string());
+            json_tree.add_child("state", state_tree);
+            return;
+        }
+    }
+    qDebug() << "Error saving state";
     state_tree.put("state", "Error");
     state_tree.put("image", "Error");
     json_tree.add_child("state", state_tree);
-  }
 }
 
 void JsonVisitor::visit(const Image &image) {
@@ -66,7 +66,7 @@ void JsonVisitor::visit(const Image &image) {
   boost::property_tree::ptree undo_tree;
   for (const auto &undoState : image.getUndo()) {
     JsonVisitor undoVisitor(session_datapath, json_filepath, progressbarID, progressCallback_);
-    undoState->accept(undoVisitor);
+    undoState->accept(undoVisitor, (Image*)&image);
     undo_tree.push_back(std::make_pair("", undoVisitor.json_tree.get_child("state")));
   }
   image_tree.add_child("undo", undo_tree);

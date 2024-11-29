@@ -1,14 +1,15 @@
 #include "image.h"
 #include "../utils.h"
 
-Image::Image(ImageCachePool* cachePool) : _loaded(false), _cachePool(cachePool) {
+Image::Image(ImageCachePool* cachePool) : _loaded(false), _isChanged(false), _cachePool(cachePool) {
 }
 
 Image::Image(ImageCachePool* cachePool, std::filesystem::path path) : Image(cachePool) {
     load(path);
 }
 
-Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _metadata(image._metadata), _cachePool(image._cachePool) {
+Image::Image(const Image& image) : _loaded(image._loaded), _isChanged(image._isChanged), _path(image._path),
+    _metadata(image._metadata), _cachePool(image._cachePool) {
     _states.reserve(image._states.size());
     for (const std::unique_ptr<ImageState>& it : image._states)
         _states.push_back(std::make_unique<ImageState>(*it));
@@ -19,7 +20,7 @@ Image::Image(const Image& image) : _loaded(image._loaded), _path(image._path), _
 }
 
 Image::Image(Image &&image)
-    : _loaded(image._loaded), _path(std::move(image._path)),
+    : _loaded(image._loaded), _isChanged(image._isChanged), _path(std::move(image._path)),
       _metadata(std::move(image._metadata)), _states(std::move(image._states)),
       _redo(std::move(image._redo)), _cachePool(image._cachePool) {
   image._loaded = false;
@@ -30,6 +31,7 @@ Image &Image::operator=(const Image &image) {
     return *this;
 
   _loaded = image._loaded;
+  _isChanged = image._isChanged;
   _path = image._path;
   _metadata = image._metadata;
   _cachePool = image._cachePool;
@@ -52,6 +54,7 @@ Image &Image::operator=(Image &&image) {
         return *this;
 
     _loaded = false;
+    _isChanged = image._isChanged;
     _path = std::move(image._path);
     _metadata = std::move(image._metadata);
     _cachePool = image._cachePool;
@@ -99,6 +102,8 @@ bool Image::setImage(cv::Mat *image, const ImageStateSource newState) {
     std::filesystem::path imagePath = getPath(newState);
     std::string imageExtension = _path.extension().string();
 
+    if (newState != ImageStateSource::Origin)
+        _isChanged = true;
     _states.push_back(std::make_unique<ImageState>(newState, imagePath.string(), imageExtension));
 
     if (image)
@@ -128,6 +133,7 @@ bool  Image::undo(){
         return false;
     }
 
+    _isChanged = true;
     _redo.push_back(std::move(_states.back()));
 
     _states.pop_back();
@@ -148,6 +154,7 @@ bool  Image::redo(){
         return false;
     }
 
+    _isChanged = true;
     _states.push_back(std::move(_redo.back()));
 
     _redo.pop_back();
@@ -204,6 +211,10 @@ std::filesystem::path Image::getPath(const ImageStateSource newState) const {
                    + imageStateSourceToString(newState) + "_" + Utils::generateString(8)
                    + _path.extension().string()
                    );
+}
+
+void Image::setChanged(bool changed) {
+    _isChanged = changed;
 }
 
 bool Image::isLoaded() const {
@@ -284,5 +295,5 @@ const QList<QString> Image::getHistory() {
 }
 
 bool Image::isChanged() const {
-    return _states.size() > 1 || !_redo.empty();
+    return _isChanged;
 }

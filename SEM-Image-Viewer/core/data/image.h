@@ -39,6 +39,8 @@ private:
     std::filesystem::path getPath(const ImageStateSource newState) const;
 
 public:
+    void setChanged(bool);
+
     bool isLoaded() const;
     virtual const cv::Mat& getImageMat() const;
     virtual cv::Mat readImageMat() const;
@@ -69,6 +71,7 @@ signals:
 
 protected:
     bool _loaded;
+    bool _isChanged;
     std::filesystem::path _path;
     ImageMetadata _metadata;
     std::vector<std::unique_ptr<ImageState>> _states;

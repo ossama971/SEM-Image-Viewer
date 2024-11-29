@@ -250,6 +250,8 @@ void Utils::loadSessionJson(const std::string &filename) {
     {
       future.get();
     }
+
+    Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
   }
   catch (const boost::property_tree::ptree_error &e)
   {
