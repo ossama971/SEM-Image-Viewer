@@ -1,15 +1,17 @@
 #include "utils.h"
-#include <QFile>
 #include <random>
 #include <string>
 
-#include "./data/image.h"
-#include "./data/image_repository.h"
-#include "./data/image_state.h"
+#include <QFile>
+#include <QThreadPool>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <atomic>
+
 #include "./data/session_data.h"
 #include "./engines/logger.h"
 #include "./engines/workspace.h"
-#include "./engines/thread_pool.h"
 #include "./engines/logger.h"
 
 #include <boost/property_tree/json_parser.hpp>
@@ -147,116 +149,115 @@ bool Utils::checkReadPermission(const std::filesystem::path &path) {
 }
 
 void Utils::loadSessionJson(const std::string &filename) {
-  if(!checkReadPermission(filename)) {
-    Logger::instance()->logMessage(
-        Logger::MessageTypes::error,
-        Logger::MessageID::insufficient_permissions,
-        Logger::MessageOption::without_path,
-        {QString::fromStdString(filename)});
-    return;
-  }
-
-  if (!std::filesystem::exists(filename)) {
-    return;
-  }
-
-  boost::property_tree::ptree root;
-  try {
-    boost::property_tree::read_json(filename, root);
-  }
-  catch (const boost::property_tree::json_parser_error &e) {
-    return;
-  }
-
-  try
-  {
-    const auto &session_data = root.get_child("SessionData");
-    const auto &repo_data = session_data.get_child("ImageRepository");
-
-    std::string folderPath = repo_data.get<std::string>("_folderPath");
-    Workspace::Instance()->getActiveSession().loadDirectory(folderPath);
-
-    const auto &images = repo_data.get_child("Images");
-    const std::size_t total_images = images.size();
-    const std::size_t batch_size = 17;
-
-    std::vector<boost::property_tree::ptree> image_nodes;
-    for (const auto &image_node : images)
-    {
-      image_nodes.push_back(image_node.second);
+    if (!checkReadPermission(filename)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error,
+            Logger::MessageID::insufficient_permissions,
+            Logger::MessageOption::without_path,
+            {QString::fromStdString(filename)});
+        return;
     }
 
-    int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::info,
-        Logger::MessageID::loading_session,
-        Logger::MessageOption::without_path,
-        {QString::fromStdString(filename)},
-        total_images
-
-    );
-
-    std::vector<std::future<void>> futures;
-    std::atomic<size_t> processed_images{0};
-
-    for (std::size_t i = 0; i < total_images; i += batch_size)
-    {
-      auto start = image_nodes.begin() + i;
-      auto end = (i + batch_size < total_images) ? start + batch_size : image_nodes.end();
-      std::vector<boost::property_tree::ptree> batch(start, end);
-
-      futures.push_back(post(ThreadPool::instance(), use_future([progressbarID,
-                                                                 folderPath,
-                                                                 batch,
-                                                                 &processed_images,
-                                                                 total_images]()
-                                                                {
-        for (const auto &node : batch) {
-          try {
-            std::string imagePath = node.get<std::string>("_path");
-            bool isLoaded = node.get<bool>("_loaded");
-
-            Image *image =
-                Workspace::Instance()->getActiveSession().getImageRepo().getImage(imagePath);
-            if (!image) {
-              // Log missing image
-              continue;
-            }
-
-            for (const auto &state_node : node.get_child("states")) {
-              std::string state = state_node.second.get<std::string>("state");
-              std::string imageFile = state_node.second.get<std::string>("image");
-              cv::Mat imageMat = cv::imread(imageFile);
-              image->setImage(&imageMat,
-                              imageStateSourceFromString(state));
-            }
-
-            for (const auto &undo_node : node.get_child("undo")) {
-              std::string state = undo_node.second.get<std::string>("state");
-              std::string imageFile = undo_node.second.get<std::string>("image");
-              image->addRedo(cv::imread(imageFile),
-                             imageStateSourceFromString(state));
-            }
-          } catch (const boost::property_tree::ptree_error &e) {
-            // Handle parsing errors for individual nodes
-          }
-
-          processed_images++;
-          float progress = static_cast<float>(processed_images.load()) / total_images;
-          Logger::instance()->updateProgressBar(progressbarID, progress);
-        } })));
+    if (!std::filesystem::exists(filename)) {
+        return;
     }
 
-    for (auto &future : futures)
-    {
-      future.get();
+    boost::property_tree::ptree root;
+    try {
+        boost::property_tree::read_json(filename, root);
+    } catch (const boost::property_tree::json_parser_error &) {
+        return;
     }
 
-    Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
-  }
-  catch (const boost::property_tree::ptree_error &e)
-  {
-    // Handle other JSON structure errors
-  }
+    try {
+        const auto &session_data = root.get_child("SessionData");
+        const auto &repo_data = session_data.get_child("ImageRepository");
+
+        std::string folderPath = repo_data.get<std::string>("_folderPath");
+        Workspace::Instance()->getActiveSession().loadDirectory(folderPath);
+
+        const auto &images = repo_data.get_child("Images");
+        const std::size_t total_images = images.size();
+        const std::size_t batch_size = 17;
+
+        std::vector<boost::property_tree::ptree> image_nodes;
+        for (const auto &image_node : images) {
+            image_nodes.push_back(image_node.second);
+        }
+
+        int progressbarID = Logger::instance()->logMessageWithProgressBar(
+            Logger::MessageTypes::info,
+            Logger::MessageID::loading_session,
+            Logger::MessageOption::without_path,
+            {QString::fromStdString(filename)},
+            total_images
+        );
+
+        std::atomic<size_t> processed_images{0};
+        QList<QFuture<void>> futures;
+
+        for (std::size_t i = 0; i < total_images; i += batch_size) {
+            auto start = image_nodes.begin() + i;
+            auto end = (i + batch_size < total_images) ? start + batch_size : image_nodes.end();
+            std::vector<boost::property_tree::ptree> batch(start, end);
+
+            auto future = QtConcurrent::run([=, &processed_images]() {
+                for (const auto &node : batch) {
+                    try {
+                        std::string imagePath = node.get<std::string>("_path");
+                        bool isLoaded = node.get<bool>("_loaded");
+
+                        std::filesystem::path safeImagePath(imagePath);
+                        Image *image = Workspace::Instance()->getActiveSession().getImageRepo().getImage(safeImagePath);
+                        if (!image) {
+                            // Handle missing image
+                            continue;
+                        }
+
+                        // Process image states
+                        for (const auto &state_node : node.get_child("states")) {
+                            std::string state = state_node.second.get<std::string>("state");
+                            std::string imageFile = state_node.second.get<std::string>("image");
+                            cv::Mat imageMat = cv::imread(imageFile);
+                            image->setImage(&imageMat, imageStateSourceFromString(state));
+                        }
+
+                        // Process undo states
+                        for (const auto &undo_node : node.get_child("undo")) {
+                            std::string state = undo_node.second.get<std::string>("state");
+                            std::string imageFile = undo_node.second.get<std::string>("image");
+                            image->addRedo(cv::imread(imageFile), imageStateSourceFromString(state));
+                        }
+                    } catch (const boost::property_tree::ptree_error &) {
+                        // Log or handle individual parsing errors
+                    }
+
+                    // Update progress
+                    processed_images++;
+                    float progress = static_cast<float>(processed_images.load()) / total_images;
+                    Logger::instance()->updateProgressBar(progressbarID, progress);
+                }
+            });
+
+            futures.append(std::move(future));
+        }
+
+        for (auto &future : futures) {
+            future.waitForFinished();
+        }
+
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::info,
+            Logger::MessageID::loading_session,
+            Logger::MessageOption::without_path,
+            {QString::fromStdString(filename)}
+        );
+
+        Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
+
+    } catch (const boost::property_tree::ptree_error &) {
+        // Handle JSON structure errors
+    }
 }
 
 QImage Utils::loadFromQrc(const QString &qrc, const char *extension) {

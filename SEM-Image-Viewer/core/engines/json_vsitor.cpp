@@ -1,10 +1,12 @@
 #include "json_vsitor.h"
 
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
+
 #include "../utils.h"
 #include "../data/image_format.h"
 #include "../data/image_state.h"
-
-#include "../engines/thread_pool.h"
 #include "../engines/logger.h"
 
 // TODO: need to handle errors & exceptions that can be thrown by any of the
@@ -18,7 +20,7 @@ void JsonVisitor::visit(const ImageMetadata &metadata) {
   metadata_tree.put("width", metadata.getWidth());
   metadata_tree.put("height", metadata.getHeight());
   metadata_tree.put("format", imageFormatToString(metadata.getFormat()));
-  //metadata_tree.put("colorSpace", colorSpaceToString(metadata.getColorSpace()));
+  // metadata_tree.put("colorSpace", colorSpaceToString(metadata.getColorSpace()));
   // metadata_tree.put("dateModified", metadata.getDateModified());
   json_tree.add_child("metadata", metadata_tree);
 }
@@ -51,10 +53,6 @@ void JsonVisitor::visit(const Image &image) {
   image.getMetadata().accept(metadataVisitor);
   image_tree.add_child("metadata", metadataVisitor.json_tree.get_child("metadata"));
 
-  // TODO: saving the states/images to disk should be done concurrently
-  // an idea is to have a threadpool and put the saving tasks (states & undos)
-  // in a queue and have the threads in the pool take tasks from the queue
-
   boost::property_tree::ptree states_tree;
   for (const auto &state : image.getStates()) {
     JsonVisitor stateVisitor(session_datapath, json_filepath, progressbarID, progressCallback_);
@@ -78,11 +76,13 @@ void JsonVisitor::visit(const ImageRepository &repo) {
   repo_tree.put("_folderPath", repo.getFolderPath());
 
   const std::size_t batch_size = 17;
-  std::vector<std::future<boost::property_tree::ptree>> futures;
+  QList<QFuture<boost::property_tree::ptree>> futures;
   const auto& images = std::make_shared<std::vector<std::unique_ptr<Image>>>(repo.cloneImages());
+
   if (images->empty()) {
     return;
   }
+
   const size_t total_images = images->size();
   size_t processed_images = 0;
 
@@ -90,40 +90,37 @@ void JsonVisitor::visit(const ImageRepository &repo) {
     auto start = i;
     auto end = std::min(i + batch_size, total_images);
 
-   auto future = post(ThreadPool::instance(),
-      use_future([
-        images, start, end, total_images,
-        progressbarID=this->progressbarID,
-        progressCallback_=this->progressCallback_,
-        session_datapath=this->session_datapath,
-        json_filepath=this->json_filepath,
-        &processed_images]() -> boost::property_tree::ptree {
+    auto future = QtConcurrent::run([=, &processed_images]() -> boost::property_tree::ptree {
         boost::property_tree::ptree local_images_tree;
 
         for (std::size_t j = start; j < end; j++) {
-          JsonVisitor imageVisitor(session_datapath, json_filepath, progressbarID, progressCallback_);
-          const auto& image = (*images)[j];
-          image->accept(imageVisitor);
-          local_images_tree.push_back(std::make_pair("", imageVisitor.json_tree.get_child("Image")));
+        JsonVisitor imageVisitor(session_datapath, json_filepath, progressbarID, progressCallback_);
+        const auto& image = (*images)[j];
+        image->accept(imageVisitor);
+        local_images_tree.push_back(
+            std::make_pair("", imageVisitor.json_tree.get_child("Image")));
 
-          processed_images++;
-          float progress = static_cast<float>(processed_images) / static_cast<float>(total_images);
-          if (progressbarID >= 0) {
-            Logger::instance()->updateProgressBar(progressbarID, progress);
-          }
-          if (progressCallback_) {
-            progressCallback_(static_cast<int>(progress * 100));
-          }
+        processed_images++;
+        float progress = static_cast<float>(processed_images) / static_cast<float>(total_images);
+        if (progressbarID >= 0) {
+          Logger::instance()->updateProgressBar(progressbarID, progress);
         }
+        if (progressCallback_) {
+          progressCallback_(static_cast<int>(progress * 100));
+        }
+      }
 
-        return local_images_tree;
-      }));
-    futures.push_back(std::move(future));
+      return local_images_tree;
+    });
+
+    futures.append(std::move(future));
   }
 
   boost::property_tree::ptree images_tree;
+
   for (auto& future : futures) {
-    auto batch_tree = future.get();
+    future.waitForFinished();
+    auto batch_tree = future.result();
     for (auto& node : batch_tree) {
       images_tree.push_back(std::make_pair("", node.second));
     }

@@ -1,8 +1,7 @@
 #include "image_dialog.h"
 #include <QFileDialog>
 #include <QString>
-
-#include "../core/engines/thread_pool.h"
+#include <QThreadPool>
 
 ImageDialog::ImageDialog(QWidget *parent) : QWidget(parent) {}
 
@@ -15,7 +14,7 @@ void ImageDialog::openFolder(ImageRepository *imageRepo, QWidget *parent) {
 
   // It might be necessary to have this call in another thread espcially if the
   // loaded folder contains a lot of images
-  post(ThreadPool::instance(), [imageRepo, folderPath]() {
+  QThreadPool::globalInstance()->start([imageRepo, folderPath]() {
     imageRepo->load_directory(folderPath.toStdString());
   });
 }

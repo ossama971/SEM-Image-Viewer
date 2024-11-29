@@ -21,8 +21,8 @@ if(PROJECT_IS_TOP_LEVEL AND UNIX)
                           ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json)
 endif()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Concurrent)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Concurrent)
 
 message(STATUS "Qt Version: ${Qt${QT_VERSION_MAJOR}_VERSION}")
 message(STATUS "Qt Widgets Include Dir: ${Qt${QT_VERSION_MAJOR}_Widgets_INCLUDE_DIRS}")
@@ -70,8 +70,6 @@ set(PROJECT_SOURCES
     core/engines/logger.h
     core/engines/workspace.cpp
     core/engines/workspace.h
-    core/engines/thread_pool.cpp
-    core/engines/thread_pool.h
     core/filters/edge_detection_filter.cpp
     core/filters/edge_detection_filter.h
     core/filters/gray_scale_filter.cpp
@@ -159,7 +157,7 @@ set(PROJECT_SOURCES
     models/image_data_model.cpp
     models/image_data_model.h
 
-    app_icon.rc
+    # app_icon.rc
     resources.qrc
 
     widgets/log_card_widget.h
@@ -202,7 +200,7 @@ else()
   endif()
 endif()
 
-target_link_libraries(SEM-Image-Viewer PRIVATE Qt6::Charts ${OpenCV_LIBS} ${Boost_LIBRARIES} Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(SEM-Image-Viewer PRIVATE Qt6::Charts ${OpenCV_LIBS} ${Boost_LIBRARIES} Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Concurrent)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If you are developing for iOS or macOS you
 # should consider setting an explicit, fixed bundle identifier manually though.

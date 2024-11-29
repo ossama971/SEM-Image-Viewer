@@ -10,7 +10,6 @@
 
 #include <QObject>
 #include <vector>
-#include <future>
 
 #define IMAGE_FILE_REGEX "^.*[.](png|jpg|bmp)$"
 

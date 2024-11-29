@@ -1,9 +1,11 @@
 #include "image_repository.h"
-#include "../engines/thread_pool.h"
 #include "../engines/logger.h"
 
 #include <QDebug>
 #include <QVector>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
 #include <regex>
 #include <boost/algorithm/string.hpp>
 
@@ -23,93 +25,93 @@ ImageRepository::ImageRepository() : _selectedImage(nullptr)
 }
 
 bool ImageRepository::load_directory(const std::string &path) {
-  if(_current_operations.load() > 0) {
-    Logger::instance()->logMessage(Logger::MessageTypes::warning, Logger::MessageID::operation_in_progress, Logger::MessageOption::without_path, {});
-    return false;
-  }
-
-  std::unique_lock<std::recursive_mutex> lock(_mutex);
-
-  try {
-    const std::regex filter(IMAGE_FILE_REGEX);
-    std::smatch what;
-    std::vector<std::filesystem::path> image_paths;
-
-    // Collect image file paths
-    for (std::filesystem::recursive_directory_iterator it(path);
-         it != std::filesystem::recursive_directory_iterator(); ++it) {
-      if (!std::filesystem::is_regular_file(it->status()))
-        continue;
-
-      std::string filename = it->path().filename().string();
-      boost::to_lower(filename);
-      if (!std::regex_search(filename, what, filter))
-        continue;
-
-      image_paths.push_back(it->path());
+    if (_current_operations.load() > 0) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::warning,
+            Logger::MessageID::operation_in_progress,
+            Logger::MessageOption::without_path, {});
+        return false;
     }
 
-    if (image_paths.empty())
-      return false;
+    std::unique_lock<std::recursive_mutex> lock(_mutex);
 
-    int progressbarID = Logger::instance()->logMessageWithProgressBar(
-        Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
-        Logger::MessageOption::with_path,
-        {QString::fromStdString(path)}, image_paths.size(),
-        QString("file:///%1").arg(QString::fromStdString(path)));
+    try {
+        const std::regex filter(IMAGE_FILE_REGEX);
+        std::smatch what;
+        std::vector<std::filesystem::path> image_paths;
 
-    // Prepare for new data
-    pre_directory_change(image_paths.size(), path);
+        for (std::filesystem::recursive_directory_iterator it(path);
+             it != std::filesystem::recursive_directory_iterator(); ++it) {
+            if (!std::filesystem::is_regular_file(it->status()))
+                continue;
 
-    lock.unlock(); // Unlock mutex while processing images in threads
+            std::string filename = it->path().filename().string();
+            boost::to_lower(filename);
+            if (!std::regex_search(filename, what, filter))
+                continue;
 
-    const size_t batch_size = 17;
-    std::vector<std::future<std::vector<std::unique_ptr<Image>>>> futures;
+            image_paths.push_back(it->path());
+        }
 
-    for (size_t i = 0; i < image_paths.size(); i += batch_size) {
-      auto start = image_paths.begin() + i;
-      auto end = (i + batch_size < image_paths.size()) ? start + batch_size
-                                                       : image_paths.end();
-      std::vector<std::filesystem::path> batch(start, end);
+        if (image_paths.empty())
+            return false;
 
-      auto future = post(
-          ThreadPool::instance(), use_future([this, progressbarID, batch]() {
-            std::vector<std::unique_ptr<Image>> local_images;
-            for (const auto &file : batch) {
+        int progressbarID = Logger::instance()->logMessageWithProgressBar(
+            Logger::MessageTypes::info, Logger::MessageID::images_loading_started,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(path)}, image_paths.size(),
+            QString("file:///%1").arg(QString::fromStdString(path)));
+
+        pre_directory_change(image_paths.size(), path);
+
+        lock.unlock();
+
+        const size_t batch_size = 17;
+        QList<QFuture<std::shared_ptr<std::vector<std::unique_ptr<Image>>>>> futures;
+
+        for (size_t i = 0; i < image_paths.size(); i += batch_size) {
+            auto start = image_paths.begin() + i;
+            auto end = (i + batch_size < image_paths.size()) ? start + batch_size
+                                                             : image_paths.end();
+            std::vector<std::filesystem::path> batch(start, end);
+
+            auto future = QtConcurrent::run([this, progressbarID, batch]() -> std::shared_ptr<std::vector<std::unique_ptr<Image>>> {
+                auto local_images = std::make_shared<std::vector<std::unique_ptr<Image>>>();
+                for (const auto &file : batch) {
 #ifdef IMAGE_CACHE
-                std::unique_ptr<Image> image = std::make_unique<Image>(&_cachePool);
+                    std::unique_ptr<Image> image = std::make_unique<Image>(&_cachePool);
 #else
-                std::unique_ptr<Image> image = std::make_unique<ImageCacheless>();
+                    std::unique_ptr<Image> image = std::make_unique<ImageCacheless>();
 #endif
-              image->load(file.string());
-              local_images.push_back(std::move(image));
-              Logger::instance()->updateProgressBar(progressbarID, 1);
+                    image->load(file.string());
+                    local_images->push_back(std::move(image));
+                    Logger::instance()->updateProgressBar(progressbarID, 1);
+                }
+                return local_images;
+            });
+
+            futures.append(std::move(future));
+        }
+
+        for (auto &future : futures) {
+            future.waitForFinished();
+            auto local_images = future.result();
+
+            lock.lock();
+            for (auto &image : *local_images) {
+                _images.push_back(std::move(image));
             }
-            return local_images;
-          }));
+            lock.unlock();
+        }
 
-      futures.push_back(std::move(future));
+        post_directory_change(path, false);
+        return true;
+    } catch (const std::filesystem::filesystem_error &ex) {
+        std::cerr << "Filesystem error: " << ex.what() << std::endl;
+    } catch (const std::regex_error &ex) {
+        std::cerr << "Regex error: " << ex.what() << std::endl;
     }
-
-    for (auto &future : futures) {
-      auto local_images = future.get();
-
-      lock.lock(); // Lock again to modify shared state
-      for (auto &image : local_images) {
-        _images.push_back(std::move(image));
-      }
-      lock.unlock(); // Unlock after modifying
-    }
-
-    post_directory_change(path, false);
-
-    return true;
-  } catch (const std::filesystem::filesystem_error &ex) {
-    std::cerr << "Filesystem error: " << ex.what() << std::endl;
-  } catch (const std::regex_error &ex) {
-    std::cerr << "Regex error: " << ex.what() << std::endl;
-  }
-  return false;
+    return false;
 }
 
 bool ImageRepository::load_image(const std::string &path) {

@@ -1,6 +1,5 @@
 #include "../core/engines/json_vsitor.h"
 #include "../core/engines/logger.h"
-#include "../core/engines/thread_pool.h"
 #include "../core/engines/workspace.h"
 #include "../core/utils.h"
 #include "image_dialog.h"
@@ -11,6 +10,9 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <boost/format.hpp>
+
+#include <QThreadPool>
+#include <QtConcurrent/QtConcurrent>
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) : QMenuBar(parent) {
 
@@ -98,62 +100,61 @@ void MenuBarWidget::fileMenu() {
 }
 
 void MenuBarWidget::exportSelectedImage(const QString &format) {
-  const auto image = Workspace::Instance()
+    const auto image = Workspace::Instance()
                          ->getActiveSession()
                          .getImageRepo()
                          .cloneSelectedImage();
 
-  if (image == nullptr) {
-    // TODO: use logger to inform user that there is no image to export
-    return;
-  }
+    if (image == nullptr) {
+        // TODO: use logger to inform user that there is no image to export
+        return;
+    }
 
-  const std::string originalFileName = image->getPath().filename().string();
-  const size_t lastDot = originalFileName.find_last_of('.');
-  const std::string baseFileName = (lastDot != std::string::npos)
+    const std::string originalFileName = image->getPath().filename().string();
+    const size_t lastDot = originalFileName.find_last_of('.');
+    const std::string baseFileName = (lastDot != std::string::npos)
                                        ? originalFileName.substr(0, lastDot)
                                        : originalFileName;
 
-  QString saveFilePath = QFileDialog::getSaveFileName(
-      this, tr("Save Image File"), QString::fromStdString(baseFileName),
-      tr("Images (*.%1)").arg(format));
+    QString saveFilePath = QFileDialog::getSaveFileName(
+        this, tr("Save Image File"), QString::fromStdString(baseFileName),
+        tr("Images (*.%1)").arg(format));
 
-  if (saveFilePath.isEmpty()) {
-    // User canceled the dialog
-    return;
-  }
+    if (saveFilePath.isEmpty()) {
+        // User canceled the dialog
+        return;
+    }
 
-  if (!saveFilePath.endsWith("." + format, Qt::CaseInsensitive)) {
-    saveFilePath += "." + format;
-  }
+    if (!saveFilePath.endsWith("." + format, Qt::CaseInsensitive)) {
+        saveFilePath += "." + format;
+    }
 
-  const cv::Mat& matImg = image->getImageMat();
+    const cv::Mat& matImg = image->getImageMat();
 
-  // Save the image using OpenCV
-  const std::string saveFileName = saveFilePath.toStdString();
-  post(ThreadPool::instance(),
-       std::packaged_task<void()>(
-           [matImg, saveFileName]() {
-            std::filesystem::path parentPath = std::filesystem::path(saveFileName).parent_path();
-            if (!Utils::checkWritePermission(parentPath)) {
-              Logger::instance()->logMessage(
-                  Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
-                  Logger::MessageOption::with_path,
-                  {QString::fromStdString(parentPath.string())});
-              return;
-            }
-             if(cv::imwrite(saveFileName, matImg)) {
-               Logger::instance()->logMessage(
-                  Logger::MessageTypes::info, Logger::MessageID::exporting_images,
-                  Logger::MessageOption::with_path, { QString::fromStdString(saveFileName) },
-                  QString("file:///%1").arg(QString::fromStdString(saveFileName)));
-               } else {
-               Logger::instance()->logMessage(
-                   Logger::MessageTypes::error, Logger::MessageID::exporting_error,
-                   Logger::MessageOption::with_path,
-                   {QString::fromStdString(saveFileName)});
-               }
-           }));
+    const std::string saveFileName = saveFilePath.toStdString();
+
+    QThreadPool::globalInstance()->start([matImg, saveFileName]() {
+        std::filesystem::path parentPath = std::filesystem::path(saveFileName).parent_path();
+        if (!Utils::checkWritePermission(parentPath)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error, Logger::MessageID::insufficient_permissions,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(parentPath.string())});
+        return;
+        }
+
+        if (cv::imwrite(saveFileName, matImg)) {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::info, Logger::MessageID::exporting_images,
+            Logger::MessageOption::with_path, { QString::fromStdString(saveFileName) },
+            QString("file:///%1").arg(QString::fromStdString(saveFileName)));
+        } else {
+        Logger::instance()->logMessage(
+            Logger::MessageTypes::error, Logger::MessageID::exporting_error,
+            Logger::MessageOption::with_path,
+            {QString::fromStdString(saveFileName)});
+        }
+    });
 }
 
 void MenuBarWidget::exportImages(const QString &format) {
@@ -212,8 +213,7 @@ void MenuBarWidget::exportImages(const QString &format) {
   for (std::size_t i = 0; i < images_count; i += BATCH_SIZE) {
     std::size_t startIdx = i;
     std::size_t endIdx = std::min(i + BATCH_SIZE, images_count);
-    post(ThreadPool::instance(), std::packaged_task<void()>(std::bind(
-                                     saveImagesSubset, startIdx, endIdx)));
+    QThreadPool::globalInstance()->start([=]() { saveImagesSubset(startIdx, endIdx); });
   }
 }
 
@@ -337,7 +337,7 @@ void MenuBarWidget::saveSession() {
             .getImageRepo()
             .getImagesCount());
 
-    post(ThreadPool::instance(),
+    QThreadPool::globalInstance()->start(
         [sessionFolderPath, jsonFilePath, progressbarID]() {
            JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), progressbarID, nullptr);
            Workspace::Instance()->getActiveSession().accept(visitor);
@@ -365,16 +365,16 @@ void MenuBarWidget::loadSession() {
   // Check if the selected file has a .json extension
   if (jsonFilePath.extension() != ".json") {
     // TODO: use logger
-    return; // Invalid file type
+    return;
   }
 
   try {
-    post(ThreadPool::instance(), [jsonFilePath]() { Utils::loadSessionJson(jsonFilePath.string()); });
-
+    QThreadPool::globalInstance()->start(
+        [jsonFilePath]() { Utils::loadSessionJson(jsonFilePath.string()); });
     // TODO: use logger
-    return; // Load successful
+    return;
   } catch (const std::exception &e) {
     // TODO: use logger
-    return; // Load failed
+    return;
   }
 }

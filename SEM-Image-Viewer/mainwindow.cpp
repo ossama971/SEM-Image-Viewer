@@ -1,6 +1,5 @@
 #include "core/engines/json_vsitor.h"
 #include "core/engines/logger.h"
-#include "core/engines/thread_pool.h"
 #include "core/engines/workspace.h"
 #include "models/image_data_model.h"
 #include "mainwindow.h"
@@ -12,6 +11,10 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QtConcurrent/QtConcurrent>
+#include <QFileDialog>
+#include <QProgressBar>
+#include <QFutureWatcher>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -254,38 +257,49 @@ void MainWindow::onSaveChangesClicked() {
         progressBar->setTextVisible(true);
         progressBar->show();
 
-        // Calculate the center position
         int windowWidth = this->width();
         int windowHeight = this->height();
         int progressBarWidth = 333;
         int progressBarHeight = 37;
-        
         int x = (windowWidth - progressBarWidth) / 2;
         int y = (windowHeight - progressBarHeight) / 2;
-        
         progressBar->setGeometry(x, y, progressBarWidth, progressBarHeight);
 
-        post(ThreadPool::instance(), [sessionFolderPath, jsonFilePath, this]() {
-            auto saveTask = post(ThreadPool::instance(), use_future([this, sessionFolderPath, jsonFilePath]() {
-                auto progressCallback = [this](int progress) {
-                    QMetaObject::invokeMethod(this, [this, progress]() {
-                        int new_value = progressBar->value() + 1;
-                        progressBar->setValue(new_value);
+        QFuture<void> future = QtConcurrent::run([=]() {
+            try {
+                // Progress callback for updates
+                auto progressCallback = [this]([[maybe_unused]] int progress) {
+                    QMetaObject::invokeMethod(this, [this]() {
+                        progressBar->setValue(progressBar->value() + 1);
                     });
                 };
+
                 JsonVisitor visitor(sessionFolderPath.string(), jsonFilePath.string(), -100, progressCallback);
                 Workspace::Instance()->getActiveSession().accept(visitor);
                 visitor.write_json();
-            }));
-            saveTask.get();
-            Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
-            QMetaObject::invokeMethod(qApp, &QApplication::quit);
+                Workspace::Instance()->getActiveSession().getImageRepo().setHasUnsavedChanges(false);
+                QMetaObject::invokeMethod(qApp, &QApplication::quit);
+
+            } catch (const std::exception &e) {
+                Logger::instance()->logMessage(
+                    Logger::MessageTypes::error, Logger::MessageID::error_in_save,
+                    Logger::MessageOption::without_path, {});
+            }
         });
+
+        // Ensure future finishes before closing the application
+        QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
+        connect(watcher, &QFutureWatcher<void>::finished, this, [this, watcher]() {
+            watcher->deleteLater();
+            progressBar->deleteLater();
+            setEnabled(true);
+        });
+        watcher->setFuture(future);
+
     } catch (const std::exception &e) {
         Logger::instance()->logMessage(
             Logger::MessageTypes::error, Logger::MessageID::error_in_save,
-            Logger::MessageOption::without_path,
-            {});
+            Logger::MessageOption::without_path, {});
     }
 }
 
