@@ -146,18 +146,25 @@ To optimize image viewing and processing, the SEM Image Viewer employs an **Imag
 ## **Overview Screenshots**  
 
 ### **Main View**  
-*(Insert Main View screenshot here)*  
+*![plot](SEM-Image-Viewer/assets/Screenshots/11.png)*
+*![plot](SEM-Image-Viewer/assets/Screenshots/14.png)*
 
 ### **Grid View**  
-*(Insert Grid View screenshot here)*  
+*![plot](SEM-Image-Viewer/assets/Screenshots/6.png)*  
 
 ### **Diff View**  
-*(Insert Diff View screenshot here)*  
+*![plot](SEM-Image-Viewer/assets/Screenshots/Pasted_Graphic_2.png)*
+
+### **Heat Maps** 
+*![plot](SEM-Image-Viewer/assets/Screenshots/2.png)*
+
+### **Intensities Plots** 
+*![plot](SEM-Image-Viewer/assets/Screenshots/4.png)*
 
 ---
 
 ## **High-Level Architecture**  
-*(Insert High-Level Architecture diagram here)*  
+*![plot](SEM-Image-Viewer/assets/Screenshots/Browser.png)*
 
 ---
 
